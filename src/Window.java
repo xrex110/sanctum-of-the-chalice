@@ -14,6 +14,10 @@ public class Window extends JFrame {
 		this.setTitle(titleText);
 		this.setSize(xSize, ySize);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//Player cannot resize for now
+		//We can look into scaling things later
+		this.setResizable(false);
 	}
 
 	public Window(String titleText) {
