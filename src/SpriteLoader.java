@@ -14,6 +14,32 @@ public class SpriteLoader{
         cache = new HashMap<String, BufferedImage>();
     }
 
+	/**
+	 *	Searches the cache for the requested image and its frame (0-indexed) and returns it
+	 *	If not found within cache, attempts to load the image from its spritesheet (a cacheSheet call) and
+	 *	then return it
+	 *
+	 */
+
+    public BufferedImage getSprite(String requested, int frame, int xSize, int ySize) {
+		String cacheQuery = requested + frame;
+		System.out.println("Searching for " + cacheQuery + " within cache");
+		if(cache.containsKey(cacheQuery)) {
+			System.out.println(cacheQuery + " was successfully found withing cache");
+			return cache.get(cacheQuery);	
+		}
+
+		cacheSheet(requested, xSize, ySize);
+		if(cache.containsKey(cacheQuery)) {
+			System.out.println(cacheQuery + " had to be loaded into the cache and returned");
+			return cache.get(cacheQuery);	
+		}
+		else {
+			System.out.println("Invalid frame requested.\n");
+			System.exit(1);
+		}
+		return null;
+    } 
 
     /** Loads a sprite map from memory (same path format as getImage()) and splits it
      *  Stores output in a HashMap with keys "FileName0,1,2..."
@@ -21,8 +47,8 @@ public class SpriteLoader{
      *  X and Y specify the width and height of each cut
      *
      */
-    public void loadSheet(String path, int x, int y) {
-        BufferedImage sheet = getImage(path);
+    public void cacheSheet(String path, int x, int y) {
+        BufferedImage sheet = getImage(RESOURCE_PATH + path);
         
         if(sheet == null){
             System.out.printf("Unexpected null pointer returned after loading %s%n", path);
@@ -49,11 +75,27 @@ public class SpriteLoader{
         for(int i = 0; i < width; i += x) {
             for(int j = 0; j < height; j += y) {
                 BufferedImage temp = sheet.getSubimage(i, j, x, y);
-                cache.put(path + count++, temp);
+				String imgKey = path + count;
+				System.out.println("Put " + imgKey + " in cache");
+                cache.put(imgKey, temp);
+				count++;
             }
         }
                 
     }
+
+	/**
+	 *	Caches and returns the requested image
+	 *
+	 */
+	
+	public BufferedImage cacheImage(String path) {
+		BufferedImage img = getImage(path);
+		String imgKey = path + "0";
+		System.out.println("Put " + imgKey + " in cache");
+		cache.put(imgKey, img);
+		return img;
+	}
 
 
     /** Takes in a path in the form of "test.png", not "/test.png"
@@ -66,7 +108,7 @@ public class SpriteLoader{
             System.exit(1);
         }
 
-        String location = /*RESOURCE_PATH + */path;
+        String location = RESOURCE_PATH + path;
         File imgFile = new File(location);
         BufferedImage in = null;
         try{
