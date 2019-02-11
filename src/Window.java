@@ -18,6 +18,9 @@ public class Window extends JFrame {
 		this.add(this.view);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		//Here just to be safe. See GameView constructor for full details
+		//this.setIgnoreRepaint(true);
+
 		//Player cannot resize for now
 		//We can look into scaling things later
 		this.setResizable(false);

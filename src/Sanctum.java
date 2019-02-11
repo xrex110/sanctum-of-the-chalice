@@ -7,7 +7,7 @@ public class Sanctum {
 		System.out.println("Hello, world!@@"); // hey T was here
 
 		in = new InputHandler();
-		GameView gm = new GameView(in);
+		GameView gm = new GameView();
 		gm.setInputHandler(in);
 		window = new Window("Sanctum of the Chalice - Rendering Engine test", gm, 800, 800);
 		window.showWindow();

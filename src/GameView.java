@@ -6,6 +6,14 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 public class GameView extends JPanel {
 	
+	public GameView() {
+		//Fixes a nasty bug that causes repaint() to be called when
+		//the OS requests for it (moving the window offscreen or bringing it
+		//to focux after having it be overlapped by another window) and thus
+		//cause everything to be reloaded within the dirty area only. Very nasty
+		
+		//this.setIgnoreRepaint(true);
+	}
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
