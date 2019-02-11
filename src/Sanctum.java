@@ -64,12 +64,12 @@ public class Sanctum {
 				log("S key is just PRESSED, not held");
 			}
 
-			/*try {
-				Thread.sleep(32);
+			try {
+				Thread.sleep(32);	//Time for a single fast tick on avg
 			}
 			catch(InterruptedException e) {
 				System.out.println("Timer failed? What.");
-			}*/
+			}
 		}
 
 		System.out.println("Game HECKIN over ree");

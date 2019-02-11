@@ -5,6 +5,8 @@ import java.util.Random;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.awt.Font;
+import java.awt.Color;
+
 public class GameView extends JPanel {
 	
 	private SpriteLoader loader;
@@ -54,10 +56,20 @@ public class GameView extends JPanel {
 		BufferedImage wizard = loader.getSprite("wizard.png", 0, 32, 32); 
 		rend.drawImage(wizard, null, 320, 320);
 		//System.out.printf("Frame %s took %.2f ms to draw\n",  redraw++, runTime);
+		drawFPS(rend);
         
-        Font font = new Font("Serif", Font.PLAIN, 14);
+	}
+	
+	public void drawFPS(Graphics2D rend) {
+        Font font = new Font("Serif", Font.BOLD, 14);
         rend.setFont(font);
-        rend.drawString("Frames Per Second: " + fps,20,20);
+		rend.setColor(Color.BLACK);
+        rend.drawString("FPS: " + fps,19,19);
+        rend.drawString("FPS: " + fps,19,20);
+        rend.drawString("FPS: " + fps,20,19);
+        rend.drawString("FPS: " + fps,21,21);
+		rend.setColor(Color.RED);
+        rend.drawString("FPS: " + fps,20,20);
 	}
 
 	public void setInputHandler(InputHandler ih) {
