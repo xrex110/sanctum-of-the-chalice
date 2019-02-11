@@ -27,6 +27,10 @@ public class Window extends JFrame {
 		this(titleText, view, 800, 800);
 	}
 
+	public void setInputHandler(InputHandler ih) {
+		this.addKeyListener(ih);
+	}
+
 	public void updateWindow() {
 		this.setTitle(titleText);
 		this.setSize(xSize, ySize);
@@ -39,6 +43,11 @@ public class Window extends JFrame {
 
 	public void hideWindow() {
 		this.setVisible(false);
+	}
+
+	public void killWindow() {
+		hideWindow();
+		this.dispose();
 	}
 
 	public void setWindowSize(int x, int y) {
