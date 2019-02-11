@@ -23,15 +23,15 @@ public class SpriteLoader{
 
     public BufferedImage getSprite(String requested, int frame, int xSize, int ySize) {
 		String cacheQuery = requested + frame;
-		System.out.println("Searching for " + cacheQuery + " within cache");
+		//System.out.println("Searching for " + cacheQuery + " within cache");
 		if(cache.containsKey(cacheQuery)) {
-			System.out.println(cacheQuery + " was successfully found withing cache");
+			//System.out.println(cacheQuery + " was successfully found within cache");
 			return cache.get(cacheQuery);	
 		}
 
 		cacheSheet(requested, xSize, ySize);
 		if(cache.containsKey(cacheQuery)) {
-			System.out.println(cacheQuery + " had to be loaded into the cache and returned");
+			//System.out.println(cacheQuery + " had to be loaded into the cache and returned");
 			return cache.get(cacheQuery);	
 		}
 		else {
@@ -72,6 +72,8 @@ public class SpriteLoader{
             System.exit(1);
         }
 
+		//TODO: This needs a check to ensure we dont try to cache things that are already cached
+		//It can occur if the player calls cacheSheet manually
         for(int i = 0; i < width; i += x) {
             for(int j = 0; j < height; j += y) {
                 BufferedImage temp = sheet.getSubimage(i, j, x, y);

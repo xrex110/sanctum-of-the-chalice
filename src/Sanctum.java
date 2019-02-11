@@ -3,11 +3,12 @@ import java.awt.event.KeyEvent;
 public class Sanctum {
 	static Window window;
 	static InputHandler in;
+	static GameView gm;
 	public static void main(String[] args) {
 		System.out.println("Hello, world!@@"); // hey T was here
 
 		in = new InputHandler();
-		GameView gm = new GameView();
+		gm = new GameView();
 		gm.setInputHandler(in);
 		window = new Window("Sanctum of the Chalice - Rendering Engine test", gm, 800, 800);
 		window.showWindow();
@@ -21,11 +22,11 @@ public class Sanctum {
 		int count = 0;
 		boolean isRunning = true;
 		while(isRunning) {
+			gm.repaint();		
 			in.poll();
 			count++;
 			/*
-			 *	Bug with the HELD state being calculated too soon
-			 *	Need fix ree
+			 *	TODO: Bug with the HELD state being calculated too soon
 			 *	Might be tickrate related
 			 */ 
 
@@ -53,7 +54,7 @@ public class Sanctum {
 			}
 
 			try {
-				Thread.sleep(100);
+				Thread.sleep(1000);
 			}
 			catch(InterruptedException e) {
 				System.out.println("Timer failed? What.");
