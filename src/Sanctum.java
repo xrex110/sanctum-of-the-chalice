@@ -20,9 +20,20 @@ public class Sanctum {
 	public static void startTestLoop() {
 		log("==========INPUT TESTING==========");
 		int count = 0;
+		long startTime = System.nanoTime();
+		int frame = 0;
 		boolean isRunning = true;
 		while(isRunning) {
-			gm.repaint();		
+			gm.repaint();
+
+			long nowTime = System.nanoTime();
+			if(((nowTime - startTime) / 1e9) >= 1) {
+				System.out.println("FPS: " + frame);
+				frame = 1;
+				startTime = nowTime;
+			}
+			else frame++;
+
 			in.poll();
 			count++;
 			/*
@@ -53,12 +64,12 @@ public class Sanctum {
 				log("S key is just PRESSED, not held");
 			}
 
-			try {
-				Thread.sleep(1000);
+			/*try {
+				Thread.sleep(32);
 			}
 			catch(InterruptedException e) {
 				System.out.println("Timer failed? What.");
-			}
+			}*/
 		}
 
 		System.out.println("Game HECKIN over ree");

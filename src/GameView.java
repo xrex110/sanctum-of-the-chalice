@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.util.Random;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+
 public class GameView extends JPanel {
 	
 	private SpriteLoader loader;
@@ -26,7 +27,6 @@ public class GameView extends JPanel {
 	}
 	@Override
 	public void paint(Graphics g) {
-		long curTime = System.nanoTime();
 		super.paint(g);		//Clears screen before every paint
 		//SpriteLoader loader = new SpriteLoader();
 		Graphics2D rend = (Graphics2D) g;
@@ -44,9 +44,7 @@ public class GameView extends JPanel {
 
 		BufferedImage wizard = loader.getSprite("wizard.png", 0, 32, 32); 
 		rend.drawImage(wizard, null, 320, 320);
-		long nowTime = System.nanoTime();
-		double runTime = (nowTime - curTime)/1000000;
-		System.out.printf("Frame %s took %.2f ms to draw\n",  redraw++, runTime);
+		//System.out.printf("Frame %s took %.2f ms to draw\n",  redraw++, runTime);
 	}
 
 	public void setInputHandler(InputHandler ih) {
