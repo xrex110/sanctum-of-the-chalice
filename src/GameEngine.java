@@ -41,40 +41,60 @@ class GameEngine {
 			
 			float timeElapsed = System.nanoTime() / MILLITONANO - timeStart;
 			float timeToNext = FASTRATE - timeElapsed;
-			slowCount += FASTRATE;
+			slowCount += timeElapsed;
 			if (timeToNext > 0)
 			{
 				sleepForMilli(timeToNext);
+				slowCount += timeToNext;
 			}
 			else {
 				System.out.print("lag");
 			}
 			timeStart = timeToNext-(long)timeToNext;
 		}
-		System.out.println("Total Time: " + (System.nanoTime() / MILLITONANO - gameStart)
-				+ ", Slow ticks: " + slowIts + ", Fast ticks: " + fastIts);
+		getTickRates();
 	}
 	
-
+	
 	public void fastTick()
 	{
+
 		fastIts += 1;
-		fillerOperations(400000);
+		//fillerOperations(100_000);
 	}
 	
+	/*This method serves as a benchmark function to see statistics on the performance of the gameloop
+	 */
+	public void getTickRates()
+	{
+
+		float totTime = System.nanoTime() / MILLITONANO - gameStart;
+		System.out.println("Total Time: " + totTime
+				+ ", Slow ticks: " + slowIts + ", Fast ticks: " + fastIts);
+		System.out.println("Avg ft/s: "+(fastIts/totTime*1000)+", Avg ms/ft: "+(totTime/fastIts) 
+				+", Avg st/s: "+(slowIts/totTime*1000)+", Avg ms/st: "+(totTime/slowIts));
+
+
+	}
+	
+	/*This method runs a number of arbitrary operations in order to test the response of the gameloop to
+	 * loads that it cannot handle
+	 */
 	private void fillerOperations(int num)
 	{
-		for (int i = 0; i < num/2; i++)
+		double[] x = new double[num];
+		for (int i = 0; i < num; i++)
 		{
-			if (i % fastIts == 0) {
-			slowIts += num;
-			slowIts -= num;}
+			x[i] = Math.random();
 		}
+		Arrays.sort(x);
 		
 	}
 
 	public void slowTick()
 	{
+		fillerOperations(1_000_000);
+
 		System.out.print(" 1");
 		slowIts++;
 		if (slowIts >= 30)
