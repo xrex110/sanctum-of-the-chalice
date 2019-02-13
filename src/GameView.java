@@ -11,7 +11,7 @@ public class GameView extends JPanel {
 	
 	private SpriteLoader loader;
 	private String sheetPath;
-	Random rand;
+	Random rand;					/* util.Random object for benchmarking */
 	int redraw = 1;
 
     int frameCount = 0;             /* Tracks number of frames since last check */
@@ -20,11 +20,6 @@ public class GameView extends JPanel {
     double fps = 0;                 /* Number of frames per second */
     
 	public GameView() {
-		//Fixes a nasty bug that causes repaint() to be called when
-		//the OS requests for it (moving the window offscreen or bringing it
-		//to focux after having it be overlapped by another window) and thus
-		//cause everything to be reloaded within the dirty area only. Very nasty
-		
 		//this.setIgnoreRepaint(true);
 		loader = new SpriteLoader();
 		sheetPath = "test_tile.png";
@@ -34,16 +29,13 @@ public class GameView extends JPanel {
 	}
 	@Override
 	public void paint(Graphics g) {
-
         updateFPS();
 		super.paint(g);		//Clears screen before every paint
-		//SpriteLoader loader = new SpriteLoader();
         
-
 		Graphics2D rend = (Graphics2D) g;
 
-		int xTiles = 25;
-		int yTiles = 25;
+		int xTiles = 25;	/* Number of tiles window can accomodate in x axis */
+		int yTiles = 25;	/* Number of tiles window can accomodate in y axis */
 
 		for(int i = 0; i < xTiles; i++) {
 			for(int j = 0; j < yTiles; j++) {
@@ -55,7 +47,6 @@ public class GameView extends JPanel {
 
 		BufferedImage wizard = loader.getSprite("wizard.png", 0, 32, 32); 
 		rend.drawImage(wizard, null, 320, 320);
-		//System.out.printf("Frame %s took %.2f ms to draw\n",  redraw++, runTime);
 		drawFPS(rend);
         
 	}
@@ -63,6 +54,8 @@ public class GameView extends JPanel {
 	public void drawFPS(Graphics2D rend) {
         Font font = new Font("Serif", Font.BOLD, 14);
         rend.setFont(font);
+		//The next 5 lines allow us to draw a black outline for the FPS counter
+		//Making it more readable
 		rend.setColor(Color.BLACK);
         rend.drawString("FPS: " + fps,19,19);
         rend.drawString("FPS: " + fps,19,20);

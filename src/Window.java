@@ -3,9 +3,9 @@ import javax.swing.JPanel;
 
 public class Window extends JFrame {  
 
-	private String titleText;
-	private int xSize, ySize;
-	private JPanel view;
+	private String titleText;	/* Text for JFrame title */
+	private int xSize, ySize;	/* Size of Frame in x and y axis in px */
+	private JPanel view;		/* The JPanel view to add the the Frame */
 
 	public Window(String titleText, JPanel view, int x, int y) {
 		this.titleText = titleText;
@@ -18,7 +18,6 @@ public class Window extends JFrame {
 		this.add(this.view);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		//Here just to be safe. See GameView constructor for full details
 		//this.setIgnoreRepaint(true);
 
 		//Player cannot resize for now

@@ -2,9 +2,9 @@ import java.awt.event.KeyEvent;
 
 public class Sanctum {
 
-	static Window window;
-	static InputHandler in;
-	static GameView gm;
+	static Window window;	/* Static window object */
+	static InputHandler in;	/* Static InputHandler object */
+	static GameView gm;		/* Static GameView object */
 	
 	//private static int frame = 1;	/* Used for theoretical FPS calculation */
 	//static long startTime = System.nanoTime();	/* Used for theoretical FPS calculation. Uncomment when needed*/
@@ -33,7 +33,7 @@ public class Sanctum {
 			handleInput();
 
 			try {
-				Thread.sleep(16);	//Time for a single fast tick on avg
+				Thread.sleep(16);	//Time for a single fast tick
 			}
 			catch(InterruptedException e) {
 				System.out.println("Timer failed? What.");
