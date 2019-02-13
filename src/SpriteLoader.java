@@ -75,12 +75,15 @@ public class SpriteLoader{
 		//TODO: This needs a check to ensure we dont try to cache things that are already cached
 		//It can occur if the player calls cacheSheet manually
         for(int i = 0; i < width; i += x) {
-            for(int j = 0; j < height; j += y) {
+            for(int j = 0; j < height; j += y, count++) {
                 BufferedImage temp = sheet.getSubimage(i, j, x, y);
 				String imgKey = path + count;
+				if(cache.containsKey(imgKey)) {
+					System.out.println("Image " + imgKey + " already in cache");
+					continue;
+				}
 				System.out.println("Put " + imgKey + " in cache");
                 cache.put(imgKey, temp);
-				count++;
             }
         }
                 
