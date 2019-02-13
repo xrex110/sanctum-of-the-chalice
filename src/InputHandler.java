@@ -14,7 +14,6 @@ public class InputHandler implements KeyListener {
 	//below functions
 	private enum State {
 		PRESSED,
-		HELD,
 		RELEASED
 	}
 
@@ -45,21 +44,11 @@ public class InputHandler implements KeyListener {
 				//If the key is pressed right now, but wasn't the last time we polled, we register
 				//it as a single *tap* action
 				if(keyState[i] == State.RELEASED) keyState[i] = keyState[i] = State.PRESSED;
-				//However, if key was in either the pressed OR the held state last tick
-				//We register is as just held down
-				//This can allow for us to judge time held in the future
-				//and also allows for checking if multiple keys are pressed in betweem
-				//ticks
-				else keyState[i] = State.HELD;
 			}
 			else {
 				keyState[i] = State.RELEASED;
 			}
 		}
-	}
-
-	public boolean isKeyDown(int code) {
-		return keyState[code] == State.HELD || keyState[code] == State.PRESSED;
 	}
 
 	public boolean isKeyReleased(int code) {
@@ -68,11 +57,6 @@ public class InputHandler implements KeyListener {
 
 	public boolean isKeyPressed(int code) {
 		return keyState[code] == State.PRESSED;
-	}
-
-	//Fixes needed here
-	public boolean isKeyHeld(int code) {
-		return keyState[code] == State.HELD;
 	}
 
 	//This function is triggered by some external KeyEvent class
