@@ -33,7 +33,7 @@ public class Sanctum {
 			handleInput();
 
 			try {
-				Thread.sleep(32);	//Time for a single fast tick on avg
+				Thread.sleep(16);	//Time for a single fast tick on avg
 			}
 			catch(InterruptedException e) {
 				System.out.println("Timer failed? What.");
