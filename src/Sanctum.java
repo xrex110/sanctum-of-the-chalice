@@ -4,6 +4,10 @@ public class Sanctum {
 	static Window window;
 	static InputHandler in;
 	static GameView gm;
+	
+	//private static int frame = 1;	/* Used for theoretical FPS calculation */
+	//static long startTime = System.nanoTime();	/* Used for theoretical FPS calculation. Uncomment when needed*/
+
 	public static void main(String[] args) {
 		System.out.println("Hello, world!@@"); // hey T was here
 
@@ -20,19 +24,11 @@ public class Sanctum {
 	public static void startTestLoop() {
 		log("==========INPUT TESTING==========");
 		int count = 0;
-		long startTime = System.nanoTime();
-		int frame = 0;
 		boolean isRunning = true;
 		while(isRunning) {
 			gm.repaint();
 
-			long nowTime = System.nanoTime();
-			if(((nowTime - startTime) / 1e9) >= 1) {
-				System.out.println("FPS: " + frame);
-				frame = 1;
-				startTime = nowTime;
-			}
-			else frame++;
+			//theoreticalFPS();	/*Uncomment when theoretical FPS is need (unbound refresh) */
 
 			in.poll();
 			count++;
@@ -74,6 +70,16 @@ public class Sanctum {
 
 		System.out.println("Game HECKIN over ree");
 		window.killWindow();		//Heckin' KILLS windows	
+	}
+
+	public static void theoreticalFPS() {
+		long nowTime = System.nanoTime();
+		if(((nowTime - startTime) / 1e9) >= 1) {
+			System.out.println("FPS: " + frame);	//Theoretical FPS
+			frame = 1;
+			startTime = nowTime;
+		}
+		else frame++;
 	}
 
 	public static void log(String msg) {
