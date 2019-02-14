@@ -7,6 +7,29 @@ import com.jogamp.openal.util.ALut;
 import java.io.File;
 import java.nio.ByteBuffer;
 
-void main(String[] args){
-	
+public class SoundEngine {
+
+	public void play(String fName)
+	{
+
+
+
+
+
+
+
+	}
+
+	public void loop(String fName)
+	{
+
+
+
+
+
+
+
+
+
+	}
 }
