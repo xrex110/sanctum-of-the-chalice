@@ -9,7 +9,6 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.Color;
 import java.awt.Shape;
-
 public class GameView extends JPanel {
 	
 	private SpriteLoader loader;
@@ -43,7 +42,7 @@ public class GameView extends JPanel {
 
 		int xTiles = 25;	/* Number of tiles window can accomodate in x axis */
 		int yTiles = 25;	/* Number of tiles window can accomodate in y axis */
-
+        /*
 		for(int i = 0; i < xTiles; i++) {
 			for(int j = 0; j < yTiles; j++) {
 				int randNum = rand.nextInt(12);
@@ -51,7 +50,10 @@ public class GameView extends JPanel {
 				rend.drawImage(img, null, i * 32, j * 32); 
 			}
 		}
- 
+        */
+        TileSet debug = new TileSet(0, 0, xTiles, yTiles, 32,32,true);
+        debug.draw(rend);
+
 		BufferedImage wizard = loader.getSprite("wizard.png", 0, 32, 32); 
 		rend.drawImage(wizard, null, 320, 320);
         
