@@ -4,11 +4,7 @@ import java.awt.Graphics2D;
 import java.util.Random;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
-import java.awt.Font;
-import java.awt.font.FontRenderContext;
-import java.awt.font.GlyphVector;
 import java.awt.Color;
-import java.awt.Shape;
 
 public class GameView extends JPanel {
 	
@@ -23,6 +19,9 @@ public class GameView extends JPanel {
     double updateDelta = 16;        /* Difference in MS between FPS calculations */
     double fps = 0;                 /* Number of frames per second */
     
+	TextDevice fpsText;
+	TextDevice testText;
+
 	public GameView() {
 		//this.setIgnoreRepaint(true);
 		loader = new SpriteLoader();
@@ -30,10 +29,13 @@ public class GameView extends JPanel {
 		loader.cacheSheet(sheetPath, 32, 32);	//Load in and cache stuff
 		loader.cacheImage("wizard.png");
 		fl = new FontLoader();
-		//Extension for fonts are fixed to TTFs
-		fl.loadFont("dpcomic");	/* loadFont accepts just the name of the font file, not the ext */
+		fl.loadFont("dpcomic");
 		rand = new Random();
+
+		fpsText = new TextDevice("DPComic", 20, Color.WHITE, Color.BLACK);
+		testText = new TextDevice("DPComic", 45, Color.BLUE, Color.RED);
 	}
+
 	@Override
 	public void paint(Graphics g) {
         updateFPS();
@@ -55,55 +57,14 @@ public class GameView extends JPanel {
 		BufferedImage wizard = loader.getSprite("wizard.png", 0, 32, 32); 
 		rend.drawImage(wizard, null, 320, 320);
         
-		drawText(rend, "Normal Text", "DPComic", 40, 50, 150, Color.BLUE);
-		drawOutlineText(rend, "Outline Text", "DPComic", 40, 50, 250, Color.DARK_GRAY, Color.BLACK);
+		testText.drawText(rend, "Normal Text", 50, 150);
+		testText.drawOutlineText(rend, "Outlined", 50, 250);
 		drawFPS(rend);
 	}
 	
 	public void drawFPS(Graphics2D rend) {
 		String fpsStr = "Fps: " + fps;
-		drawOutlineText(rend, fpsStr, "DPComic", 20, 25, 25, Color.WHITE, Color.BLACK); 
-	}
-
-	public void drawText(Graphics2D rend, String text, String fontName, int size, int x, int y, Color color) {
-		Color oldColor = rend.getColor();	/* Stores the current color of g2d obj */
-		Font oldFont = rend.getFont();		/* Stores the current font of g2d obj */
-
-		Font font = new Font(fontName, Font.BOLD, size);
-		rend.setFont(font);
-		rend.setColor(color);
-		rend.drawString(text, x, y);
-
-		rend.setColor(oldColor);	/* Restore color to original one from before calling */	
-		rend.setFont(oldFont);		/* Restore color to original one from before calling */
-	}
-
-	public void drawOutlineText(Graphics2D rend, String text, String fontName, int size, int x, int y, Color textColor, Color outlineColor) {
-		//To preserve the original color and fonts
-		Color oldColor = rend.getColor();
-		Font oldFont = rend.getFont();
-
-		drawText(rend, text, fontName, size, x, y, textColor);	/* To draw the inner text */
-
-		Font font = new Font(fontName, Font.BOLD, size);
-		rend.setFont(font);
-		FontRenderContext frc = rend.getFontRenderContext();	/* No clue tbh */
-		GlyphVector gc = font.createGlyphVector(frc, text);		/* Gets the glyphs */
-		rend.setColor(outlineColor);
-
-		//Graphics2D.translate(x,y) translates the origin of the G2D device to x, y of the JFrame
-		rend.translate(x, y);		/* Needed because g2d.draw doesnt accept coords to draw at */
-
-		Shape textOutline = gc.getOutline();  /* gc.getOutline return a Shape type */
-		rend.draw(textOutline);
-
-		//We need to return the origin of the G2D device to the origin of the JFrame
-		//Otherwise all further Shape draws will be relative to x, y
-		rend.translate(-x, -y);
-
-		//Restore the old color and font settings for the Graphics2D obj
-		rend.setColor(oldColor);
-		rend.setFont(oldFont);
+		fpsText.drawOutlineText(rend, fpsStr, 25, 25);
 	}
 
 	public void setInputHandler(InputHandler ih) {
