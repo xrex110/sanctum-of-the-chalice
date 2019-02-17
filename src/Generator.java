@@ -183,7 +183,7 @@ public class Generator {
 		}
 
 		//Open up the corridor
-		//TODO: Remove the coordinate that opens the corridor from the walls of the Room obj
+		 //TODO: Remove the coordinate that opens the corridor from the walls of the Room obj
 		map[start.row][start.col] = 1;
 		Room rm = excavateRoom(dir, cursor);
 		//We generate a room at the end of every "DIG". If a room cannot
@@ -198,6 +198,7 @@ public class Generator {
 		//roomDim.col is the height of the room
 		Coordinate roomDim = generateRoomBounds(5, 9);	//Magic numbers xD
 		int row = 0, col = 0;
+		//Pivot for new room in bottom left here
 		if(dir == Direction.UP) {
 			int offset = randWithinBounds(1, roomDim.row - 2);		
 			col = ensureRange(cursor.col - offset, 0, 29);
@@ -208,6 +209,8 @@ public class Generator {
 			col = ensureRange(cursor.col - offset, 0, 29);
 			row = ensureRange(cursor.row, 0, 29);
 		}
+
+		//Pivot for new room in top left here
 		else if(dir == Direction.RIGHT) {
 			int offset = randWithinBounds(1, roomDim.col - 2);		
 			row = ensureRange(cursor.row - offset, 0, 29);
@@ -222,6 +225,12 @@ public class Generator {
 		//TODO: bug = if the room gets bounded by the ensureRange func
 		//the width and height(roomDim row and col) don't get updated properly
 		Coordinate roomOrigin = new Coordinate(row, col);
+		
+		//We must ensure that the width and height are proper, i.e.
+		//If we end up bounding the room at the edges of the map
+		//We need adjust the width and height to reflect it
+
+		//roomDim.col = Math.abs(row - cursor.row) + 1;
 
 		return generateRoom(roomOrigin, roomDim);
 	}
