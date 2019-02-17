@@ -107,7 +107,7 @@ public class Generator {
 
 	public void generateDungeon() {	
 		Coordinate pt = new Coordinate(10, 10);
-		Room room = generateRoom(pt, new Coordinate(5, 9));
+		Room room = generateRoom(pt, generateRoomBounds(5, 9));
 		addWalls(room);
 		fillRoom(room);
 		
@@ -183,16 +183,57 @@ public class Generator {
 		}
 
 		//Open up the corridor
+		//TODO: Remove the coordinate that opens the corridor from the walls of the Room obj
 		map[start.row][start.col] = 1;
-		//excavateRoom(dir, cursor);
+		Room rm = excavateRoom(dir, cursor);
 		//We generate a room at the end of every "DIG". If a room cannot
 		//be generated, then we can dead end for now... Might want a better
 		//solution for this in the future
+		addWalls(rm);
+		fillRoom(rm);
 	}
 
-	/*public excavateRoom(Direction dir, Coordinate cursor) {
-		
-	}*/
+	public Room excavateRoom(Direction dir, Coordinate cursor) {
+		//roomDim.row is the width of the room
+		//roomDim.col is the height of the room
+		Coordinate roomDim = generateRoomBounds(5, 9);	//Magic numbers xD
+		int row = 0, col = 0;
+		if(dir == Direction.UP) {
+			int offset = randWithinBounds(1, roomDim.row - 2);		
+			col = ensureRange(cursor.col - offset, 0, 29);
+			row = ensureRange(cursor.row - roomDim.col + 1, 0, 29);
+		}
+		else if(dir == Direction.DOWN) {
+			int offset = randWithinBounds(1, roomDim.row - 2);		
+			col = ensureRange(cursor.col - offset, 0, 29);
+			row = ensureRange(cursor.row, 0, 29);
+		}
+		else if(dir == Direction.RIGHT) {
+			int offset = randWithinBounds(1, roomDim.col - 2);		
+			row = ensureRange(cursor.row - offset, 0, 29);
+			col = ensureRange(cursor.col, 0, 29);
+		}
+		else if(dir == Direction.LEFT) {
+			int offset = randWithinBounds(1, roomDim.col - 2);		
+			row = ensureRange(cursor.row - offset, 0, 29);
+			col = ensureRange(cursor.col - roomDim.row + 1, 0, 29);
+		}
+
+		//TODO: bug = if the room gets bounded by the ensureRange func
+		//the width and height(roomDim row and col) don't get updated properly
+		Coordinate roomOrigin = new Coordinate(row, col);
+
+		return generateRoom(roomOrigin, roomDim);
+	}
+
+	/*
+	 *	What a fucking surprise this doesn't exist in java.math
+	 *	It's a function to ensure that the result of a variable
+	 *	remains within a certain bound
+	 */
+	private int ensureRange(int value, int min, int max) {
+		return Math.max(min, Math.min(value, max));
+	}
 
 	public void addWalls(Room rm) {
 		for(int i = rm.origin.row; i < rm.origin.row + rm.height; i++) {
@@ -223,15 +264,19 @@ public class Generator {
 		return rand.nextInt((max - min) + 1) + min;
 	}
 
+	public Coordinate generateRoomBounds(int min, int max) {
+		int width = randWithinBounds(min, max);
+		int height = randWithinBounds(min, max);
+		return new Coordinate(width, height);
+	}
+
 	public Room generateRoom(Coordinate atPoint, Coordinate xyBound) {
 		//Keep in mind, x axis is modulation in columns (j)
 		//And y axis is modulation in rows (i) for any (i)(j) arr
-		int width = randWithinBounds(xyBound.row, xyBound.col);
-		int height = randWithinBounds(xyBound.row, xyBound.col);
 		
-		System.out.printf("Room generated with width %d and height %d at (%d, %d)\n", width, height, atPoint.col, atPoint.row);
+		System.out.printf("Room generated with width %d and height %d at (%d row, %d col)\n", xyBound.row, xyBound.col, atPoint.row, atPoint.col);
 
-		Room rm = new Room(atPoint, width, height);
+		Room rm = new Room(atPoint, xyBound.row, xyBound.col);
 		return rm;
 	}
 
