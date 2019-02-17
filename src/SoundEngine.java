@@ -101,13 +101,13 @@ public class SoundEngine {
 
 
 
-	}
+	
 
-	public void loop(String fName)
-	{
+//	public void loop(String fName)
+//	{
 		
 
-	 	System.out.println("Start Loop");
+//	 	System.out.println("Start Loop");
 	//	static AL al = ALFactory.getAL();
 		//buffer hold sound data
 	//	static int[] buffer = new int[1];
@@ -133,7 +133,7 @@ public class SoundEngine {
 	//	static float[] listnerOri = { 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f };
 		
 
-	}
+//	}
 
 
 }
