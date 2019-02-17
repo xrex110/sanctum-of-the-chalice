@@ -1,5 +1,6 @@
 public class Sanctum {
-  public static void main(String[] args) {
-    System.out.println("Hello, world!@@"); // hey T was here
-  }
+	public static void main(String[] args) {
+		Generator gen = new Generator();		//Seed
+		gen.generateDungeon();
+	}
 }
