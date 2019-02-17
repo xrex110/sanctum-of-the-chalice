@@ -55,10 +55,6 @@ public class Generator {
 		public int width, height;
 		public int perimeter;
 		public int area;
-		private Coordinate origin;
-		private int width, height;
-		private int perimeter;
-		private int area;
 		
 		private Coordinate[] left;
 		private Coordinate[] right;
@@ -100,7 +96,6 @@ public class Generator {
 			for(int i = origin.col + 1, count = 0; i < origin.col + width - 1; i++, count++) {
 				//origin.row + 1 ignores the corner blocks
 				top[count] = new Coordinate(origin.row, i);
-				top[count] = new Coordinate(i, origin.row);
 			}
 			for(int i = origin.col + 1, count = 0; i < origin.col + width - 1; i++, count++) {
 				//origin.row + 1 ignores the corner blocks
@@ -123,10 +118,6 @@ public class Generator {
 			return corners;
 		}
 
-				left[count] = new Coordinate(i, row);
-			}
-			
-		}
 	}
 
 	public Generator(long seed) {
