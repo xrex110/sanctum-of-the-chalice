@@ -14,6 +14,9 @@ public class Generator {
 
 	Coordinate signPos;
 	
+	public int[][] map;
+	private Random rand;
+
 	private class Coordinate {
 		public int row, col;
 		private Random rand;
@@ -52,6 +55,10 @@ public class Generator {
 		public int width, height;
 		public int perimeter;
 		public int area;
+		private Coordinate origin;
+		private int width, height;
+		private int perimeter;
+		private int area;
 		
 		private Coordinate[] left;
 		private Coordinate[] right;
@@ -76,6 +83,10 @@ public class Generator {
 			corners[1] = new Coordinate(origin.row, origin.col + width - 1);
 			corners[2] = new Coordinate(origin.row + height - 1, origin.col + width - 1);
 			corners[3] = new Coordinate(origin.row + height - 1, origin.col);
+			left = new Coordinate[height];
+			right = new Coordinate[height];
+			top = new Coordinate[width];
+			bottom = new Coordinate[width];
 
 			for(int i = origin.row + 1, count = 0; i < origin.row + height - 1; i++, count++) {
 				//origin.row + 1 ignores the corner blocks
@@ -89,6 +100,7 @@ public class Generator {
 			for(int i = origin.col + 1, count = 0; i < origin.col + width - 1; i++, count++) {
 				//origin.row + 1 ignores the corner blocks
 				top[count] = new Coordinate(origin.row, i);
+				top[count] = new Coordinate(i, origin.row);
 			}
 			for(int i = origin.col + 1, count = 0; i < origin.col + width - 1; i++, count++) {
 				//origin.row + 1 ignores the corner blocks
@@ -111,6 +123,10 @@ public class Generator {
 			return corners;
 		}
 
+				left[count] = new Coordinate(i, row);
+			}
+			
+		}
 	}
 
 	public Generator(long seed) {
@@ -376,5 +392,4 @@ public class Generator {
 		int[] coords = {signPos.row, signPos.col};
 		return coords;
 	}
-
 }
