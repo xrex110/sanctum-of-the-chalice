@@ -210,7 +210,7 @@ public class Generator {
 		}
 
 		//Open up the corridor
-		 //TODO: Remove the coordinate that opens the corridor from the walls of the Room obj
+		//TODO: Remove the coordinate that opens the corridor from the walls of the Room obj
 		map[start.row][start.col] = 1;
 		Room rm = excavateRoom(dir, cursor);
 		//We generate a room at the end of every "DIG". If a room cannot
