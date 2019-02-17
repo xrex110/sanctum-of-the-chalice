@@ -44,12 +44,21 @@ public class InputHandler implements KeyListener {
 				//If the key is pressed right now, but wasn't the last time we polled, we register
 				//it as a single *tap* action
 				if(keyState[i] == State.RELEASED) keyState[i] = keyState[i] = State.PRESSED;
+                //TODO: PLEASE REMOVE ME AFTER HAVING GE HANDLE INPUT!
+                DEBUG_camera_input(i);
 			}
 			else {
 				keyState[i] = State.RELEASED;
 			}
 		}
 	}
+
+    public void DEBUG_camera_input(int keyid){
+        if(keyid == KeyEvent.VK_W) Player.player.moveUp();
+        if(keyid == KeyEvent.VK_A) Player.player.moveLeft();
+        if(keyid == KeyEvent.VK_S) Player.player.moveDown();
+        if(keyid == KeyEvent.VK_D) Player.player.moveRight();
+    }
 
 	public boolean isKeyReleased(int code) {
 		return keyState[code] == State.RELEASED;
