@@ -7,6 +7,7 @@ import com.jogamp.openal.ALFactory;
 import com.jogamp.openal.util.ALut;
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.util.*;
 
 public class SoundEngine {
 	public static AL al = ALFactory.getAL();
@@ -17,32 +18,38 @@ public class SoundEngine {
 	public float[] lPos = new float[3];
 	public float[] lVel = new float[3];
 	public float[] lOri = { 0, 0, -1f, 0, 1f, 0};
+	public ArrayList<String> fileList = new ArrayList<String>();
 
 	public void play(String fName)
 	{
 
 		System.out.println("play");
-		ALut.alutInit();
-		al.alGetError();
-		
-		if (loadData(fName) == AL.AL_FALSE)
+		if (!fileList.contains(fName))
 		{
-			System.out.println("you are a failure");
-			return;
-		}
 
-		setListener();
+			ALut.alutInit();
+			al.alGetError();
+			
+			if (loadData(fName) == AL.AL_FALSE)
+			{
+				System.out.println("you are a failure");
+				return;
+			}
+			
+			fileList.add(fName);
+			setListener();
 
-		Runtime runtime = Runtime.getRuntime();
-		runtime.addShutdownHook(
-				new Thread(
-					new Runnable() {
-						public void run() {
-							killAll();
+			Runtime runtime = Runtime.getRuntime();
+			runtime.addShutdownHook(
+					new Thread(
+						new Runnable() {
+							public void run() {
+								killAll();
+							}
 						}
-					}
-					)
-				);
+						)
+					);
+		}
 		al.alSourcePlay(src[0]);
 		
 		
