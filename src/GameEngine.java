@@ -95,11 +95,11 @@ class GameEngine {
 	{
 		//fillerOperations(100_000);
 
-		//System.out.print(" 1");
+		System.out.print(" 1");
 		slowIts++;
 		if (slowIts >= 30)
 		{
-			running = false;
+			end();
 			System.out.println();
 		}
 		
@@ -115,4 +115,9 @@ class GameEngine {
 		}
 	}
 	
+	public void end()
+	{
+		running = false;
+	}
+
 }
