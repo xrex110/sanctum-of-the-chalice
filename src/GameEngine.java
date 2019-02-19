@@ -52,7 +52,7 @@ class GameEngine {
 			}
 			timeStart = timeToNext-(long)timeToNext;
 		}
-		getTickRates();
+		//getTickRates();
 	}
 	
 	
@@ -93,9 +93,9 @@ class GameEngine {
 
 	public void slowTick()
 	{
-		fillerOperations(1_000_000);
+		//fillerOperations(100_000);
 
-		System.out.print(" 1");
+		//System.out.print(" 1");
 		slowIts++;
 		if (slowIts >= 30)
 		{
