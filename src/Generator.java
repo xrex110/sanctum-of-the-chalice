@@ -79,10 +79,6 @@ public class Generator {
 			corners[1] = new Coordinate(origin.row, origin.col + width - 1);
 			corners[2] = new Coordinate(origin.row + height - 1, origin.col + width - 1);
 			corners[3] = new Coordinate(origin.row + height - 1, origin.col);
-			left = new Coordinate[height];
-			right = new Coordinate[height];
-			top = new Coordinate[width];
-			bottom = new Coordinate[width];
 
 			for(int i = origin.row + 1, count = 0; i < origin.row + height - 1; i++, count++) {
 				//origin.row + 1 ignores the corner blocks
