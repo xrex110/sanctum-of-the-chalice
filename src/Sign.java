@@ -5,7 +5,7 @@ public class Sign extends GameObject {
     SpriteLoader sp = new SpriteLoader();
     private String text;
     public Sign(int x, int y, String text){
-        super(x,y);
+        super(x,y, false);
         this.text = text;
 
     }

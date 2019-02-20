@@ -18,9 +18,16 @@ class GameEngine {
 	private Generator levelGen;
 
 	private GameObject[][] levelMap;
+	private GameObject[][] entityMap;
 	
 	public GameEngine() {
 		levelMap = new GameObject[30][30];
+		entityMap = new GameObject[30][30];
+
+		entityMap[12][12] = Player.player;
+		Player.player.setX(12*32);
+		Player.player.setY(12*32);
+
 		levelGen = new Generator();
 		generateMap();
 		renderEngine = new RenderLoop();
@@ -38,10 +45,10 @@ class GameEngine {
 			for(int j = 0; j < rawMap[i].length; j++) {
 				int tileType = rawMap[i][j];
 				if(tileType == 2) {
-					levelMap[i][j] = new Tile(j * 32, i * 32, "test_tile.png", 0);
+					levelMap[i][j] = new Tile(j * 32, i * 32, "test_tile.png", 0, true);
 				}
 				else if(tileType == 1) {
-					levelMap[i][j] = new Tile(j * 32, i * 32, "test_tile.png", 1);
+					levelMap[i][j] = new Tile(j * 32, i * 32, "test_tile.png", 1, false);
 				}
 				else if(tileType == 0) {
 					levelMap[i][j] = null;
@@ -160,21 +167,34 @@ class GameEngine {
 	}
 
 	public void updatePlayer() {
+		int xPos = Player.player.getX()/32;
+		int yPos = Player.player.getY()/32;
 		if(currentInput.equals("W"))
 		{
-			Player.player.moveUp();
+			//Player.player.moveUp();
+			yPos--;
 		}
 		else if (currentInput.equals("A"))
 		{
-			Player.player.moveLeft();
+			//Player.player.moveLeft();
+			xPos--;
 		}
 		else if (currentInput.equals("S"))
 		{
-			Player.player.moveDown();
+			//Player.player.moveDown();
+			yPos++;
 		}
 		else if (currentInput.equals("D"))
 		{
-			Player.player.moveRight();
+			//Player.player.moveRight();
+			xPos++;
+		}
+		if(levelMap[yPos][xPos] != null) {
+			if (!levelMap[yPos][xPos].isSolid())
+			{
+				Player.player.setX(xPos * 32);
+				Player.player.setY(yPos * 32);
+			}
 		}
 
 	}

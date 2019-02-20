@@ -10,8 +10,8 @@ public class Tile extends GameObject{
         spLoader = new SpriteLoader();
     }
 
-    public Tile(int x, int y, String spriteIdentifier, int tileID) {
-        super(x, y);
+    public Tile(int x, int y, String spriteIdentifier, int tileID, boolean solid) {
+        super(x, y, solid);
         this.spriteIdentifier = spriteIdentifier;
         this.tileID = tileID;
     }
