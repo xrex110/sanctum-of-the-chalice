@@ -106,8 +106,9 @@ public class Generator {
 	}
 
 	public void generateDungeon() {	
+		//Spawn room
 		Coordinate pt = new Coordinate(10, 10);
-		Room room = generateRoom(pt, generateRoomBounds(5, 9));
+		Room room = generateRoom(pt, generateRoomBounds(5, 9, 30, 30));
 		addWalls(room);
 		fillRoom(room);
 		
@@ -196,15 +197,31 @@ public class Generator {
 	public Room excavateRoom(Direction dir, Coordinate cursor) {
 		//roomDim.row is the width of the room
 		//roomDim.col is the height of the room
-		Coordinate roomDim = generateRoomBounds(5, 9);	//Magic numbers xD
+		
+		//IMPORTANT: roomDim.row = width of room, roomDim.col = height of room!!!!
+		//TODO: Fix the weird shit as described in line 201 LOL
+		Coordinate roomDim = new Coordinate(0, 0);	//Magic numbers xD
 		int row = 0, col = 0;
+
+		//These variables try to ensure that we aren't generating
+		//bigger than we have space for in the given direction
+		int maxWidth = 0, maxHeight = 0; 
+		
 		//Pivot for new room in bottom left here
 		if(dir == Direction.UP) {
+			maxWidth = 30;					//The max possible width
+			//Max possible height. This is cursor.row + 1 because the cursor moves one
+			//space to the up, left, right, or down before being passed in
+			maxHeight = cursor.row + 1;
+			roomDim = generateRoomBounds(5, 9, maxWidth, maxHeight);
 			int offset = randWithinBounds(1, roomDim.row - 2);		
 			col = ensureRange(cursor.col - offset, 0, 29);
 			row = ensureRange(cursor.row - roomDim.col + 1, 0, 29);
 		}
 		else if(dir == Direction.DOWN) {
+			maxWidth = 30;
+			maxHeight = 30 - cursor.row;
+			roomDim = generateRoomBounds(5, 9, maxWidth, maxHeight);
 			int offset = randWithinBounds(1, roomDim.row - 2);		
 			col = ensureRange(cursor.col - offset, 0, 29);
 			row = ensureRange(cursor.row, 0, 29);
@@ -212,11 +229,17 @@ public class Generator {
 
 		//Pivot for new room in top left here
 		else if(dir == Direction.RIGHT) {
+			maxWidth = 30 - cursor.col;
+			maxHeight = 30;
+			roomDim = generateRoomBounds(5, 9, maxWidth, maxHeight);
 			int offset = randWithinBounds(1, roomDim.col - 2);		
 			row = ensureRange(cursor.row - offset, 0, 29);
 			col = ensureRange(cursor.col, 0, 29);
 		}
 		else if(dir == Direction.LEFT) {
+			maxWidth = cursor.col + 1;
+			maxHeight = 30;
+			roomDim = generateRoomBounds(5, 9, maxWidth, maxHeight);
 			int offset = randWithinBounds(1, roomDim.col - 2);		
 			row = ensureRange(cursor.row - offset, 0, 29);
 			col = ensureRange(cursor.col - roomDim.row + 1, 0, 29);
@@ -241,6 +264,7 @@ public class Generator {
 	 *	remains within a certain bound
 	 */
 	private int ensureRange(int value, int min, int max) {
+		//TODO: Bounds check for min < max
 		return Math.max(min, Math.min(value, max));
 	}
 
@@ -273,9 +297,9 @@ public class Generator {
 		return rand.nextInt((max - min) + 1) + min;
 	}
 
-	public Coordinate generateRoomBounds(int min, int max) {
-		int width = randWithinBounds(min, max);
-		int height = randWithinBounds(min, max);
+	public Coordinate generateRoomBounds(int min, int max, int maxWidth, int maxHeight) {
+		int width = ensureRange(randWithinBounds(min, max), -1, maxWidth);
+		int height = ensureRange(randWithinBounds(min, max), -1, maxHeight);
 		return new Coordinate(width, height);
 	}
 
