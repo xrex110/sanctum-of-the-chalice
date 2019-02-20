@@ -27,6 +27,10 @@ public class Generator {
 			col = b;
 		}
 
+		public boolean equals(Coordinate a) {
+			return (this.row == a.row && this.col == a.col);
+		}
+
 		public void generateInBounds(Coordinate xBounds, Coordinate yBounds) {
 			//xBounds and yBounds are just a (min, max) pair for these values
 			
@@ -51,6 +55,7 @@ public class Generator {
 		private Coordinate[] right;
 		private Coordinate[] top;
 		private Coordinate[] bottom;
+		private Coordinate[] corners;
 
 		public Room(Coordinate ul, int width, int height) {
 			origin = ul;
@@ -62,6 +67,13 @@ public class Generator {
 			right = new Coordinate[height - 2];
 			top = new Coordinate[width - 2];
 			bottom = new Coordinate[width - 2];
+			//Origin clockwise
+			corners = new Coordinate[4];		//Four corners allowed for now
+
+			corners[0] = new Coordinate(origin.row, origin.col);
+			corners[1] = new Coordinate(origin.row, origin.col + width - 1);
+			corners[2] = new Coordinate(origin.row + height - 1, origin.col + width - 1);
+			corners[3] = new Coordinate(origin.row + height - 1, origin.col);
 
 			for(int i = origin.row + 1, count = 0; i < origin.row + height - 1; i++, count++) {
 				//origin.row + 1 ignores the corner blocks
@@ -91,6 +103,10 @@ public class Generator {
 				case DOWN: return bottom;
 			}
 			return null;
+		}
+
+		public Coordinate[] getCorners() {
+			return corners;
 		}
 
 	}
@@ -134,7 +150,7 @@ public class Generator {
 			colNum = start.col + 1;
 			rowNum = start.row;
 			for(int i = colNum; i < colNum + corridorLength; i++) {
-				System.out.printf("Putting tile at %d, %d\n", rowNum, i);
+				//System.out.printf("Putting tile at %d, %d\n", rowNum, i);
 				map[rowNum][i] = 1;
 				cursor.setValue(rowNum, i);
 				map[rowNum - 1][i] = 2;
@@ -147,7 +163,7 @@ public class Generator {
 			colNum = start.col - 1;
 			rowNum = start.row;
 			for(int i = colNum; i > colNum - corridorLength; i--) {
-				System.out.printf("Putting tile at %d, %d\n", rowNum, i);
+				//System.out.printf("Putting tile at %d, %d\n", rowNum, i);
 				map[rowNum][i] = 1;
 				cursor.setValue(rowNum, i);
 				map[rowNum - 1][i] = 2;
@@ -161,7 +177,7 @@ public class Generator {
 			colNum = start.col;
 			rowNum = start.row - 1;
 			for(int i = rowNum; i > rowNum - corridorLength; i--) {
-				System.out.printf("Putting tile at %d, %d\n", i, colNum);
+				//System.out.printf("Putting tile at %d, %d\n", i, colNum);
 				map[i][colNum] = 1;
 				cursor.setValue(i, colNum);
 				map[i][colNum - 1] = 2;
@@ -174,7 +190,7 @@ public class Generator {
 			colNum = start.col;
 			rowNum = start.row + 1;
 			for(int i = rowNum; i < rowNum + corridorLength; i++) {
-				System.out.printf("Putting tile at %d, %d\n", i, colNum);
+				//System.out.printf("Putting tile at %d, %d\n", i, colNum);
 				map[i][colNum] = 1;
 				cursor.setValue(i, colNum);
 				map[i][colNum - 1] = 2;
@@ -192,6 +208,10 @@ public class Generator {
 		//solution for this in the future
 		addWalls(rm);
 		fillRoom(rm);
+
+		//VERY hacky and temporary fix to opening the new room to a corridor
+		//TODO: Fix this please for godssake this needs to be better Oh god
+		map[cursor.row][cursor.col] = 1;
 	}
 
 	public Room excavateRoom(Direction dir, Coordinate cursor) {
@@ -255,7 +275,9 @@ public class Generator {
 
 		//roomDim.col = Math.abs(row - cursor.row) + 1;
 
-		return generateRoom(roomOrigin, roomDim);
+		Room newRoom = generateRoom(roomOrigin, roomDim);
+
+		return newRoom;
 	}
 
 	/*
@@ -269,7 +291,7 @@ public class Generator {
 	}
 
 	public void addWalls(Room rm) {
-		for(int i = rm.origin.row; i < rm.origin.row + rm.height; i++) {
+		/*for(int i = rm.origin.row; i < rm.origin.row + rm.height; i++) {
 			map[i][rm.origin.col] = 2;
 		}
 		for(int i = rm.origin.row; i < rm.origin.row + rm.height; i++) {
@@ -282,7 +304,18 @@ public class Generator {
 		for(int i = rm.origin.col; i < rm.origin.col + rm.width; i++) {
 			int row = rm.origin.row + rm.height - 1;
 			map[row][i] = 2;
-		}	
+		}*/	
+		Coordinate[] left = rm.getDirectionWall(Direction.LEFT);
+		Coordinate[] right = rm.getDirectionWall(Direction.RIGHT);
+		Coordinate[] up = rm.getDirectionWall(Direction.UP);
+		Coordinate[] bottom = rm.getDirectionWall(Direction.DOWN);
+		Coordinate[] corners = rm.getCorners();
+
+		for(Coordinate pt : left) map[pt.row][pt.col] = 2;
+		for(Coordinate pt : right) map[pt.row][pt.col] = 2;
+		for(Coordinate pt : up) map[pt.row][pt.col] = 2;
+		for(Coordinate pt : bottom) map[pt.row][pt.col] = 2;
+		for(Coordinate pt : corners) map[pt.row][pt.col] = 2;
 	}
 
 	public void fillRoom(Room rm) {
