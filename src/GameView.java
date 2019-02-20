@@ -72,7 +72,7 @@ public class GameView extends JPanel {
 			}
 		}
 
-		rend.drawImage(wizard, null, 320, 320);
+		//rend.drawImage(wizard, null, 320, 320);
         
         //sign.draw(rend);
 

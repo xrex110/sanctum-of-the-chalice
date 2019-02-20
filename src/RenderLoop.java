@@ -52,22 +52,22 @@ public class RenderLoop extends Thread {
 		}
 		if(in.isKeyPressed(KeyEvent.VK_W)) {
 			//log("W was pressed on RE");
-			Player.player.moveUp();
+			//Player.player.moveUp();
 			GameEngine.updateInput("W");			
 		}
 		else if(in.isKeyPressed(KeyEvent.VK_S)) {
 			//log("S was pressed on RE");
-			Player.player.moveDown();
+			//Player.player.moveDown();
 			GameEngine.updateInput("S");
 		}
 		else if(in.isKeyPressed(KeyEvent.VK_A)) {
 			//log("A was pressed on RE");
-			Player.player.moveLeft();
+			//Player.player.moveLeft();
 			GameEngine.updateInput("A");
 		}
 		else if(in.isKeyPressed(KeyEvent.VK_D)) {
 			//log("D was pressed on RE");
-			Player.player.moveRight();
+			//Player.player.moveRight();
 			GameEngine.updateInput("D");
 		}
 		else GameEngine.updateInput("");

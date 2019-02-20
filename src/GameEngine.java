@@ -17,7 +17,6 @@ class GameEngine {
 
 	private Generator levelGen;
 
-	private int[][] rawMap;
 	private GameObject[][] levelMap;
 	
 	public GameEngine() {
@@ -33,7 +32,7 @@ class GameEngine {
 
 	public void generateMap() {
 		levelGen.generateDungeon();
-		rawMap = levelGen.getMap();
+		int[][] rawMap = levelGen.getMap();
 
 		for(int i = 0; i < rawMap.length; i++) {
 			for(int j = 0; j < rawMap[i].length; j++) {
@@ -135,6 +134,8 @@ class GameEngine {
 		System.out.println("SLOW TICKS " + slowIts);
 		//Update player and stuff
 
+		updatePlayer();
+
 		//Clear currentInput at end of every slowTick
 		currentInput = "";
 		/*if (slowIts >= 30)
@@ -158,9 +159,25 @@ class GameEngine {
 		running = false;
 	}
 
-	/*public void update() {
+	public void updatePlayer() {
+		if(currentInput.equals("W"))
+		{
+			Player.player.moveUp();
+		}
+		else if (currentInput.equals("A"))
+		{
+			Player.player.moveLeft();
+		}
+		else if (currentInput.equals("S"))
+		{
+			Player.player.moveDown();
+		}
+		else if (currentInput.equals("D"))
+		{
+			Player.player.moveRight();
+		}
 
-	}*/
+	}
 
 	public static void updateInput(String input) {
 		if(!input.equals("") && !input.equals(currentInput)) {
