@@ -18,4 +18,5 @@ public class Tile extends GameObject{
     public void draw(Graphics2D rend) {
         rend.drawImage(spLoader.getSprite(spriteIdentifier, tileID, 32, 32), null, getX(), getY());
     }
+
 }

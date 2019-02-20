@@ -14,13 +14,41 @@ class GameEngine {
 
 	private static String currentInput;
 	private RenderLoop renderEngine;
+
+	private Generator levelGen;
+
+	private int[][] rawMap;
+	private GameObject[][] levelMap;
 	
 	public GameEngine() {
+		levelMap = new GameObject[30][30];
+		levelGen = new Generator();
+		generateMap();
 		renderEngine = new RenderLoop();
 		renderEngine.setName("RenderEngine");
-
+		
 		//player = new Player(12*32, 12*32);
 		currentInput = "";
+	}
+
+	public void generateMap() {
+		levelGen.generateDungeon();
+		rawMap = levelGen.getMap();
+
+		for(int i = 0; i < rawMap.length; i++) {
+			for(int j = 0; j < rawMap[i].length; j++) {
+				int tileType = rawMap[i][j];
+				if(tileType == 2) {
+					levelMap[i][j] = new Tile(j * 32, i * 32, "test_tile.png", 0);
+				}
+				else if(tileType == 1) {
+					levelMap[i][j] = new Tile(j * 32, i * 32, "test_tile.png", 1);
+				}
+				else if(tileType == 0) {
+					levelMap[i][j] = null;
+				}
+			}
+		}
 	}
 
 	public void startLoop() {
@@ -29,6 +57,7 @@ class GameEngine {
 		slowCount = 0;
 		running = true;
 		gameStart = System.nanoTime() / MILLITONANO;
+		renderEngine.updateMap(levelMap);
 		renderEngine.start();		//Starts the renderengine thread!
 		gameLoop();
 	}
@@ -103,7 +132,7 @@ class GameEngine {
 
 		//System.out.print(" 1");
 		slowIts++;
-
+		System.out.println("SLOW TICKS " + slowIts);
 		//Update player and stuff
 
 		//Clear currentInput at end of every slowTick

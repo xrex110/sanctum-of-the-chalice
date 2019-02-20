@@ -20,6 +20,9 @@ public class GameView extends JPanel {
     double updateDelta = 16;        /* Difference in MS between FPS calculations */
     double fps = 0;                 /* Number of frames per second */
     
+	BufferedImage wizard;
+	private GameObject[][] map;	
+
 	TextDevice fpsText;
 	TextDevice testText;
     
@@ -35,9 +38,12 @@ public class GameView extends JPanel {
 		fl = new FontLoader();
 		fl.loadFont("dpcomic");
 		rand = new Random();
+		wizard  = loader.getSprite("wizard.png", 0, 32, 32); 
 
 		fpsText = new TextDevice("DPComic", 20, Color.WHITE, Color.BLACK);
 		testText = new TextDevice("DPComic", 45, Color.BLUE, Color.RED);
+		
+		map = new GameObject[1][1];
 	}
     
 	@Override
@@ -50,24 +56,33 @@ public class GameView extends JPanel {
 		int xTiles = 25;	/* Number of tiles window can accomodate in x axis */
 		int yTiles = 25;	/* Number of tiles window can accomodate in y axis */
         
-		for(int i = 0; i < xTiles; i++) {
+		/*for(int i = 0; i < xTiles; i++) {
 			for(int j = 0; j < yTiles; j++) {
 				int randNum = rand.nextInt(12);
 				BufferedImage img = loader.getSprite(sheetPath, randNum, 32, 32);
 				rend.drawImage(img, null, i * 32, j * 32); 
 			}
-		}
+		}*/
         
-		BufferedImage wizard = loader.getSprite("wizard.png", 0, 32, 32); 
+		if(map.length != 1) {
+			for(int i = 0; i < map.length; i++) {
+				for(int j = 0; j < map[i].length; j++) {
+					if(map[i][j] != null) map[i][j].draw(rend);	
+				}
+			}
+		}
+
 		rend.drawImage(wizard, null, 320, 320);
         
-        sign.draw(rend);
+        //sign.draw(rend);
 
         Player.player.draw(rend);
         
         drawHud(rend);
+	}
 
-		
+	public void setMap(GameObject[][] map) {
+		this.map = map;	
 	}
 
     public void drawHud(Graphics2D rend) {
@@ -75,8 +90,8 @@ public class GameView extends JPanel {
         AffineTransform at = new AffineTransform();
         rend.setTransform(at);
         
-        testText.drawText(rend, "Normal Text", 50, 150);
-		testText.drawOutlineText(rend, "Outlined", 50, 250);
+        //testText.drawText(rend, "Normal Text", 50, 150);
+		//testText.drawOutlineText(rend, "Outlined", 50, 250);
 		drawFPS(rend);
         drawPos(rend);
         
