@@ -44,6 +44,7 @@ public class GameView extends JPanel {
 		testText = new TextDevice("DPComic", 45, Color.BLUE, Color.RED);
 		
 		map = new GameObject[1][1];
+		this.setBackground(Color.BLACK);
 	}
     
 	@Override
