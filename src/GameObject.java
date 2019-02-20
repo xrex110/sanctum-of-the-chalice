@@ -1,4 +1,3 @@
-
 import java.awt.Graphics2D;
 
 public abstract class GameObject {
@@ -15,4 +14,3 @@ public abstract class GameObject {
     public void setY(int y) { yPos = y; }
     public abstract void draw(Graphics2D rend);
 }
-

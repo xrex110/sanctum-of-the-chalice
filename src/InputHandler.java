@@ -45,7 +45,7 @@ public class InputHandler implements KeyListener {
 				//it as a single *tap* action
 				if(keyState[i] == State.RELEASED) keyState[i] = keyState[i] = State.PRESSED;
                 //TODO: PLEASE REMOVE ME AFTER HAVING GE HANDLE INPUT!
-                DEBUG_camera_input(i);
+                //DEBUG_camera_input(i);
 			}
 			else {
 				keyState[i] = State.RELEASED;

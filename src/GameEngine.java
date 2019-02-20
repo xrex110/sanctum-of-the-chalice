@@ -9,24 +9,31 @@ class GameEngine {
 	private int slowIts;
 	private float gameStart;
 	private boolean running;
+	
+	//private Player player;
 
-	public GameEngine()
-	{
-		
+	private static String currentInput;
+	private RenderLoop renderEngine;
+	
+	public GameEngine() {
+		renderEngine = new RenderLoop();
+		renderEngine.setName("RenderEngine");
+
+		//player = new Player(12*32, 12*32);
+		currentInput = "";
 	}
 
-	public void start()
-	{
+	public void startLoop() {
 		fastIts = 0;
 		slowIts = 0;
 		slowCount = 0;
 		running = true;
 		gameStart = System.nanoTime() / MILLITONANO;
+		renderEngine.start();		//Starts the renderengine thread!
 		gameLoop();
 	}
 
-	public void gameLoop()
-	{
+	public void gameLoop() {
 		float timeStart = 0;
 		while (running)
 		{
@@ -56,17 +63,18 @@ class GameEngine {
 	}
 	
 	
-	public void fastTick()
-	{
+	public void fastTick() {
 
 		fastIts += 1;
 		//fillerOperations(100_000);
+		if(!currentInput.equals("")) {
+			System.out.println("Key is " + currentInput);
+		}
 	}
 	
 	/*This method serves as a benchmark function to see statistics on the performance of the gameloop
 	 */
-	public void getTickRates()
-	{
+	public void getTickRates() {
 
 		float totTime = System.nanoTime() / MILLITONANO - gameStart;
 		System.out.println("Total Time: " + totTime
@@ -80,8 +88,7 @@ class GameEngine {
 	/*This method runs a number of arbitrary operations in order to test the response of the gameloop to
 	 * loads that it cannot handle
 	 */
-	private void fillerOperations(int num)
-	{
+	private void fillerOperations(int num) {
 		double[] x = new double[num];
 		for (int i = 0; i < num; i++)
 		{
@@ -91,22 +98,25 @@ class GameEngine {
 		
 	}
 
-	public void slowTick()
-	{
+	public void slowTick() {
 		//fillerOperations(100_000);
 
-		System.out.print(" 1");
+		//System.out.print(" 1");
 		slowIts++;
-		if (slowIts >= 30)
+
+		//Update player and stuff
+
+		//Clear currentInput at end of every slowTick
+		currentInput = "";
+		/*if (slowIts >= 30)
 		{
 			end();
 			System.out.println();
-		}
+		}*/
 		
 	}
 	
-	private void sleepForMilli(float t)
-	{
+	private void sleepForMilli(float t) {
 		try {
 			Thread.sleep((long)t);
 		} catch (Exception e)
@@ -115,9 +125,18 @@ class GameEngine {
 		}
 	}
 	
-	public void end()
-	{
+	public void end() {
 		running = false;
 	}
 
+	/*public void update() {
+
+	}*/
+
+	public static void updateInput(String input) {
+		if(!input.equals("") && !input.equals(currentInput)) {
+			currentInput = input;
+		}
+		
+	}
 }
