@@ -1,5 +1,6 @@
 
 import java.util.*;
+import java.util.concurrent.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,33 +33,50 @@ public class SoundPlay {
 		//String ar = "../res/FancyPants.wav";
 		String arr = "../res/Mario.ogg";
 		String arr2 = "../res/Twisting.ogg";
-		playing(arr);
-		playing(arr2);
+		//playing(arr2);
+		//SoundTest backmusic = playLoop(arr);
+		//sTest.testFile(arr2);
+		SoundTest sEngine = new SoundTest();
+		sEngine.play(arr2, "once");
+		sEngine.play(arr, "upOnce");
 		
 		try{
-			Thread.sleep(2000);
-			
+			Thread.sleep(7000);
+			sEngine.playLoop(arr, "looping");
+			Thread.sleep(5000);
 
 		}catch(Exception e){
 
 		}
-
+		sEngine.stopAllRequests();
+		System.out.println("Exited");
 
 	}// end main function.
-
-	public static void playing(String fName){
+/*
+	public static SoundTest play(String fName){
 		SoundTest sTest = new SoundTest();
-		boolean backGroundFlag = true;
 		Thread soundInstance = new Thread() {
 			public void run() {
-				for(int i =0; backGroundFlag == true; i++){
-					sTest.testFile(fName);
-					//sTest.testFile(arr2);
-				}
+				sTest.testFile(fName);
 			}
 		};
 		soundInstance.start();
-
+		return sTest;
 	}// end playing function
 
+	public static SoundTest playLoop(String fName) {
+		SoundTest sTest = new SoundTest();
+		Thread soundInstance = new Thread() { 
+			public void run() {
+				do {
+					sTest.testFile(fName);
+				} while (sTest.running);
+			}
+
+		};
+		soundInstance.start();
+		return sTest;
+	}
+*/
 }
+
