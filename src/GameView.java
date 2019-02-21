@@ -124,7 +124,7 @@ public class GameView extends JPanel {
         Color outline = Color.white;
         Color fill = new Color(0x002663);
         drawOutlinedRectangle(rend, outline, fill, 64, getHeight() - 256, getWidth() - 128, 192);
-        fpsText.drawText(rend, sign.getText(), 92, getHeight() - 224);
+        fpsText.drawOutlineText(rend, sign.getText(), 92, getHeight() - 224);
 		rend.setTransform(oldAt);
     }
 

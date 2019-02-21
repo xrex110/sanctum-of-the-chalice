@@ -33,7 +33,9 @@ class GameEngine {
 
 		int[] signPos = levelGen.getSignCoords();
 		System.out.println("GE Row: " + signPos[0] + " GE Col: " + signPos[1]);
-		entityMap[signPos[0]][signPos[1]] = new Sign(signPos[1] * 32, signPos[0] * 32, "WooooW!");
+		String help = "Use the W A S D keys to move around the map!";
+		entityMap[signPos[0]][signPos[1]] = new Sign(signPos[1] * 32, signPos[0] * 32, "Insert end stats here");
+		entityMap[12][12] = new Sign(12*32, 12*32, help);
 
 		renderEngine = new RenderLoop();
 		renderEngine.setName("RenderEngine");
