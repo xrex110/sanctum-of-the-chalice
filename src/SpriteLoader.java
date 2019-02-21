@@ -97,7 +97,7 @@ public class SpriteLoader{
 	public BufferedImage cacheImage(String path) {
 		BufferedImage img = getImage(path);
 		String imgKey = path + "0";
-		System.out.println("Put " + imgKey + " in cache");
+		//System.out.println("Put " + imgKey + " in cache");
 		cache.put(imgKey, img);
 		return img;
 	}

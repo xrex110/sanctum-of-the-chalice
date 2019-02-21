@@ -20,7 +20,7 @@ public class GameView extends JPanel {
     double updateDelta = 16;        /* Difference in MS between FPS calculations */
     double fps = 0;                 /* Number of frames per second */
     
-	BufferedImage wizard;
+	//BufferedImage wizard;
 	private GameObject[][] map;	
 	private GameObject[][] emap;
 
@@ -35,11 +35,11 @@ public class GameView extends JPanel {
 		loader = new SpriteLoader();
 		sheetPath = "test_tile.png";
 		loader.cacheSheet(sheetPath, 32, 32);	//Load in and cache stuff
-		loader.cacheImage("wizard.png");
+		//loader.cacheImage("wizard.png");
 		fl = new FontLoader();
 		fl.loadFont("dpcomic");
 		rand = new Random();
-		wizard  = loader.getSprite("wizard.png", 0, 32, 32); 
+		//wizard  = loader.getSprite("wizard.png", 0, 32, 32); 
 
 		fpsText = new TextDevice("DPComic", 20, Color.WHITE, Color.BLACK);
 		testText = new TextDevice("DPComic", 45, Color.BLUE, Color.RED);
