@@ -1,123 +1,153 @@
-
-import com.jogamp.openal.util.*;
-import com.jogamp.openal.*;
-
-import com.jogamp.openal.ALException;
-import com.jogamp.openal.ALFactory;
-import com.jogamp.openal.util.ALut;
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.util.*;
-
-public class SoundEngine {
-	public static AL al = ALFactory.getAL();
-	public int[] buff = new int[1];
-	public int[] src = new int[1];
-	public float[] sPos = new float[3];
-	public float[] sVel = new float[3];
-	public float[] lPos = new float[3];
-	public float[] lVel = new float[3];
-	public float[] lOri = { 0, 0, -1f, 0, 1f, 0};
-	public ArrayList<String> fileList = new ArrayList<String>();
-
-	public void play(String fName)
-	{
-
-		System.out.println("play");
-		if (!fileList.contains(fName))
-		{
-
-			ALut.alutInit();
-			al.alGetError();
-			
-			if (loadData(fName) == AL.AL_FALSE)
-			{
-				System.out.println("you are a failure");
-				return;
-			}
-			
-			fileList.add(fName);
-			setListener();
-
-			Runtime runtime = Runtime.getRuntime();
-			runtime.addShutdownHook(
-					new Thread(
-						new Runnable() {
-							public void run() {
-								killAll();
-							}
-						}
-						)
-					);
-		}
-		al.alSourcePlay(src[0]);
-		
-		
-		
-	}
-
-	public int loadData(String fName)
-	{
-		int[] format = new int[1];
-		int[] size = new int[1];
-		ByteBuffer[] data = new ByteBuffer[1];
-		int[] freq = new int[1];
-		int[] loop = new int[1];
-		
-		al.alGenBuffers(1, buff, 0);
-		if (al.alGetError() != AL.AL_NO_ERROR)
-		{
-			return AL.AL_FALSE;
-		}
-		ALut.alutLoadWAVFile(fName, format, data, size, freq, loop);
-		al.alBufferData(buff[0], format[0], data[0], size[0], freq[0]);
-		
-		al.alGenSources(1, src, 0);
-		if (al.alGetError() != AL.AL_NO_ERROR)
-		{
-			return AL.AL_FALSE;
-		}
-		al.alSourcei(src[0], AL.AL_BUFFER, buff[0]);
-		al.alSourcef(src[0], AL.AL_PITCH, 1f);
-		al.alSourcef(src[0], AL.AL_GAIN, 1f);
-		al.alSourcefv(src[0], AL.AL_POSITION, sPos, 0);
-		al.alSourcefv(src[0], AL.AL_VELOCITY, sVel, 0);
-		al.alSourcei(src[0], AL.AL_LOOPING, loop[0]);
-
-		if (al.alGetError() == AL.AL_NO_ERROR)
-		{
-			return AL.AL_TRUE;
-		}
-		return AL.AL_FALSE;
-
-	}
-
-	public void setListener()
-	{
-		al.alListenerfv(AL.AL_POSITION, lPos, 0);
-		al.alListenerfv(AL.AL_VELOCITY, lVel, 0);
-		al.alListenerfv(AL.AL_ORIENTATION, lOri, 0);
-	}
-
-	public void killAll()
-	{
-		al.alDeleteBuffers(1, buff, 0);
-		al.alDeleteSources(1, src, 0);
-		ALut.alutExit();
-	}
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.net.URL;
+import java.util.Properties;
+import java.util.ArrayList;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
+import javazoom.spi.PropertiesContainer;
+//import junit.framework.TestCase;
 
 
+public class SoundEngine{
 
 	
+	private String name = null;
+	public ArrayList<SoundRequest> requests = new ArrayList<SoundRequest>();
+	
 
-	public void loop(String fName)
-	{
+	public void testFile(String fileName, SoundRequest requestInstance){
 		
-  		play(fName);
-		al.alSourcei(src[0],AL.AL_LOOPING,1);
-		al.alSourcePlay(src[0]);
+		try{
+			//System.out.println("Start: "+ fileName+" !!!");
+			File file = new File(fileName);
+			AudioFileFormat aff = AudioSystem.getAudioFileFormat(file);
+			//System.out.println("The Audio Type is : " + aff.getType()); 
+
+			AudioInputStream in = AudioSystem.getAudioInputStream(file);
+			AudioInputStream din = null;
+			if( in != null){
+				AudioFormat baseFormat = in.getFormat();
+				//System.out.println("SourceFormat : "+ baseFormat.toString());
+				AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 
+															 baseFormat.getSampleRate(),
+															 16,
+															 baseFormat.getChannels(),
+															 baseFormat.getChannels() *2,
+															 baseFormat.getSampleRate(),
+															 false);
+				//System.out.println("Target Format: " + decodedFormat.toString());
+				din = AudioSystem.getAudioInputStream(decodedFormat, in);
+				/*
+				if(din instanceof PropertiesContainer){
+					assertTrue("PropertiesContainer: OK", true);
+
+				}else{
+					assertTrue("wrong propertiesContainer instnace", false);
+				}
+				*/
+				rawplay(decodedFormat, din, requestInstance);
+				in.close();
+				//System.out.println("STOP: " + fileName + " !!");
+				//assertTrue("testPlay: OK", true);
+				return;
+			}
+	     }catch (Exception e)
+		 {
+			 //assertTrue("testPlay : "+e.getMessage(),false);
+		 }
+	
 
 	}
+	private SourceDataLine getLine(AudioFormat audioFormat) throws LineUnavailableException
+	{
+	  SourceDataLine res = null;
+	  DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+	  res = (SourceDataLine) AudioSystem.getLine(info);
+	  res.open(audioFormat);
+	  return res;
+	}
+	private void rawplay(AudioFormat targetFormat, AudioInputStream din, SoundRequest requestInstance) throws IOException, LineUnavailableException
+	{
+		byte[] data = new byte[4096];
+		SourceDataLine line = getLine(targetFormat);		
+		if (line != null)
+		{
+		  // Start
+		  line.start();
+		  int nBytesRead = 0, nBytesWritten = 0;
+		  while (requestInstance.notStopped && nBytesRead != -1)
+		  {
+			nBytesRead = din.read(data, 0, data.length);
+			if (nBytesRead != -1) nBytesWritten = line.write(data, 0, nBytesRead);
+		  }
+		  // Stop
+		  line.drain();
+		  line.stop();
+		  line.close();
+		  din.close();
+		}		
+	}
 
+	public void play(String fName, String label){
+		SoundRequest requestInstance = new SoundRequest(label);
+		requests.add(requestInstance);
+		Thread soundInstance = new Thread() {
+			public void run() {
+				testFile(fName, requestInstance);
+
+				requests.remove(requestInstance);
+			}
+		};
+		soundInstance.start();
+		
+	}// end playing function
+
+	public void playLoop(String fName, String label) {
+		SoundRequest requestInstance = new SoundRequest(label);
+		requests.add(requestInstance);
+		Thread soundInstance = new Thread() { 
+			public void run() {
+				do {
+					testFile(fName, requestInstance);
+				} while (requestInstance.notStopped);
+
+				requests.remove(requestInstance);
+			}
+
+		};
+		soundInstance.start();
+	}
+
+	public void stopAllRequests()
+	{
+		synchronized (requests) {
+			for (int i = 0; i < requests.size(); i++)
+			{
+				requests.get(i).notStopped = false;
+			}
+		}
+	}
 
 }
+
+class SoundRequest {
+	public String label;
+	public volatile boolean notStopped;
+
+	public SoundRequest(String label) {
+		this.label = label;
+		this.notStopped = true;
+	}
+}
+
+
+
+

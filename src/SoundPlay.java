@@ -27,8 +27,8 @@ public class SoundPlay {
 	 */
 	public static void main(String args[]){
 		//SoundEngine object =new SoundEngine();
-		SoundTest sTest = new SoundTest();
-		boolean backGroundFlag =true;
+		//SoundEngine sTest = new SoundEngine();
+		//boolean backGroundFlag =true;
 		
 		//String ar = "../res/FancyPants.wav";
 		String arr = "../res/Mario.ogg";
@@ -36,7 +36,7 @@ public class SoundPlay {
 		//playing(arr2);
 		//SoundTest backmusic = playLoop(arr);
 		//sTest.testFile(arr2);
-		SoundTest sEngine = new SoundTest();
+		SoundEngine sEngine = new SoundEngine();
 		sEngine.play(arr2, "once");
 		sEngine.play(arr, "upOnce");
 		
