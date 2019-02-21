@@ -24,12 +24,17 @@ class GameEngine {
 		levelMap = new GameObject[30][30];
 		entityMap = new GameObject[30][30];
 
-		entityMap[12][12] = Player.player;
+		//entityMap[12][12] = Player.player;
 		Player.player.setX(12*32);
 		Player.player.setY(12*32);
 
 		levelGen = new Generator();
 		generateMap();
+
+		int[] signPos = levelGen.getSignCoords();
+		System.out.println("GE Row: " + signPos[0] + " GE Col: " + signPos[1]);
+		entityMap[signPos[0]][signPos[1]] = new Sign(signPos[1] * 32, signPos[0] * 32, "WooooW!");
+
 		renderEngine = new RenderLoop();
 		renderEngine.setName("RenderEngine");
 		
@@ -64,6 +69,7 @@ class GameEngine {
 		running = true;
 		gameStart = System.nanoTime() / MILLITONANO;
 		renderEngine.updateMap(levelMap);
+		renderEngine.updateEntityMap(entityMap);
 		renderEngine.start();		//Starts the renderengine thread!
 		gameLoop();
 	}
@@ -102,9 +108,9 @@ class GameEngine {
 
 		fastIts += 1;
 		//fillerOperations(100_000);
-		if(!currentInput.equals("")) {
+		/*if(!currentInput.equals("")) {
 			System.out.println("Key is " + currentInput);
-		}
+		}*/
 	}
 	
 	/*This method serves as a benchmark function to see statistics on the performance of the gameloop
@@ -138,7 +144,6 @@ class GameEngine {
 
 		//System.out.print(" 1");
 		slowIts++;
-		System.out.println("SLOW TICKS " + slowIts);
 		//Update player and stuff
 
 		updatePlayer();

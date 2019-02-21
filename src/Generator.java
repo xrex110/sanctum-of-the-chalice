@@ -12,6 +12,8 @@ public class Generator {
 	private int[][] map;
 	private Random rand;
 
+	Coordinate signPos;
+	
 	private class Coordinate {
 		public int row, col;
 		private Random rand;
@@ -114,6 +116,7 @@ public class Generator {
 	public Generator(long seed) {
 		rand = new Random(seed);
 		map = new int[30][30];
+		signPos = new Coordinate(0, 0);
 	}
 
 	public Generator() {
@@ -206,6 +209,14 @@ public class Generator {
 		//We generate a room at the end of every "DIG". If a room cannot
 		//be generated, then we can dead end for now... Might want a better
 		//solution for this in the future
+
+		int srow = randWithinBounds(rm.origin.row + 1, rm.origin.row + rm.height - 2);
+		int scol = randWithinBounds(rm.origin.col + 1, rm.origin.col + rm.width - 2);
+		signPos = new Coordinate(srow, scol);
+		
+
+		System.out.println("Sign Row: " + signPos.row + " Col: " + signPos.col);
+
 		addWalls(rm);
 		fillRoom(rm);
 
@@ -359,6 +370,11 @@ public class Generator {
 
 	public int[][] getMap() {
 		return map;
+	}
+
+	public int[] getSignCoords() {
+		int[] coords = {signPos.row, signPos.col};
+		return coords;
 	}
 
 }

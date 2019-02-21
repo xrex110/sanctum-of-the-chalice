@@ -85,9 +85,11 @@ public class RenderLoop extends Thread {
 	}*/
 
 	public void updateMap(GameObject[][] map) {	
-		log("SIZE: " + map.length);
-		//log("
 		gm.setMap(map);
+	}
+
+	public void updateEntityMap(GameObject[][] emap) {
+		gm.setEMap(emap);
 	}
 
 	public void log(String msg) {

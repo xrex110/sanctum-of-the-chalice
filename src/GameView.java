@@ -22,12 +22,13 @@ public class GameView extends JPanel {
     
 	BufferedImage wizard;
 	private GameObject[][] map;	
+	private GameObject[][] emap;
 
 	TextDevice fpsText;
 	TextDevice testText;
     
     //TODO: Delete me later please and thank
-    Sign sign = new Sign(-128, -128, "Hello general kenobi");
+    //Sign sign = new Sign(-128, -128, "Hello general kenobi");
 
 	public GameView() {
 		//this.setIgnoreRepaint(true);
@@ -44,6 +45,7 @@ public class GameView extends JPanel {
 		testText = new TextDevice("DPComic", 45, Color.BLUE, Color.RED);
 		
 		map = new GameObject[1][1];
+		emap = new GameObject[1][1];
 		this.setBackground(Color.BLACK);
 	}
     
@@ -73,6 +75,18 @@ public class GameView extends JPanel {
 			}
 		}
 
+		if(emap.length != 1) {
+			for(int i = 0; i < emap.length; i++) {
+				for(int j = 0; j < emap[i].length; j++) {
+					if(emap[i][j] instanceof Sign) {
+						Sign sign = (Sign) emap[i][j];
+						//System.out.println("RENDEREING SIGN: " + sign.getText());
+						sign.draw(rend);
+						if(sign.interact()) drawSign(rend, sign);
+					}
+				}
+			}
+		}
 		//rend.drawImage(wizard, null, 320, 320);
         
         //sign.draw(rend);
@@ -86,8 +100,13 @@ public class GameView extends JPanel {
 		this.map = map;	
 	}
 
+	public void setEMap(GameObject[][] emap) {
+		this.emap = emap;
+	}
+
     public void drawHud(Graphics2D rend) {
         //If you remove these two lines things will start rendering in relation to the game world's 0,0
+		AffineTransform oldAt = rend.getTransform();
         AffineTransform at = new AffineTransform();
         rend.setTransform(at);
         
@@ -95,15 +114,18 @@ public class GameView extends JPanel {
 		//testText.drawOutlineText(rend, "Outlined", 50, 250);
 		drawFPS(rend);
         drawPos(rend);
-        
-        if(sign.interact()) drawSign(rend);
-
+		rend.setTransform(oldAt);
     }
-    public void drawSign(Graphics2D rend) {
+
+    public void drawSign(Graphics2D rend, Sign sign) {
+		AffineTransform oldAt = rend.getTransform();
+		AffineTransform at = new AffineTransform();
+		rend.setTransform(at);
         Color outline = Color.white;
         Color fill = new Color(0x002663);
         drawOutlinedRectangle(rend, outline, fill, 64, getHeight() - 256, getWidth() - 128, 192);
         fpsText.drawText(rend, sign.getText(), 92, getHeight() - 224);
+		rend.setTransform(oldAt);
     }
 
     public void drawOutlinedRectangle(Graphics2D rend, Color outline, Color fill, int x, int y, int width, int height) {
