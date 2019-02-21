@@ -9,11 +9,14 @@ class GameEngine {
 	private int slowIts;
 	private float gameStart;
 	private boolean running;
-	
+	private String backgroundMusic = "../res/Twisting.ogg";
+	private String enterSound = "../res/Mario.ogg";
+
 	//private Player player;
 
 	private static String currentInput;
 	private RenderLoop renderEngine;
+	private SoundEngine soundEngine;
 
 	private Generator levelGen;
 
@@ -40,6 +43,8 @@ class GameEngine {
 		renderEngine = new RenderLoop();
 		renderEngine.setName("RenderEngine");
 		
+		soundEngine = new SoundEngine();
+
 		//player = new Player(12*32, 12*32);
 		currentInput = "";
 	}
@@ -73,6 +78,10 @@ class GameEngine {
 		renderEngine.updateMap(levelMap);
 		renderEngine.updateEntityMap(entityMap);
 		renderEngine.start();		//Starts the renderengine thread!
+		
+		soundEngine.play(enterSound, "enter");
+		soundEngine.playLoop(backgroundMusic, "background");
+
 		gameLoop();
 	}
 
@@ -170,6 +179,7 @@ class GameEngine {
 	}
 	
 	public void end() {
+		soundEngine.stopAllRequests();
 		running = false;
 	}
 
