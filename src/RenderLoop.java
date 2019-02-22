@@ -53,6 +53,10 @@ public class RenderLoop extends Thread {
 			window.killWindow();
 			System.exit(1);
 		}
+        if(in.isKeyPressed(KeyEvent.VK_P)) {
+            menuView.isFocused = true;
+            window.setWindowView(menuView);
+        }
 		if(in.isKeyPressed(KeyEvent.VK_W)) {
 			//log("W was pressed on RE");
 			//Player.player.moveUp();
@@ -64,23 +68,30 @@ public class RenderLoop extends Thread {
 		else if(in.isKeyPressed(KeyEvent.VK_S)) {
 			//log("S was pressed on RE");
 			//Player.player.moveDown();
-			GameEngine.updateInput("S");
-            menuView.invoke("S");
+            if(menuView.isFocused)
+                menuView.invoke("S");
+			else
+                GameEngine.updateInput("S");
 		}
 		else if(in.isKeyPressed(KeyEvent.VK_A)) {
 			//log("A was pressed on RE");
 			//Player.player.moveLeft();
-			GameEngine.updateInput("A");
-            menuView.invoke("A");
+            if(menuView.isFocused)
+                menuView.invoke("A");
+			else
+                GameEngine.updateInput("A");
 		}
 		else if(in.isKeyPressed(KeyEvent.VK_D)) {
 			//log("D was pressed on RE");
 			//Player.player.moveRight();
-			GameEngine.updateInput("D");
-            menuView.invoke("D");
+            if(menuView.isFocused)
+                menuView.invoke("D");
+			else
+                GameEngine.updateInput("D");
 		}
         else if(in.isKeyPressed(KeyEvent.VK_ENTER)) {
-            menuView.invoke("Enter");
+            if(menuView.isFocused)
+                menuView.invoke("Enter");
         }
 		else GameEngine.updateInput("");
 		

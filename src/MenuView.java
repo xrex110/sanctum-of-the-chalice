@@ -11,7 +11,12 @@ public class MenuView extends JPanel {
     public MenuView(String name) {
         if(name.equals("Main")) isFocused = true;
         menuName = name;
-        options = new String[4];
+        options = new String[]{
+            "Start",
+            "Null",
+            "Null",
+            "Exit"
+        };
     }
 
     public static void setMenuSelection(int id) {
@@ -26,7 +31,9 @@ public class MenuView extends JPanel {
         switch(key) {
             case "W":
                 menuSelection = menuSelection == 0 ? options.length - 1 : menuSelection - 1;
-                System.out.println(menuSelection);
+                break;
+            case "S":
+                menuSelection = menuSelection == options.length-1 ? 0 : menuSelection + 1;
                 break; 
             case "Enter":
                 if(getMenuSelection() == 0) {
@@ -35,6 +42,11 @@ public class MenuView extends JPanel {
                         Sanctum.ge.getRenderEngine().window
                             .setWindowView(Sanctum.ge.getRenderEngine().gm);
                         isFocused = false;
+                    }
+                }else if(getMenuSelection() == 3) {
+                    if(menuName.equals("Main")){
+                        Sanctum.ge.getRenderEngine().window.killWindow();
+                        System.exit(0);
                     }
                 }
                 break;
@@ -55,6 +67,8 @@ public class MenuView extends JPanel {
                     rend.setColor(Color.red);
 
                 rend.fillRect(100,100 + 100 * i,50,50);
+                rend.setColor(Color.black);
+                rend.drawString(options[i], 110, 120 + 100*i);
             }
         }
 }
