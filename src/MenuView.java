@@ -7,16 +7,24 @@ public class MenuView extends JPanel {
     private static int menuSelection = 0;
     private String[] options;
     private final String menuName;
+    private TextDevice menuText;
+    private TextDevice titleText;
     public boolean isFocused = false;
+    private long lastInputTime = 0;
+    private final long INTERACTION_DELAY = 200; //In milliseconds
     public MenuView(String name) {
         if(name.equals("Main")) isFocused = true;
         menuName = name;
+        this.setOpaque(true);
+        this.setBackground(Color.black);
         options = new String[]{
             "Start",
-            "Null",
-            "Null",
-            "Exit"
+                "Null",
+                "Null",
+                "Exit"
         };
+        menuText = new TextDevice("DPComic",20,Color.white, Color.black);
+        titleText = new TextDevice("DPComic",40,Color.white, Color.black);
     }
 
     public static void setMenuSelection(int id) {
@@ -28,6 +36,12 @@ public class MenuView extends JPanel {
 
     public void invoke(String key) {
         if(!isFocused) return;
+        
+        if((System.nanoTime() - lastInputTime) / 1e6 < INTERACTION_DELAY) return;
+        else {
+            lastInputTime = System.nanoTime(); 
+        }
+
         switch(key) {
             case "W":
                 menuSelection = menuSelection == 0 ? options.length - 1 : menuSelection - 1;
@@ -55,20 +69,38 @@ public class MenuView extends JPanel {
     }
 
     @Override
-        public void paint(Graphics g) {
-            if(!isFocused) return;
-            super.paint(g); //Clears screen before every paint
-            Graphics2D rend = (Graphics2D) g;
-            rend.setBackground(Color.black);
-            for(int i = 0; i < options.length; ++i) {
-                if(menuSelection == i)
-                    rend.setColor(Color.green);
-                else
-                    rend.setColor(Color.red);
+    public void paint(Graphics g) {
+        if(!isFocused) return;
+        super.paint(g); //Clears screen before every paint
+        Graphics2D rend = (Graphics2D) g;
 
-                rend.fillRect(100,100 + 100 * i,50,50);
-                rend.setColor(Color.black);
-                rend.drawString(options[i], 110, 120 + 100*i);
-            }
+        int titleX = (getWidth() - titleText.getPixelWidth(rend,"Sanctum of the Chalice")) / 2;
+        int titleY = 100;
+        titleText.drawOutlineText(rend, "Sanctum of the Chalice", titleX, titleY);
+
+        final int BUTTON_WIDTH = 100;
+        final int BUTTON_HEIGHT = 50;
+        for(int i = 0; i < options.length; ++i) {
+            Color fill = new Color(0x002663);
+            if(menuSelection == i)
+                fill = new Color(0xbb0a1e);
+            int buttonX = (getWidth() - BUTTON_WIDTH) / 2;
+            int buttonY = 200 + BUTTON_HEIGHT * 2 * i;
+            Color outline = Color.white;
+
+            drawOutlinedRectangle(rend, outline, fill, buttonX, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT);
+            
+            int textX = buttonX + BUTTON_WIDTH/2 - menuText.getPixelWidth(rend, options[i]) / 2;
+            int textY = buttonY + BUTTON_HEIGHT/2 + menuText.getPixelHeight(rend)/4;
+            menuText.drawOutlineText(rend, options[i], textX, textY);
         }
+    }
+    public void drawOutlinedRectangle(Graphics2D rend, Color outline, Color fill, int x, int y, int width, int height) {
+        rend.setColor(fill);
+        rend.fillRect(x,y,width,height);
+        rend.setColor(outline);
+        rend.drawRect(x,y,width,height);
+
+    }
+
 }
