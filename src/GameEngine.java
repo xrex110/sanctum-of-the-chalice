@@ -11,12 +11,14 @@ class GameEngine {
 	private boolean running;
 	private String backgroundMusic = "../res/Twisting.ogg";
 	private String enterSound = "../res/Mario.ogg";
+	private Sign levelEnd;
 
 	//private Player player;
 
 	private static String currentInput;
 	private RenderLoop renderEngine;
 	private SoundEngine soundEngine;
+	private ScoreTracker tracker;
 
 	private Generator levelGen;
 
@@ -37,14 +39,16 @@ class GameEngine {
 		int[] signPos = levelGen.getSignCoords();
 		System.out.println("GE Row: " + signPos[0] + " GE Col: " + signPos[1]);
 		String help = "Use the W A S D keys to move around the map!";
-		entityMap[signPos[0]][signPos[1]] = new Sign(signPos[1] * 32, signPos[0] * 32, "Insert end stats here");
+		
+		levelEnd = new Sign(signPos[1] * 32, signPos[0] * 32, "Insert end stats here");
+		entityMap[signPos[0]][signPos[1]] = levelEnd;
 		entityMap[12][12] = new Sign(12*32, 12*32, help);
 
 		renderEngine = new RenderLoop();
 		renderEngine.setName("RenderEngine");
 		
 		soundEngine = new SoundEngine();
-
+		tracker = new ScoreTracker();
 		//player = new Player(12*32, 12*32);
 		currentInput = "";
 	}
@@ -158,6 +162,12 @@ class GameEngine {
 		//Update player and stuff
 
 		updatePlayer();
+		
+		if (!levelEnd.interact()); {
+			levelEnd.setText(("Congratulations! Tutorial Complete\n" +
+					"Level Stats:\n" +
+					"\tNumber of Up Moves: " + tracker.getUpScore()));
+		}
 
 		//Clear currentInput at end of every slowTick
 		currentInput = "";
@@ -209,8 +219,11 @@ class GameEngine {
 		if(levelMap[yPos][xPos] != null) {
 			if (!levelMap[yPos][xPos].isSolid())
 			{
+				int[] displace = {yPos - Player.player.getY()/32, xPos - Player.player.getX()/32};
+				tracker.notify(displace, ScoreTracker.MOVEEVENT);
 				Player.player.setX(xPos * 32);
 				Player.player.setY(yPos * 32);
+				
 			}
 		}
 

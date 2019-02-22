@@ -16,6 +16,12 @@ public class Sign extends GameObject {
         rend.drawImage(sprite, null, getX(), getY());
     }
     public String getText() { return text; }
+    public void setText(String text) { 
+	synchronized (text) {
+		this.text = text;
+	}
+
+    }
     public boolean interact() {
         return Player.player.getX() == getX() && Player.player.getY() == getY();
     }
