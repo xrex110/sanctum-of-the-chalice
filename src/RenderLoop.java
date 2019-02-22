@@ -5,6 +5,7 @@ public class RenderLoop extends Thread {
 	Window window;	/* Static window object */
 	InputHandler in;	/* Static InputHandler object */
 	GameView gm;		/* Static GameView object */
+    MenuView menuView;   /* Static MenuView object */
 	
 	//private static int frame = 1;	/* Used for theoretical FPS calculation */
 	//static long startTime = System.nanoTime();	/* Used for theoretical FPS calculation. Uncomment when needed*/
@@ -13,7 +14,9 @@ public class RenderLoop extends Thread {
 		in = new InputHandler();
 		gm = new GameView();
 		gm.setInputHandler(in);
-		window = new Window("Sanctum of the Chalice", gm, 800, 800);
+        menuView = new MenuView("Main");
+
+		window = new Window("Sanctum of the Chalice", menuView, 800, 800);
 	}
 
 	public void run() {
@@ -28,7 +31,7 @@ public class RenderLoop extends Thread {
 		boolean isRunning = true;
 		while(isRunning) {
 			gm.repaint();
-
+            menuView.repaint();
 			//theoreticalFPS();	/*Uncomment when theoretical FPS is need (unbound refresh) */
 
 			handleInput();
@@ -53,23 +56,32 @@ public class RenderLoop extends Thread {
 		if(in.isKeyPressed(KeyEvent.VK_W)) {
 			//log("W was pressed on RE");
 			//Player.player.moveUp();
-			GameEngine.updateInput("W");			
+            if(menuView.isFocused)
+                menuView.invoke("W");
+			else
+                GameEngine.updateInput("W");			
 		}
 		else if(in.isKeyPressed(KeyEvent.VK_S)) {
 			//log("S was pressed on RE");
 			//Player.player.moveDown();
 			GameEngine.updateInput("S");
+            menuView.invoke("S");
 		}
 		else if(in.isKeyPressed(KeyEvent.VK_A)) {
 			//log("A was pressed on RE");
 			//Player.player.moveLeft();
 			GameEngine.updateInput("A");
+            menuView.invoke("A");
 		}
 		else if(in.isKeyPressed(KeyEvent.VK_D)) {
 			//log("D was pressed on RE");
 			//Player.player.moveRight();
 			GameEngine.updateInput("D");
+            menuView.invoke("D");
 		}
+        else if(in.isKeyPressed(KeyEvent.VK_ENTER)) {
+            menuView.invoke("Enter");
+        }
 		else GameEngine.updateInput("");
 		
 	}

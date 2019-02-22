@@ -52,6 +52,10 @@ class GameEngine {
 		//player = new Player(12*32, 12*32);
 		currentInput = "";
 	}
+    
+    public RenderLoop getRenderEngine() {
+        return renderEngine;
+    }
 
 	public void generateMap() {
 		levelGen.generateDungeon();
