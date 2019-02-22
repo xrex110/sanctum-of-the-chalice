@@ -1,4 +1,5 @@
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
@@ -66,6 +67,24 @@ public class TextDevice {
 	public void setSize(int size) {
 		fontSize = size;
 	}
+    
+    public int getPixelWidth(Graphics2D rend, String text) {
+        Font old = rend.getFont();
+        rend.setFont(font);
+        FontMetrics fm = rend.getFontMetrics();
+        int res = fm.stringWidth(text);
+        rend.setFont(old);
+        return res;
+    }
+
+    public int getPixelHeight(Graphics2D rend) {
+        Font old = rend.getFont();
+        rend.setFont(font);
+        FontMetrics fm = rend.getFontMetrics();
+        int res = fm.getHeight();
+        rend.setFont(old);
+        return res;
+    }
 
 	public void setColors(Color ic, Color oc) {
 		innerColor = ic;
