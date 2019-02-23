@@ -22,6 +22,10 @@ public class Sign extends GameObject {
 	}
 
     }
+    public boolean interact(int currentX, int currentY) {
+        return currentX == getX() && currentY == getY();
+    }
+
     public boolean interact() {
         return Player.player.getX() == getX() && Player.player.getY() == getY();
     }

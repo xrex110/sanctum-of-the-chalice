@@ -92,7 +92,7 @@ public class GameView extends JPanel {
 						Sign sign = (Sign) emap[i][j];
 						//System.out.println("RENDEREING SIGN: " + sign.getText());
 						sign.draw(rend);
-						if(sign.interact()) signSelected = sign; 
+						if(sign.interact(playerXCopy, playerYCopy)) signSelected = sign; 
 					}
 				}
 			}
