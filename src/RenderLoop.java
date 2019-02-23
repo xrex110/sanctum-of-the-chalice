@@ -11,12 +11,16 @@ public class RenderLoop extends Thread {
 	//static long startTime = System.nanoTime();	/* Used for theoretical FPS calculation. Uncomment when needed*/
 
 	public RenderLoop() {
+        
+        int width = 800;
+        int height = 800;
+        
 		in = new InputHandler();
 		gm = new GameView();
 		gm.setInputHandler(in);
-        menuView = new MenuView("Main");
+        menuView = new MenuView("Main", width, height);
 
-		window = new Window("Sanctum of the Chalice", menuView, 800, 800);
+		window = new Window("Sanctum of the Chalice", menuView, width, height);
 	}
 
 	public void run() {
