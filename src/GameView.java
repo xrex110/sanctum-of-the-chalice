@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameView extends JPanel {
 	
@@ -32,6 +34,7 @@ public class GameView extends JPanel {
     
     private int playerXCopy = 0;
     private int playerYCopy = 0;
+    private List<Pair<Integer, Integer>> cameraInterp; 
 
 	public GameView() {
 		//this.setIgnoreRepaint(true);
@@ -49,6 +52,9 @@ public class GameView extends JPanel {
 		
 		map = new GameObject[1][1];
 		emap = new GameObject[1][1];
+        
+        cameraInterp = new ArrayList<Pair<Integer, Integer>>(); 
+
 		this.setBackground(Color.BLACK);
 	}
     
@@ -182,9 +188,29 @@ public class GameView extends JPanel {
         int centerTileX = centerX - PLAYER_WIDTH / 2;
         int centerTileY = centerY - PLAYER_HEIGHT / 2;
         
-        playerXCopy = Player.player.getX();
-        playerYCopy = Player.player.getY();
+        if(cameraInterp.size() > 0){
+            //We must interpolate from the old point to new point
+            Pair<Integer, Integer> coords = cameraInterp.remove(0);
+            
+            playerXCopy = coords.x;
+            playerYCopy = coords.y;
+        } else {
+            //We don't need to interpolate
+            int goalX = Player.player.getX();
+            int goalY = Player.player.getY();
+            int deltaX = goalX - playerXCopy;
+            int deltaY = goalY - playerYCopy;
+            //System.out.printf("GoalX: %d GoalY: %d X: %d Y: %d\n",goalX,goalY,playerXCopy, playerYCopy);
+            final int INTERP_GRANULARITY = 30;
+            for(int i = 0; i < INTERP_GRANULARITY; ++i){
+                int interpX = playerXCopy + i*deltaX / INTERP_GRANULARITY;
+                int interpY = playerYCopy + i*deltaY / INTERP_GRANULARITY;
+                cameraInterp.add(new Pair<Integer,Integer>(interpX, interpY));
+            }
+            cameraInterp.add(new Pair<Integer,Integer>(Player.player.getX(), Player.player.getY()));
 
+        }
+        
         int transX = centerTileX - playerXCopy;
         int transY = centerTileY - playerYCopy;
         
