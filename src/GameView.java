@@ -74,18 +74,22 @@ public class GameView extends JPanel {
 				}
 			}
 		}
-
+        
 		if(emap.length != 1) {
+            Sign signSelected = null;
 			for(int i = 0; i < emap.length; i++) {
 				for(int j = 0; j < emap[i].length; j++) {
 					if(emap[i][j] instanceof Sign) {
 						Sign sign = (Sign) emap[i][j];
 						//System.out.println("RENDEREING SIGN: " + sign.getText());
 						sign.draw(rend);
-						if(sign.interact()) drawSign(rend, sign);
+						if(sign.interact()) signSelected = sign; 
 					}
 				}
 			}
+            if(signSelected != null) {
+                drawSign(rend, signSelected);
+            }
 		}
 		//rend.drawImage(wizard, null, 320, 320);
         
