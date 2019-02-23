@@ -29,12 +29,14 @@ public class Player extends GameObject {
         setX(getX() + TILE_SIZE_X);
         return true;
     }
-
     public void draw(Graphics2D rend) {
+        draw(rend, getX(), getY());
+    }
+    public void draw(Graphics2D rend, int copyX, int copyY) {
         //rend.fillRect(getX(),getY(), 32, 32);
 		sp.cacheImage("wizard.png");
         BufferedImage sprite = sp.getSprite("wizard.png",0,32,32);
-        rend.drawImage(sprite, null, getX(), getY());
+        rend.drawImage(sprite, null, copyX, copyY);
     }
 
 }

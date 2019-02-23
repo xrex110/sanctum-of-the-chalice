@@ -29,6 +29,9 @@ public class GameView extends JPanel {
     
     //TODO: Delete me later please and thank
     //Sign sign = new Sign(-128, -128, "Hello general kenobi");
+    
+    private int playerXCopy = 0;
+    private int playerYCopy = 0;
 
 	public GameView() {
 		//this.setIgnoreRepaint(true);
@@ -95,7 +98,7 @@ public class GameView extends JPanel {
         
         //sign.draw(rend);
 
-        Player.player.draw(rend);
+        Player.player.draw(rend, playerXCopy, playerYCopy);
         
         drawHud(rend);
 	}
@@ -175,12 +178,15 @@ public class GameView extends JPanel {
         //TODO: Make this not garbage later
         int PLAYER_WIDTH = 32;
         int PLAYER_HEIGHT = 32;
-
+        
         int centerTileX = centerX - PLAYER_WIDTH / 2;
         int centerTileY = centerY - PLAYER_HEIGHT / 2;
         
-        int transX = centerTileX - Player.player.getX();
-        int transY = centerTileY - Player.player.getY();
+        playerXCopy = Player.player.getX();
+        playerYCopy = Player.player.getY();
+
+        int transX = centerTileX - playerXCopy;
+        int transY = centerTileY - playerYCopy;
         
         at.translate(transX, transY);
 
