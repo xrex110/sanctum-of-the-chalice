@@ -122,6 +122,10 @@ public class SettingsView extends Menu{
     void initializeFocus() {
         selection = 0;
         selected = options.get(0);
+        for(DynamicButton db : options) {
+            db.isSelected = false;
+        }
+        selected.isSelected = true;
         lastInputTime = 0;
     }
 }   
