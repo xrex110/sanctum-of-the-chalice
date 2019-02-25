@@ -2,33 +2,33 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
-public class MenuView extends JPanel {
+import java.util.ArrayList;
+public class MenuView extends Menu {
     private int volume = 5;
     private static int menuSelection = 0;
     private DynamicButton[] options;
     private DynamicButton currentSelection;
-    private final String menuName;
     private TextDevice menuText;
     private TextDevice titleText;
-    public boolean isFocused = false;
     private long lastInputTime = 0;
-    private final long INTERACTION_DELAY = 200; //In milliseconds
-    public MenuView(String name, int width, int height) {
+    private static final long INTERACTION_DELAY = 200; //In milliseconds
 
-        if(name.equals("Main")) isFocused = true;
+    private ArrayList<Menu> children = new ArrayList<Menu>();
+
+    public MenuView(int width, int height) {
+
 
         this.setOpaque(true);
         this.setBackground(Color.black);
         this.setSize(width, height);
-
+        super.isFocused = true;
         menuText = new TextDevice("DPComic",20,Color.white, Color.black);
         titleText = new TextDevice("DPComic",40,Color.white, Color.black);
-        menuName = name;
-        
+
         Color selectedColor = new Color(0xbb0a1e);
         Color outline = Color.white;
         Color fill = new Color(0x002663);
-        
+
         int BUTTON_HEIGHT = 50;
         int BUTTON_WIDTH = 100;
         int x = (getWidth() - BUTTON_WIDTH) / 2;
@@ -36,14 +36,28 @@ public class MenuView extends JPanel {
         int i = 0;
         options = new DynamicButton[]{
             new DynamicButton("Start",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
-            new DynamicButton("Nothing",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
-            new DynamicButton("Nothing",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
-            new DynamicButton("Exit",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
+                new DynamicButton("Settings",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
+                new DynamicButton("Credits",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
+                new DynamicButton("Exit",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
         };
 
         currentSelection = options[0];
         currentSelection.isSelected = true;
+        
+        initializeChildren();
 
+    }
+
+    private void initializeChildren(){
+        SettingsView settings = new SettingsView(getWidth(), getHeight(), this);
+        children.add(settings);
+    }
+
+    public boolean recursiveIsFocused() {
+        if(isFocused) return true;
+        for(Menu m : children)
+            if(m.isFocused) return true;
+        return false;
     }
 
     public static void setMenuSelection(int id) {
@@ -54,8 +68,14 @@ public class MenuView extends JPanel {
     }
 
     public void invoke(String key) {
-        if(!isFocused) return;
-        
+        if(!isFocused) {
+            for(Menu m : children) {
+                m.invoke(key);
+            }
+            return;
+        }
+
+        if(lastInputTime == 0) lastInputTime = System.nanoTime() + (long)3e8;
         if((System.nanoTime() - lastInputTime) / 1e6 < INTERACTION_DELAY) return;
         else {
             lastInputTime = System.nanoTime(); 
@@ -74,39 +94,49 @@ public class MenuView extends JPanel {
                 currentSelection = options[menuSelection];
                 currentSelection.isSelected = true;
                 break; 
-            case "Enter":
+            case "Enter": {
+                RenderLoop re = Sanctum.ge.getRenderEngine();
                 if(getMenuSelection() == 0) {
-                    if(menuName.equals("Main")){
-                        System.out.println("Loading game!");
-                        Sanctum.ge.getRenderEngine().window
-                            .setWindowView(Sanctum.ge.getRenderEngine().gm);
-                        isFocused = false;
-                    }
-                }else if(getMenuSelection() == 3) {
-                    if(menuName.equals("Main")){
-                        Sanctum.ge.getRenderEngine().window.killWindow();
-                        System.exit(0);
-                    }
+                    //Start new game
+                    System.out.println("Loading game!");
+                    re.gm.focus(this);
+                } else if(getMenuSelection() == 1) {
+                    //Settings
+                    children.get(0).focus(this);
+                } else if(getMenuSelection() == 2) {
+                    //Unused
+                    isFocused = false;
+
+                } else if(getMenuSelection() == 3) {
+                    //Exit
+                    Sanctum.ge.getRenderEngine().window.killWindow();
+                    System.exit(0);
                 }
                 break;
-
+            }
         }
     }
 
     @Override
-    public void paint(Graphics g) {
-        if(!isFocused) return;
-        super.paint(g); //Clears screen before every paint
-        Graphics2D rend = (Graphics2D) g;
+        public void paint(Graphics g) {
+            if(!isFocused) return;
+            super.paint(g); //Clears screen before every paint
+            Graphics2D rend = (Graphics2D) g;
 
-        int titleX = (getWidth() - titleText.getPixelWidth(rend,"Sanctum of the Chalice")) / 2;
-        int titleY = 100;
-        titleText.drawOutlineText(rend, "Sanctum of the Chalice", titleX, titleY);
+            int titleX = (getWidth() - titleText.getPixelWidth(rend,"Sanctum of the Chalice")) / 2;
+            int titleY = 100;
+            titleText.drawOutlineText(rend, "Sanctum of the Chalice", titleX, titleY);
 
-        for(int i = 0; i < options.length; ++i) {
-            options[i].draw(rend);
-            
+            for(int i = 0; i < options.length; ++i) {
+                options[i].draw(rend);
+            }
         }
+    public void setInputHandler(InputHandler ih) {
+		this.addKeyListener(ih);
+	}
+    @Override
+    void initializeFocus() {
+        lastInputTime = 0;
     }
-    
+
 }

@@ -6,7 +6,7 @@ public class DynamicButton {
 
     private TextDevice font;
     private int x, y, width, height;
-    private String text;
+     String text;
     private Color fill, outline, selectedColor;
     
     public DynamicButton(String text, int x, int y, int width, int height, Color fill, Color outline, Color selectedColor, TextDevice font) {
@@ -24,7 +24,6 @@ public class DynamicButton {
    
     public void draw(Graphics2D rend) {
         Color background;
-        System.out.println(isSelected);
         if(isSelected) background = selectedColor;
         else background = fill;
         drawOutlinedRectangle(rend, outline, background, x, y, width, height);
@@ -38,6 +37,7 @@ public class DynamicButton {
         rend.fillRect(x,y,width,height);
         rend.setColor(outline);
         rend.drawRect(x,y,width,height);
+        //System.out.printf("(%d,%d,%d,%d)\n",x,y,width,height);
     }
 
 }

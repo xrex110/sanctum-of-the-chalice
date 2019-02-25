@@ -9,7 +9,7 @@ import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameView extends JPanel {
+public class GameView extends Menu {
 	
 	private SpriteLoader loader;
 	private FontLoader fl;
@@ -35,6 +35,8 @@ public class GameView extends JPanel {
     private int playerXCopy = 0;
     private int playerYCopy = 0;
     private List<Pair<Integer, Integer>> cameraInterp; 
+    
+    private static int interpRate = 30;
 
 	public GameView() {
 		//this.setIgnoreRepaint(true);
@@ -158,11 +160,7 @@ public class GameView extends JPanel {
         String posStr = "Pos: (" + Player.player.getX() + ", " + Player.player.getY() + ")";
         fpsText.drawOutlineText(rend, posStr, 25, 50);
     }
-
-	public void setInputHandler(InputHandler ih) {
-		this.addKeyListener(ih);
-	}
-
+	
     private void updateFPS() {
         frameCount++;
 
@@ -187,7 +185,7 @@ public class GameView extends JPanel {
         
         int centerTileX = centerX - PLAYER_WIDTH / 2;
         int centerTileY = centerY - PLAYER_HEIGHT / 2;
-        
+        System.out.println(cameraInterp); 
         if(cameraInterp.size() > 0){
             //We must interpolate from the old point to new point
             Pair<Integer, Integer> coords = cameraInterp.remove(0);
@@ -201,10 +199,10 @@ public class GameView extends JPanel {
             int deltaX = goalX - playerXCopy;
             int deltaY = goalY - playerYCopy;
             //System.out.printf("GoalX: %d GoalY: %d X: %d Y: %d\n",goalX,goalY,playerXCopy, playerYCopy);
-            final int INTERP_GRANULARITY = 30;
-            for(int i = 0; i < INTERP_GRANULARITY; ++i){
-                int interpX = playerXCopy + i*deltaX / INTERP_GRANULARITY;
-                int interpY = playerYCopy + i*deltaY / INTERP_GRANULARITY;
+            
+            for(int i = 0; i < interpRate; ++i){
+                int interpX = playerXCopy + i*deltaX / interpRate;
+                int interpY = playerYCopy + i*deltaY / interpRate;
                 cameraInterp.add(new Pair<Integer,Integer>(interpX, interpY));
             }
             cameraInterp.add(new Pair<Integer,Integer>(Player.player.getX(), Player.player.getY()));
@@ -219,4 +217,16 @@ public class GameView extends JPanel {
         rend.setTransform(at); 
     }
 
+    public static void setInterpRate(int x) {
+        interpRate = x;
+    }
+    public static int getInterpRate() {
+        return interpRate;
+    }
+    void initializeFocus() {
+
+    }
+    public void invoke(String key) {
+        //Please do nothing ty
+    }
 }

@@ -4,9 +4,9 @@ public class RenderLoop extends Thread {
 
 	Window window;	/* Static window object */
 	InputHandler in;	/* Static InputHandler object */
-	GameView gm;		/* Static GameView object */
+	GameView gm;
     MenuView menuView;   /* Static MenuView object */
-	
+    public static final long SLEEP_TIME = 16;
 	//private static int frame = 1;	/* Used for theoretical FPS calculation */
 	//static long startTime = System.nanoTime();	/* Used for theoretical FPS calculation. Uncomment when needed*/
 
@@ -17,9 +17,8 @@ public class RenderLoop extends Thread {
         
 		in = new InputHandler();
 		gm = new GameView();
-		gm.setInputHandler(in);
-        menuView = new MenuView("Main", width, height);
-
+        menuView = new MenuView(width, height);
+        menuView.setInputHandler(in);
 		window = new Window("Sanctum of the Chalice", menuView, width, height);
 	}
 
@@ -34,14 +33,13 @@ public class RenderLoop extends Thread {
 		//log("==========INPUT TESTING==========");
 		boolean isRunning = true;
 		while(isRunning) {
-			gm.repaint();
-            menuView.repaint();
-			//theoreticalFPS();	/*Uncomment when theoretical FPS is need (unbound refresh) */
+			window.getWindowView().repaint();
+            //theoreticalFPS();	/*Uncomment when theoretical FPS is need (unbound refresh) */
 
 			handleInput();
 
 			try {
-				Thread.sleep(16);	//Time for a single fast tick
+				Thread.sleep(SLEEP_TIME);	//Time for a single fast tick
 			}
 			catch(InterruptedException e) {
 				System.out.println("Timer failed? What.");
@@ -58,13 +56,13 @@ public class RenderLoop extends Thread {
 			System.exit(1);
 		}
         if(in.isKeyPressed(KeyEvent.VK_P)) {
-            menuView.isFocused = true;
-            window.setWindowView(menuView);
+            if(!menuView.equals((Menu)window.getWindowView()))
+                menuView.focus((Menu)window.getWindowView());
         }
 		if(in.isKeyPressed(KeyEvent.VK_W)) {
 			//log("W was pressed on RE");
 			//Player.player.moveUp();
-            if(menuView.isFocused)
+            if(menuView.recursiveIsFocused())
                 menuView.invoke("W");
 			else
                 GameEngine.updateInput("W");			
@@ -72,7 +70,8 @@ public class RenderLoop extends Thread {
 		else if(in.isKeyPressed(KeyEvent.VK_S)) {
 			//log("S was pressed on RE");
 			//Player.player.moveDown();
-            if(menuView.isFocused)
+            
+            if(menuView.recursiveIsFocused())
                 menuView.invoke("S");
 			else
                 GameEngine.updateInput("S");
@@ -80,7 +79,7 @@ public class RenderLoop extends Thread {
 		else if(in.isKeyPressed(KeyEvent.VK_A)) {
 			//log("A was pressed on RE");
 			//Player.player.moveLeft();
-            if(menuView.isFocused)
+            if(menuView.recursiveIsFocused())
                 menuView.invoke("A");
 			else
                 GameEngine.updateInput("A");
@@ -88,13 +87,13 @@ public class RenderLoop extends Thread {
 		else if(in.isKeyPressed(KeyEvent.VK_D)) {
 			//log("D was pressed on RE");
 			//Player.player.moveRight();
-            if(menuView.isFocused)
+            if(menuView.recursiveIsFocused())
                 menuView.invoke("D");
 			else
                 GameEngine.updateInput("D");
 		}
         else if(in.isKeyPressed(KeyEvent.VK_ENTER)) {
-            if(menuView.isFocused)
+            if(menuView.recursiveIsFocused())
                 menuView.invoke("Enter");
         }
 		else GameEngine.updateInput("");
