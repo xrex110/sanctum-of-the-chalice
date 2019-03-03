@@ -36,7 +36,7 @@ public class GameView extends Menu {
     private int playerYCopy = 0;
     private List<Pair<Integer, Integer>> cameraInterp; 
     
-    private static int interpRate = 30;
+    private static int interpRate = 5;
 
 	public GameView() {
 		//this.setIgnoreRepaint(true);
@@ -185,7 +185,6 @@ public class GameView extends Menu {
         
         int centerTileX = centerX - PLAYER_WIDTH / 2;
         int centerTileY = centerY - PLAYER_HEIGHT / 2;
-        System.out.println(cameraInterp); 
         if(cameraInterp.size() > 0){
             //We must interpolate from the old point to new point
             Pair<Integer, Integer> coords = cameraInterp.remove(0);
