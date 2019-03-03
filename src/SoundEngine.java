@@ -136,7 +136,37 @@ public class SoundEngine{
 			}
 		}
 	}
+	
+	public boolean stopRequest(String label)
+	{
+		/*This method will search the reqwest list for a sound request of a matching label
+		 * If such a request exists, it will set the notStopped value to false for the first
+		 * matching instance in the list and return true
+		 * If no match is found, return false
+		 */
+		synchronized (requests) {
+			int i = 0;
+			while (i < requests.size())
+			{
+				if (requests.get(i).label.equals(label)) {
+					requests.get(i).notStopped = false;
+					return true;
+				}
+				i++;
+			}
+		}
+		
+		return false;
+	}
 
+	public boolean stopRequest(SoundRequest req)
+	{
+		/*This method will set notStopped in req to false and the return true
+		 * There is currently no instance that will return false
+		 */
+		req.notStopped = false;
+		return true;
+	}
 }
 /*
 class SoundRequest {
