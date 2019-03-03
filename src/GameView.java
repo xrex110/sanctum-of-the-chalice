@@ -170,7 +170,7 @@ public class GameView extends Menu {
         int memoryFree = (int)(Runtime.getRuntime().freeMemory() / 1024);
         int memoryUsed = memoryTotal - memoryFree;
         int memoryMax = (int)(Runtime.getRuntime().maxMemory() / 1024);
-        String ramString = "Mem: " + memoryUsed + " / " + memoryMax + " KB";
+        String ramString = "Heap: " + memoryUsed + " / " + memoryMax + " KB";
         fpsText.drawOutlineText(rend, ramString, 25, 75);
     }
 	
