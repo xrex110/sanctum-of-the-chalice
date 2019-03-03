@@ -96,7 +96,7 @@ public class SoundEngine{
 		}		
 	}
 
-	public void play(String fName, String label){
+	public SoundRequest play(String fName, String label){
 		SoundRequest requestInstance = new SoundRequest(label);
 		requests.add(requestInstance);
 		Thread soundInstance = new Thread() {
@@ -107,10 +107,10 @@ public class SoundEngine{
 			}
 		};
 		soundInstance.start();
-		
+		return requestInstance;
 	}// end playing function
 
-	public void playLoop(String fName, String label) {
+	public SoundRequest playLoop(String fName, String label) {
 		SoundRequest requestInstance = new SoundRequest(label);
 		requests.add(requestInstance);
 		Thread soundInstance = new Thread() { 
@@ -124,6 +124,7 @@ public class SoundEngine{
 
 		};
 		soundInstance.start();
+		return requestInstance;
 	}
 
 	public void stopAllRequests()
@@ -137,7 +138,7 @@ public class SoundEngine{
 	}
 
 }
-
+/*
 class SoundRequest {
 	public String label;
 	public volatile boolean notStopped;
@@ -148,6 +149,6 @@ class SoundRequest {
 	}
 }
 
-
+*/
 
 
