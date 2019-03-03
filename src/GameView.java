@@ -28,6 +28,7 @@ public class GameView extends Menu {
 
 	TextDevice fpsText;
 	TextDevice testText;
+    PlayerStatusHUD playerStatusHud;
     
     //TODO: Delete me later please and thank
     //Sign sign = new Sign(-128, -128, "Hello general kenobi");
@@ -37,6 +38,7 @@ public class GameView extends Menu {
     private List<Pair<Integer, Integer>> cameraInterp; 
     
     private static int interpRate = 5;
+    private Sign signSelected = null;
     
     //Handles the rendering of time until next tick
 	public GameView() {
@@ -52,6 +54,7 @@ public class GameView extends Menu {
 
 		fpsText = new TextDevice("DPComic", 20, Color.WHITE, Color.BLACK);
 		testText = new TextDevice("DPComic", 45, Color.BLUE, Color.RED);
+        playerStatusHud = new PlayerStatusHUD(800,800, fpsText);
 		
 		map = new GameObject[1][1];
 		emap = new GameObject[1][1];
@@ -88,7 +91,6 @@ public class GameView extends Menu {
 		}
         
 		if(emap.length != 1) {
-            Sign signSelected = null;
 			for(int i = 0; i < emap.length; i++) {
 				for(int j = 0; j < emap[i].length; j++) {
 					if(emap[i][j] instanceof Sign) {
@@ -99,10 +101,7 @@ public class GameView extends Menu {
 					}
 				}
 			}
-            if(signSelected != null) {
-                drawSign(rend, signSelected);
-            }
-		}
+ 		}
 		//rend.drawImage(wizard, null, 320, 320);
         
         //sign.draw(rend);
@@ -132,6 +131,14 @@ public class GameView extends Menu {
         drawMem(rend);
         CircleProgressBar.tickTimer.draw(rend);
         CircleProgressBar.tickTimer2.draw(rend);
+        
+        playerStatusHud.draw(rend);
+
+        if(signSelected != null) {
+                drawSign(rend, signSelected);
+                signSelected = null;
+        }
+
 		rend.setTransform(oldAt);
 
     }
