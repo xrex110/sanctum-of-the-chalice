@@ -49,7 +49,7 @@ public class RenderLoop extends Thread {
 	}
 	public void handleInput() {
 		in.poll();
-
+        
 		if(in.isKeyPressed(KeyEvent.VK_ESCAPE)) {
 			log("Window killed");
 			window.killWindow();
@@ -85,6 +85,20 @@ public class RenderLoop extends Thread {
         else if(in.isKeyPressed(KeyEvent.VK_ENTER)) {
             ((Menu)window.getWindowView()).invoke("Enter");
         }
+        else if(in.isKeyPressed(KeyEvent.VK_O)) {
+            ((Menu)window.getWindowView()).invoke("O");
+        }
+        else if(in.isKeyPressed(KeyEvent.VK_I)) {
+            ((Menu)window.getWindowView()).invoke("I");
+        }
+        else if(in.isKeyPressed(KeyEvent.VK_K)) {
+            ((Menu)window.getWindowView()).invoke("K");
+        }
+        else if(in.isKeyPressed(KeyEvent.VK_L)) {
+            ((Menu)window.getWindowView()).invoke("L");
+        }
+
+
 		else ((Menu)window.getWindowView()).invoke("");
 		
 	}

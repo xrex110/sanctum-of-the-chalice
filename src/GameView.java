@@ -246,6 +246,8 @@ public class GameView extends Menu {
     void initializeFocus() {
 
     }
+    private static final long INTERACTION_DELAY = 200; //In milliseconds
+    private long lastInputTime = 0; 
     public void invoke(String key) {
         //Please do nothing ty
         if(!isFocused) return; 
@@ -254,8 +256,28 @@ public class GameView extends Menu {
             GameEngine.updateInput(key);
             return;
         }
+        /* Debug options for now */
+        if(lastInputTime == 0) lastInputTime = System.nanoTime() + (long)3e8;
+        if((System.nanoTime() - lastInputTime) / 1e6 < INTERACTION_DELAY) return;
+        else {
+            lastInputTime = System.nanoTime(); 
+        }
         
+        switch(key) {
+            case "O":
+                playerStatusHud.health += 25;
+                break;
+            case "I":
+                playerStatusHud.reduceHP(25);
+                break;
+            case "K":
+                playerStatusHud.stamina -= 25;
+                break;
+            case "L":
+                playerStatusHud.stamina += 25;
+                break;
 
+        }
         
 
     }
