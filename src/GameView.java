@@ -37,7 +37,8 @@ public class GameView extends Menu {
     private List<Pair<Integer, Integer>> cameraInterp; 
     
     private static int interpRate = 5;
-
+    
+    //Handles the rendering of time until next tick
 	public GameView() {
 		//this.setIgnoreRepaint(true);
 		loader = new SpriteLoader();
@@ -107,7 +108,6 @@ public class GameView extends Menu {
         //sign.draw(rend);
 
         Player.player.draw(rend, playerXCopy, playerYCopy);
-        
         drawHud(rend);
 	}
 
@@ -129,7 +129,10 @@ public class GameView extends Menu {
 		//testText.drawOutlineText(rend, "Outlined", 50, 250);
 		drawFPS(rend);
         drawPos(rend);
+        CircleProgressBar.tickTimer.draw(rend);
+        CircleProgressBar.tickTimer2.draw(rend);
 		rend.setTransform(oldAt);
+
     }
 
     public void drawSign(Graphics2D rend, Sign sign) {
