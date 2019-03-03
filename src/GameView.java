@@ -129,6 +129,7 @@ public class GameView extends Menu {
 		//testText.drawOutlineText(rend, "Outlined", 50, 250);
 		drawFPS(rend);
         drawPos(rend);
+        drawMem(rend);
         CircleProgressBar.tickTimer.draw(rend);
         CircleProgressBar.tickTimer2.draw(rend);
 		rend.setTransform(oldAt);
@@ -162,6 +163,15 @@ public class GameView extends Menu {
     public void drawPos(Graphics2D rend) {
         String posStr = "Pos: (" + Player.player.getX() + ", " + Player.player.getY() + ")";
         fpsText.drawOutlineText(rend, posStr, 25, 50);
+    }
+
+    public void drawMem(Graphics2D rend) {
+        int memoryTotal = (int)(Runtime.getRuntime().totalMemory() / 1024); 
+        int memoryFree = (int)(Runtime.getRuntime().freeMemory() / 1024);
+        int memoryUsed = memoryTotal - memoryFree;
+        int memoryMax = (int)(Runtime.getRuntime().maxMemory() / 1024);
+        String ramString = "Mem: " + memoryUsed + " / " + memoryMax + " KB";
+        fpsText.drawOutlineText(rend, ramString, 25, 75);
     }
 	
     private void updateFPS() {
