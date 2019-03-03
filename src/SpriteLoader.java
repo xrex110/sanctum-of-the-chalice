@@ -20,7 +20,7 @@ public class SpriteLoader{
 	 *	then return it
 	 *
 	 */
-
+    
     public BufferedImage getSprite(String requested, int frame, int xSize, int ySize) {
 		String cacheQuery = requested + frame;
 		//System.out.println("Searching for " + cacheQuery + " within cache");
@@ -47,7 +47,7 @@ public class SpriteLoader{
      *  X and Y specify the width and height of each cut
      *
      */
-    public void cacheSheet(String path, int x, int y) {
+    public int cacheSheet(String path, int x, int y) {
         BufferedImage sheet = getImage(RESOURCE_PATH + path);
         
         if(sheet == null){
@@ -74,8 +74,9 @@ public class SpriteLoader{
 
 		//TODO: This needs a check to ensure we dont try to cache things that are already cached
 		//It can occur if the player calls cacheSheet manually
+        int result = 0;
         for(int i = 0; i < width; i += x) {
-            for(int j = 0; j < height; j += y, count++) {
+            for(int j = 0; j < height; j += y, count++, result++) {
                 BufferedImage temp = sheet.getSubimage(i, j, x, y);
 				String imgKey = path + count;
 				if(cache.containsKey(imgKey)) {
@@ -86,7 +87,7 @@ public class SpriteLoader{
                 cache.put(imgKey, temp);
             }
         }
-                
+        return result;
     }
 
 	/**
