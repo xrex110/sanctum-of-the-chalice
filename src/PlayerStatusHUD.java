@@ -7,7 +7,8 @@ public class PlayerStatusHUD {
     public int stamina = 25;
     public final int HEALTH_MAX = 100;
     public final int STAMINA_MAX = 100;
-
+    private String key = "";
+    CircleProgressBar nextTick;
     
     private int width, height;
     private TextDevice font;
@@ -16,7 +17,9 @@ public class PlayerStatusHUD {
         this.width = width;
         this.height = height;
         this.font = font;
+        nextTick = new CircleProgressBar(width - 185, height - 95,50,50,5,Color.RED);
     }
+    public void setKey(String s) { key = s; }
     
     private void fillProgressBar(Graphics2D rend, int x, int y, int w, int h, int current, int max, Color outline, Color fill, Color background) {
         rend.setColor(background);
@@ -51,6 +54,9 @@ public class PlayerStatusHUD {
         fillProgressBar(rend, barX, barY+10+barHeight, barWidth, barHeight, stamina,
                         STAMINA_MAX, Color.white, new Color(0x228b22), Color.black);
         drawCenteredText(rend, stam, barX, barY+10+barHeight, barWidth, barHeight);
+        nextTick.draw(rend);
+        drawCenteredText(rend, key, width-185,height-95,50,50);
+        
     }
 
 }

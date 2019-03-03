@@ -74,6 +74,9 @@ public class GameView extends Menu {
 		int xTiles = 25;	/* Number of tiles window can accomodate in x axis */
 		int yTiles = 25;	/* Number of tiles window can accomodate in y axis */
         
+        if(frameCount % (int)(GameEngine.SLOWRATE / RenderLoop.SLEEP_TIME) == 0)
+            playerStatusHud.setKey("");
+
 		/*for(int i = 0; i < xTiles; i++) {
 			for(int j = 0; j < yTiles; j++) {
 				int randNum = rand.nextInt(12);
@@ -129,8 +132,6 @@ public class GameView extends Menu {
 		drawFPS(rend);
         drawPos(rend);
         drawMem(rend);
-        CircleProgressBar.tickTimer.draw(rend);
-        CircleProgressBar.tickTimer2.draw(rend);
         
         playerStatusHud.draw(rend);
 
@@ -247,5 +248,15 @@ public class GameView extends Menu {
     }
     public void invoke(String key) {
         //Please do nothing ty
+        if(!isFocused) return; 
+        if(key.matches("[WASD]")) {
+            playerStatusHud.setKey(key);
+            GameEngine.updateInput(key);
+            return;
+        }
+        
+
+        
+
     }
 }
