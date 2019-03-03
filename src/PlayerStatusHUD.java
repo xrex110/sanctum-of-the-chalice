@@ -1,5 +1,6 @@
 import java.awt.Graphics2D;
 import java.awt.Color;
+import java.util.ArrayList;
 
 public class PlayerStatusHUD {
     
@@ -12,6 +13,9 @@ public class PlayerStatusHUD {
     
     private int width, height;
     private TextDevice font;
+    
+    ArrayList<Color> hurtFilter = new ArrayList<Color>();
+    private int frames = 0;
 
     public PlayerStatusHUD(int width, int height, TextDevice font) {
         this.width = width;
@@ -20,6 +24,13 @@ public class PlayerStatusHUD {
         nextTick = new CircleProgressBar(width - 185, height - 95,50,50,5,Color.RED);
     }
     public void setKey(String s) { key = s; }
+    public void reduceHP(int loss) {
+        health -= loss;
+        int n = 20;
+        for(int i = 0; i < n; ++i) {
+            hurtFilter.add(new Color(255,0,0,255- (255/n) * i));
+        }
+    }
     
     private void fillProgressBar(Graphics2D rend, int x, int y, int w, int h, int current, int max, Color outline, Color fill, Color background) {
         rend.setColor(background);
@@ -36,8 +47,15 @@ public class PlayerStatusHUD {
         int textY = y + h/2 + font.getPixelHeight(rend)/4;
         font.drawOutlineText(rend, text, textX, textY);
     }
+    
+    private void drawHurt(Graphics2D rend) {
+        if(hurtFilter.size() == 0) return;
+        rend.setColor(hurtFilter.remove(0));
+        rend.fillRect(0,0,width, height);
+    }
 
     public void draw(Graphics2D rend) {
+        drawHurt(rend);
 
         int barWidth = 100;
         int barHeight = 25;
@@ -56,7 +74,8 @@ public class PlayerStatusHUD {
         drawCenteredText(rend, stam, barX, barY+10+barHeight, barWidth, barHeight);
         nextTick.draw(rend);
         drawCenteredText(rend, key, width-185,height-95,50,50);
-        
+         
+        frames++;
     }
 
 }
