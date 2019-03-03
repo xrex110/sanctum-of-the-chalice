@@ -1,0 +1,232 @@
+import javax.swing.JPanel;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.util.Random;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.awt.Color;
+import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+import java.util.List;
+
+public class GameView extends Menu {
+	
+	private SpriteLoader loader;
+	private FontLoader fl;
+	private String sheetPath;
+	Random rand;					/* util.Random object for benchmarking */
+	int redraw = 1;
+
+    int frameCount = 0;             /* Tracks number of frames since last check */
+    double timeSinceFPSUpdate = 0;  /* Tracks last time of FPS calculation in MS */
+    double updateDelta = 16;        /* Difference in MS between FPS calculations */
+    double fps = 0;                 /* Number of frames per second */
+    
+	//BufferedImage wizard;
+	private GameObject[][] map;	
+	private GameObject[][] emap;
+
+	TextDevice fpsText;
+	TextDevice testText;
+    
+    //TODO: Delete me later please and thank
+    //Sign sign = new Sign(-128, -128, "Hello general kenobi");
+    
+    private int playerXCopy = 0;
+    private int playerYCopy = 0;
+    private List<Pair<Integer, Integer>> cameraInterp; 
+    
+    private static int interpRate = 30;
+
+	public GameView() {
+		//this.setIgnoreRepaint(true);
+		loader = new SpriteLoader();
+		sheetPath = "test_tile.png";
+		loader.cacheSheet(sheetPath, 32, 32);	//Load in and cache stuff
+		//loader.cacheImage("wizard.png");
+		fl = new FontLoader();
+		fl.loadFont("dpcomic");
+		rand = new Random();
+		//wizard  = loader.getSprite("wizard.png", 0, 32, 32); 
+
+		fpsText = new TextDevice("DPComic", 20, Color.WHITE, Color.BLACK);
+		testText = new TextDevice("DPComic", 45, Color.BLUE, Color.RED);
+		
+		map = new GameObject[1][1];
+		emap = new GameObject[1][1];
+        
+        cameraInterp = new ArrayList<Pair<Integer, Integer>>(); 
+
+		this.setBackground(Color.BLACK);
+	}
+    
+	@Override
+	public void paint(Graphics g) {
+        updateFPS();
+		super.paint(g);		//Clears screen before every paint
+        
+		Graphics2D rend = (Graphics2D) g;
+        positionCamera(rend);
+		int xTiles = 25;	/* Number of tiles window can accomodate in x axis */
+		int yTiles = 25;	/* Number of tiles window can accomodate in y axis */
+        
+		/*for(int i = 0; i < xTiles; i++) {
+			for(int j = 0; j < yTiles; j++) {
+				int randNum = rand.nextInt(12);
+				BufferedImage img = loader.getSprite(sheetPath, randNum, 32, 32);
+				rend.drawImage(img, null, i * 32, j * 32); 
+			}
+		}*/
+        
+		if(map.length != 1) {
+			for(int i = 0; i < map.length; i++) {
+				for(int j = 0; j < map[i].length; j++) {
+					if(map[i][j] != null) map[i][j].draw(rend);	
+				}
+			}
+		}
+        
+		if(emap.length != 1) {
+            Sign signSelected = null;
+			for(int i = 0; i < emap.length; i++) {
+				for(int j = 0; j < emap[i].length; j++) {
+					if(emap[i][j] instanceof Sign) {
+						Sign sign = (Sign) emap[i][j];
+						//System.out.println("RENDEREING SIGN: " + sign.getText());
+						sign.draw(rend);
+						if(sign.interact(playerXCopy, playerYCopy)) signSelected = sign; 
+					}
+				}
+			}
+            if(signSelected != null) {
+                drawSign(rend, signSelected);
+            }
+		}
+		//rend.drawImage(wizard, null, 320, 320);
+        
+        //sign.draw(rend);
+
+        Player.player.draw(rend, playerXCopy, playerYCopy);
+        
+        drawHud(rend);
+	}
+
+	public void setMap(GameObject[][] map) {
+		this.map = map;	
+	}
+
+	public void setEMap(GameObject[][] emap) {
+		this.emap = emap;
+	}
+
+    public void drawHud(Graphics2D rend) {
+        //If you remove these two lines things will start rendering in relation to the game world's 0,0
+		AffineTransform oldAt = rend.getTransform();
+        AffineTransform at = new AffineTransform();
+        rend.setTransform(at);
+        
+        //testText.drawText(rend, "Normal Text", 50, 150);
+		//testText.drawOutlineText(rend, "Outlined", 50, 250);
+		drawFPS(rend);
+        drawPos(rend);
+		rend.setTransform(oldAt);
+    }
+
+    public void drawSign(Graphics2D rend, Sign sign) {
+		AffineTransform oldAt = rend.getTransform();
+		AffineTransform at = new AffineTransform();
+		rend.setTransform(at);
+        Color outline = Color.white;
+        Color fill = new Color(0x002663);
+        drawOutlinedRectangle(rend, outline, fill, 64, getHeight() - 256, getWidth() - 128, 192);
+        fpsText.drawOutlineText(rend, sign.getText(), 92, getHeight() - 224);
+		rend.setTransform(oldAt);
+    }
+
+    public void drawOutlinedRectangle(Graphics2D rend, Color outline, Color fill, int x, int y, int width, int height) {
+        rend.setColor(fill);
+        rend.fillRect(x,y,width,height);
+        rend.setColor(outline);
+        rend.drawRect(x,y,width,height);
+
+    }
+
+	public void drawFPS(Graphics2D rend) {
+		String fpsStr = "Fps: " + fps;
+		fpsText.drawOutlineText(rend, fpsStr, 25, 25);
+	}
+
+    public void drawPos(Graphics2D rend) {
+        String posStr = "Pos: (" + Player.player.getX() + ", " + Player.player.getY() + ")";
+        fpsText.drawOutlineText(rend, posStr, 25, 50);
+    }
+	
+    private void updateFPS() {
+        frameCount++;
+
+        double currentTime = System.nanoTime() / 1e8;
+        if(currentTime - timeSinceFPSUpdate >= updateDelta) {
+            fps = frameCount * 10 / updateDelta;
+            frameCount = 0;
+            timeSinceFPSUpdate = System.nanoTime() / 1e8;
+        }
+
+
+    }
+
+    private void positionCamera(Graphics2D rend) {
+        AffineTransform at = new AffineTransform();
+        int centerX = getWidth() / 2;
+        int centerY = getHeight() / 2;
+        
+        //TODO: Make this not garbage later
+        int PLAYER_WIDTH = 32;
+        int PLAYER_HEIGHT = 32;
+        
+        int centerTileX = centerX - PLAYER_WIDTH / 2;
+        int centerTileY = centerY - PLAYER_HEIGHT / 2;
+        System.out.println(cameraInterp); 
+        if(cameraInterp.size() > 0){
+            //We must interpolate from the old point to new point
+            Pair<Integer, Integer> coords = cameraInterp.remove(0);
+            
+            playerXCopy = coords.x;
+            playerYCopy = coords.y;
+        } else {
+            //We don't need to interpolate
+            int goalX = Player.player.getX();
+            int goalY = Player.player.getY();
+            int deltaX = goalX - playerXCopy;
+            int deltaY = goalY - playerYCopy;
+            //System.out.printf("GoalX: %d GoalY: %d X: %d Y: %d\n",goalX,goalY,playerXCopy, playerYCopy);
+            
+            for(int i = 0; i < interpRate; ++i){
+                int interpX = playerXCopy + i*deltaX / interpRate;
+                int interpY = playerYCopy + i*deltaY / interpRate;
+                cameraInterp.add(new Pair<Integer,Integer>(interpX, interpY));
+            }
+            cameraInterp.add(new Pair<Integer,Integer>(Player.player.getX(), Player.player.getY()));
+
+        }
+        
+        int transX = centerTileX - playerXCopy;
+        int transY = centerTileY - playerYCopy;
+        
+        at.translate(transX, transY);
+
+        rend.setTransform(at); 
+    }
+
+    public static void setInterpRate(int x) {
+        interpRate = x;
+    }
+    public static int getInterpRate() {
+        return interpRate;
+    }
+    void initializeFocus() {
+
+    }
+    public void invoke(String key) {
+        //Please do nothing ty
+    }
+}
