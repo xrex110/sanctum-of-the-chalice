@@ -4,6 +4,7 @@ class GameEngine {
 	public final float FASTRATE = 31.25f;
 	public final float SLOWRATE = 500f;
 	private final float MILLITONANO = 1_000_000;
+	private final int MAXHISTORY = 10;
 	private float slowCount;
 	private int fastIts;
 	private int slowIts;
@@ -24,7 +25,8 @@ class GameEngine {
 
 	private GameObject[][] levelMap;
 	private GameObject[][] entityMap;
-	
+	private MoveHistory moveHist;
+
 	public GameEngine() {
 		levelMap = new GameObject[30][30];
 		entityMap = new GameObject[30][30];
@@ -43,6 +45,7 @@ class GameEngine {
 		levelEnd = new Sign(signPos[1] * 32, signPos[0] * 32, "Insert end stats here");
 		entityMap[signPos[0]][signPos[1]] = levelEnd;
 		entityMap[12][12] = new Sign(12*32, 12*32, help);
+		moveHist = new MoveHistory(MAXHISTORY);
 
 		renderEngine = new RenderLoop();
 		renderEngine.setName("RenderEngine");
@@ -194,6 +197,13 @@ class GameEngine {
 	
 	public void end() {
 		soundEngine.stopAllRequests();
+		
+		while (moveHist.history.size() > 0)
+		{
+			System.out.print(moveHist.pop() + " ");
+		}
+		System.out.println("end");
+
 		running = false;
 	}
 
@@ -227,9 +237,12 @@ class GameEngine {
 				tracker.notify(displace, ScoreTracker.MOVEEVENT);
 				Player.player.setX(xPos * 32);
 				Player.player.setY(yPos * 32);
-				
-			}
+							}
 		}
+
+		moveHist.push(Player.player.getY() , Player.player.getX());
+				
+
 
 	}
 
