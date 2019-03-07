@@ -213,7 +213,6 @@ public class Generator {
 		int srow = randWithinBounds(rm.origin.row + 1, rm.origin.row + rm.height - 2);
 		int scol = randWithinBounds(rm.origin.col + 1, rm.origin.col + rm.width - 2);
 		signPos = new Coordinate(srow, scol);
-		
 
 		System.out.println("Sign Row: " + signPos.row + " Col: " + signPos.col);
 
