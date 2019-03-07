@@ -13,9 +13,6 @@ public class Generator {
 	private Random rand;
 
 	Coordinate signPos;
-	
-	public int[][] map;
-	private Random rand;
 
 	private class Coordinate {
 		public int row, col;
