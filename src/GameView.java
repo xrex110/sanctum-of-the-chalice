@@ -23,7 +23,7 @@ public class GameView extends Menu {
     double fps = 0;                 /* Number of frames per second */
     
 	//BufferedImage wizard;
-	private GameObject[][] map;	
+	private GameObject[][][] map;	
 	private GameObject[][] emap;
 
 	TextDevice fpsText;
@@ -52,8 +52,8 @@ public class GameView extends Menu {
 		fpsText = new TextDevice("DPComic", 20, Color.WHITE, Color.BLACK);
 		testText = new TextDevice("DPComic", 45, Color.BLUE, Color.RED);
 		
-		map = new GameObject[1][1];
-		emap = new GameObject[1][1];
+		map = new GameObject[1][1][1];
+		//emap = new GameObject[1][1];
         
         cameraInterp = new ArrayList<Pair<Integer, Integer>>(); 
 
@@ -78,20 +78,20 @@ public class GameView extends Menu {
 			}
 		}*/
         
-		if(map.length != 1) {
-			for(int i = 0; i < map.length; i++) {
-				for(int j = 0; j < map[i].length; j++) {
-					if(map[i][j] != null) map[i][j].draw(rend);	
+		if(map[0].length != 1) {
+			for(int i = 0; i < map[0].length; i++) {
+				for(int j = 0; j < map[0][i].length; j++) {
+					if(map[0][i][j] != null) map[0][i][j].draw(rend);	
 				}
 			}
 		}
         
-		if(emap.length != 1) {
+		if(map[1].length != 1) {
             Sign signSelected = null;
-			for(int i = 0; i < emap.length; i++) {
-				for(int j = 0; j < emap[i].length; j++) {
-					if(emap[i][j] instanceof Sign) {
-						Sign sign = (Sign) emap[i][j];
+			for(int i = 0; i < map[1].length; i++) {
+				for(int j = 0; j < map[1][i].length; j++) {
+					if(map[1][i][j] instanceof Sign) {
+						Sign sign = (Sign) map[1][i][j];
 						//System.out.println("RENDEREING SIGN: " + sign.getText());
 						sign.draw(rend);
 						if(sign.interact(playerXCopy, playerYCopy)) signSelected = sign; 
@@ -111,7 +111,7 @@ public class GameView extends Menu {
         drawHud(rend);
 	}
 
-	public void setMap(GameObject[][] map) {
+	public void setMap(GameObject[][][] map) {
 		this.map = map;	
 	}
 
