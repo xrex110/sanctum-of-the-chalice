@@ -9,7 +9,9 @@ public class InventoryMenu extends Menu {
     private long lastInputTime = 0; 
     //This is for debugging, hook in an Item[] later
     String[] inventory = new String[28];
-    private DynamicButton[] inventoryButtons = new DynamicButton[28];;
+    private DynamicButton[] inventoryButtons = new DynamicButton[28];
+    //For this array, set each equipment slot ID's image to the current equipped item slot's sprite!
+    private DynamicButton[] equipmentRender = new DynamicButton[4];
     private int selection = 0;
     private DynamicButton selected;
     private Menu parent;
@@ -28,8 +30,8 @@ public class InventoryMenu extends Menu {
         sp = new SpriteLoader();
         /* Initialize inventory buttons */
         //Defines the top left corner of the inventory
-        int inventX = 150;
-        int inventY = 150;
+        int inventX = 100;
+        int inventY = 197;
         int BUTTON_WIDTH = 48;
         int BUTTON_HEIGHT = 48;
         int horizGap = 10;
@@ -44,6 +46,16 @@ public class InventoryMenu extends Menu {
 
             }
         }
+        
+        int equipmentX = inventX;
+        int equipmentY = inventY - 2*(BUTTON_HEIGHT+vertGap);
+        for(int i = 0; i < equipmentRender.length; ++i) {
+            int buttonX = equipmentX + (BUTTON_WIDTH  + horizGap) * i;
+            int buttonY = equipmentY;
+            equipmentRender[i] =
+                    new DynamicButton(null, buttonX, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT, new Color(0x002663), Color.white, new Color(0xbb0a1e));
+
+        }
         inventoryButtons[0].isSelected = true;
         selected = inventoryButtons[0];
     }
@@ -55,6 +67,10 @@ public class InventoryMenu extends Menu {
             for(DynamicButton b : inventoryButtons) {
                 b.draw(rend);
             }
+            for(DynamicButton b : equipmentRender) {
+                b.draw(rend);
+            }
+
         }
 
     void initializeFocus() {
@@ -111,7 +127,13 @@ public class InventoryMenu extends Menu {
                 break;
             case "Enter":
                 //Pls handle item equipping FEETBUS or JONTRON or SHOEMAN or TEA
-                helm = selection;
+                //In each conditional handle your unequip request
+                //and in the else handle an equip request :)
+                if(selection == helm) helm = -1;
+                else if(selection == legs) legs = -1;
+                else if(selection == top) top = -1;
+                else if(selection == weapon) weapon = -1;
+                else helm = selection;
                 //Set highlight for equipped items!
                 for(int i = 0; i < inventoryButtons.length; ++i) {
                     if(helm == i || top == i || legs == i || weapon == i) {
@@ -119,7 +141,6 @@ public class InventoryMenu extends Menu {
                     }else {
                         inventoryButtons[i].outline = inventoryButtons[i].originalOutline;
                     }
-
                 }
                 break;
         }
