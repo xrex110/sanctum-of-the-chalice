@@ -24,7 +24,7 @@ public class GameView extends Menu {
     
 	//BufferedImage wizard;
 	private GameObject[][][] map;	
-	private GameObject[][] emap;
+	//private GameObject[][] emap;
 
 	TextDevice fpsText;
 	TextDevice testText;
@@ -114,10 +114,10 @@ public class GameView extends Menu {
 	public void setMap(GameObject[][][] map) {
 		this.map = map;	
 	}
-
+	/*
 	public void setEMap(GameObject[][] emap) {
 		this.emap = emap;
-	}
+	}*/
 
     public void drawHud(Graphics2D rend) {
         //If you remove these two lines things will start rendering in relation to the game world's 0,0
