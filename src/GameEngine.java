@@ -188,6 +188,8 @@ class GameEngine {
 					"Level Stats:\n" +
 					"\tNumber of Up Moves: " + tracker.getUpScore()));
 		}
+		
+		//System.out.println(moveHist);
 
 		//Clear currentInput at end of every slowTick
 		currentInput = "";
@@ -262,9 +264,9 @@ class GameEngine {
 			}
 		}
 
-		moveHist.push(Player.player.getY() , Player.player.getX());
-				
-
+		moveHist.push(Player.player.getX()/32 , Player.player.getY()/32);
+		
+		
 
 	}
 
