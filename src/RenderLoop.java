@@ -94,6 +94,15 @@ public class RenderLoop extends Thread {
 			else
                 GameEngine.updateInput("D");
 		}
+		else if(in.isKeyPressed(KeyEvent.VK_Q)) {
+			//log("D was pressed on RE");
+			//Player.player.moveRight();
+            if(menuView.recursiveIsFocused())
+                menuView.invoke("Q");
+			else
+                GameEngine.updateInput("Q");
+		}
+
         else if(in.isKeyPressed(KeyEvent.VK_ENTER)) {
             if(menuView.recursiveIsFocused())
                 menuView.invoke("Enter");

@@ -4,7 +4,8 @@ class GameEngine {
 	public final float FASTRATE = 31.25f;
 	public final float SLOWRATE = 500f;
 	private final float MILLITONANO = 1_000_000;
-	private final int MAXHISTORY = 10;
+	private final int MAXHISTORY = 30;
+	public float currSlowRate;
 
 	enum MODE {
 		GAME,
@@ -77,6 +78,7 @@ class GameEngine {
 		//player = new Player(12*32, 12*32);
 		gameMode = MODE.PAUSE;
 		prevMode = MODE.GAME;
+		currSlowRate = SLOWRATE;
 		currentInput = "";
 	}
     
@@ -127,10 +129,10 @@ class GameEngine {
 			timeStart += System.nanoTime() / MILLITONANO;
 			
 			fastTick();
-			if (slowCount >= SLOWRATE && gameMode != MODE.PAUSE)
+			if (slowCount >= currSlowRate && gameMode != MODE.PAUSE)
 			{
 				slowTick();
-				slowCount -= SLOWRATE;
+				slowCount -= currSlowRate;
 			}
 			
 			float timeElapsed = System.nanoTime() / MILLITONANO - timeStart;
@@ -196,17 +198,29 @@ class GameEngine {
 		//System.out.print(" 1");
 		slowIts++;
 		//Update player and stuff
-
-		updatePlayer();
-		
-		if (!levelEnd.interact()); {
-			levelEnd.setText(("Congratulations! Tutorial Complete\n" +
-					"Level Stats:\n" +
-					"\tNumber of Up Moves: " + tracker.getUpScore()));
+		if (currentInput.equals("Q") && moveHist.history.size() > 0) {
+			setState(MODE.REVERSION);
+		}
+		else {
+			setState(MODE.GAME);
+			currSlowRate = SLOWRATE;
 		}
 		
-		System.out.println("Slow tick: "+slowIts+"\n"+moveHist);
-
+		if (gameMode == MODE.GAME) {
+			updatePlayer();
+			
+			if (!levelEnd.interact()); {
+				levelEnd.setText(("Congratulations! Tutorial Complete\n" +
+						"Level Stats:\n" +
+						"\tNumber of Up Moves: " + tracker.getUpScore()));
+			}
+			
+			System.out.println("Slow tick: "+slowIts+"\n"+moveHist);
+		}
+		else if (gameMode == MODE.REVERSION) { 
+			revert();
+		}
+		prevMode = gameMode;
 		//Clear currentInput at end of every slowTick
 		currentInput = "";
 		/*if (slowIts >= 30)
@@ -224,7 +238,7 @@ class GameEngine {
 		{
 			
 		}
-	}
+	}	
 	
 	public void end() {
 		soundEngine.stopAllRequests();
@@ -261,6 +275,7 @@ class GameEngine {
 			//Player.player.moveRight();
 			xPos++;
 		}
+		
 
 		//System.out.println(xPos + " " + yPos);
 
@@ -284,6 +299,24 @@ class GameEngine {
 		
 		
 
+	}
+
+	public void revert() {
+		currSlowRate = SLOWRATE / 2;
+		Pair<Integer, Integer> prevPos = moveHist.pop();
+		if (prevPos != null) {
+			//do stuff
+			levelMap[2][Player.player.getY()/32][Player.player.getX()/32] = null;
+			Player.player.setX(prevPos.x * 32);
+			Player.player.setY(prevPos.y * 32);
+			levelMap[2][prevPos.y][prevPos.x] = Player.player;
+
+			
+			return;
+		}
+		
+		setState(MODE.GAME);
+		currSlowRate = SLOWRATE;
 	}
 
 	public static void setState(MODE m) {
