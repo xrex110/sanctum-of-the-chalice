@@ -110,14 +110,14 @@ public class RenderLoop extends Thread {
 		else frame++;
 	}*/
 
-	public void updateMap(GameObject[][] map) {	
+	public void updateMap(GameObject[][][] map) {	
 		gm.setMap(map);
 	}
-
+/*
 	public void updateEntityMap(GameObject[][] emap) {
 		gm.setEMap(emap);
 	}
-
+*/
 	public void log(String msg) {
 		System.out.println(msg);
 	}
