@@ -12,6 +12,7 @@ class GameEngine {
 		REVERSION
 	}
 	public static MODE gameMode;
+	public static MODE prevMode;
 
 	private float slowCount;
 	private int fastIts;
@@ -75,6 +76,7 @@ class GameEngine {
 		tracker = new ScoreTracker();
 		//player = new Player(12*32, 12*32);
 		gameMode = MODE.PAUSE;
+		prevMode = MODE.GAME;
 		currentInput = "";
 	}
     
@@ -114,7 +116,7 @@ class GameEngine {
 		
 		soundEngine.play(enterSound, "enter");
 		soundEngine.playLoop(backgroundMusic, "background");
-		gameMode = MODE.GAME;
+		GameEngine.unPause();
 		gameLoop();
 	}
 
@@ -285,7 +287,24 @@ class GameEngine {
 	}
 
 	public static void setState(MODE m) {
+		if (m != MODE.PAUSE);
+		prevMode = gameMode;
 		gameMode = m;
+	}
+
+	public static boolean setPause() { 
+		//returns true if sets to pause
+		//returns false if already paused
+		if (gameMode != MODE.PAUSE) {
+			prevMode = gameMode;
+			gameMode = MODE.PAUSE;
+			return true;
+		}
+		return false;
+	}
+
+	public static void unPause() {
+		gameMode = prevMode;
 	}
 
 	public static void updateInput(String input) {

@@ -58,7 +58,7 @@ public class RenderLoop extends Thread {
         if(in.isKeyPressed(KeyEvent.VK_P)) {
             if(!menuView.equals((Menu)window.getWindowView())) {
                 menuView.focus((Menu)window.getWindowView());
-		GameEngine.setState(GameEngine.MODE.PAUSE);
+		GameEngine.setPause();
 	    }
         }
 		if(in.isKeyPressed(KeyEvent.VK_W)) {
