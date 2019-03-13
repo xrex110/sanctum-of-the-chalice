@@ -100,6 +100,7 @@ public class MenuView extends Menu {
                     //Start new game
                     System.out.println("Loading game!");
                     re.gm.focus(this);
+		    GameEngine.setState(GameEngine.MODE.GAME);
                 } else if(getMenuSelection() == 1) {
                     //Settings
                     children.get(0).focus(this);

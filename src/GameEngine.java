@@ -5,6 +5,14 @@ class GameEngine {
 	public final float SLOWRATE = 500f;
 	private final float MILLITONANO = 1_000_000;
 	private final int MAXHISTORY = 10;
+
+	enum MODE {
+		GAME,
+		PAUSE,
+		REVERSION
+	}
+	public static MODE gameMode;
+
 	private float slowCount;
 	private int fastIts;
 	private int slowIts;
@@ -66,6 +74,7 @@ class GameEngine {
 		soundEngine = new SoundEngine();
 		tracker = new ScoreTracker();
 		//player = new Player(12*32, 12*32);
+		gameMode = MODE.PAUSE;
 		currentInput = "";
 	}
     
@@ -105,7 +114,7 @@ class GameEngine {
 		
 		soundEngine.play(enterSound, "enter");
 		soundEngine.playLoop(backgroundMusic, "background");
-
+		gameMode = MODE.GAME;
 		gameLoop();
 	}
 
@@ -116,7 +125,7 @@ class GameEngine {
 			timeStart += System.nanoTime() / MILLITONANO;
 			
 			fastTick();
-			if (slowCount >= SLOWRATE)
+			if (slowCount >= SLOWRATE && gameMode != MODE.PAUSE)
 			{
 				slowTick();
 				slowCount -= SLOWRATE;
@@ -124,14 +133,19 @@ class GameEngine {
 			
 			float timeElapsed = System.nanoTime() / MILLITONANO - timeStart;
 			float timeToNext = FASTRATE - timeElapsed;
-			slowCount += timeElapsed;
-			if (timeToNext > 0)
-			{
-				sleepForMilli(timeToNext);
-				slowCount += timeToNext;
+			if (gameMode != MODE.PAUSE) {
+				slowCount += timeElapsed;
+				if (timeToNext > 0)
+				{
+					sleepForMilli(timeToNext);
+					slowCount += timeToNext;
+				}
+				else {
+					System.out.print("lag");
+				}
 			}
 			else {
-				System.out.print("lag");
+				sleepForMilli(timeToNext);
 			}
 			timeStart = timeToNext-(long)timeToNext;
 		}
@@ -189,7 +203,7 @@ class GameEngine {
 					"\tNumber of Up Moves: " + tracker.getUpScore()));
 		}
 		
-		//System.out.println(moveHist);
+		System.out.println("Slow tick: "+slowIts+"\n"+moveHist);
 
 		//Clear currentInput at end of every slowTick
 		currentInput = "";
@@ -268,6 +282,10 @@ class GameEngine {
 		
 		
 
+	}
+
+	public static void setState(MODE m) {
+		gameMode = m;
 	}
 
 	public static void updateInput(String input) {
