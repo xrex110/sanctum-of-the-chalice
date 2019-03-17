@@ -44,8 +44,12 @@ public class Generator {
 		fillRoom(room);
 		int numRooms = 0;
 		
-		while(numRooms != 20) {
+		while(numRooms != 5) {
 			Direction dir = Direction.values()[rand.nextInt(4)];
+
+			//We check if this direction on this room already has a connection
+			if(room.isSideConnected(dir)) continue;		//Eventually, we will want to reroll after 4 continues
+
 			Coordinate[] wall = room.getDirectionWall(dir);
 
 			int indexPick = rand.nextInt(wall.length);
@@ -58,36 +62,39 @@ public class Generator {
 				if(corridorLength >= start.row) {
 					System.out.println("Corridor gen exceed");
 					continue;
-					//System.exit(1);
 				}
 			}
 			if(dir == Direction.DOWN) {
 				if(corridorLength >= sideSize - start.row) {
 					System.out.println("Corridor gen exceed");
 					continue;
-					//System.exit(1);
 				}
 			}
 			if(dir == Direction.LEFT) {
 				if(corridorLength >= start.col) {
 					System.out.println("Corridor gen exceed");
 					continue;
-					//System.exit(1);
 				}
 			}
 			if(dir == Direction.RIGHT) {
 				if(corridorLength >= sideSize - start.col) {
 					System.out.println("Corridor gen exceed");
 					continue;
-					//System.exit(1);
 				}
 			}
 
 			Heading head = startDigging(new Heading(start, dir), corridorLength);
-			Room rm = excavateRoom(head);
+			room.setConnectedSide(dir);
 
+			Room rm = excavateRoom(head);
 			addWalls(rm);
 			fillRoom(rm);
+
+			//Set connected side for new room too
+			if(dir == Direction.UP) rm.setConnectedSide(Direction.DOWN);
+			else if(dir == Direction.DOWN) rm.setConnectedSide(Direction.UP); 
+			else if(dir == Direction.LEFT) rm.setConnectedSide(Direction.RIGHT); 
+			else if(dir == Direction.RIGHT) rm.setConnectedSide(Direction.LEFT); 
 
 			//Experimental line
 			room = rm;
@@ -233,15 +240,11 @@ public class Generator {
 			col = ensureRange(cursor.col - roomDim.row + 1, 0, sideSize);
 		}
 
-		//TODO: bug = if the room gets bounded by the ensureRange func
-		//the width and height(roomDim row and col) don't get updated properly
 		Coordinate roomOrigin = new Coordinate(row, col);
 		
 		//We must ensure that the width and height are proper, i.e.
 		//If we end up bounding the room at the edges of the map
 		//We need adjust the width and height to reflect it
-
-		//roomDim.col = Math.abs(row - cursor.row) + 1;
 
 		Room newRoom = generateRoom(roomOrigin, roomDim);
 

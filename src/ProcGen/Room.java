@@ -9,6 +9,7 @@ public class Room {
 	private Coordinate[] top;
 	private Coordinate[] bottom;
 	private Coordinate[] corners;
+	private boolean[] connectedSide;	//Order: left right top bottom
 
 	public Room(Coordinate ul, int width, int height) {
 		origin = ul;
@@ -27,6 +28,8 @@ public class Room {
 		corners[1] = new Coordinate(origin.row, origin.col + width - 1);
 		corners[2] = new Coordinate(origin.row + height - 1, origin.col + width - 1);
 		corners[3] = new Coordinate(origin.row + height - 1, origin.col);
+
+		connectedSide = new boolean[] {false, false, false, false};
 
 		for(int i = origin.row + 1, count = 0; i < origin.row + height - 1; i++, count++) {
 			//origin.row + 1 ignores the corner blocks
@@ -56,6 +59,14 @@ public class Room {
 			case DOWN: return bottom;
 		}
 		return null;
+	}
+
+	public void setConnectedSide(Direction dir) {
+		connectedSide[dir.getValue()] = true;
+	}
+
+	public boolean isSideConnected(Direction dir) {
+		return connectedSide[dir.getValue()];
 	}
 
 	public Coordinate[] getCorners() {
