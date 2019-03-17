@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.util.ArrayList;
 
 public class Generator {
 	private int[][] map;
@@ -35,6 +36,7 @@ public class Generator {
 		//Spawn room
 		//Make spawn room inside a square 20 blocks inside the canvas map
 
+		ArrayList<Room> rooms = new ArrayList<>();
 		int minSpawn = 9;
 		int maxSpawn = 14;
 
@@ -42,12 +44,18 @@ public class Generator {
 		Room room = generateRoom(pt, generateRoomBounds(minSpawn, maxSpawn, sideSize - pt.col, sideSize - pt.row));
 		addWalls(room);
 		fillRoom(room);
-		int numRooms = 0;
+		rooms.add(room);
+		int numRooms = 1;
+		int r = 0;
 		
-		while(numRooms != 5) {
+		while(numRooms != 10) {
 			Direction dir = Direction.values()[rand.nextInt(4)];
 
 			//We check if this direction on this room already has a connection
+			if(room.isAllConnected()) {
+				room = rooms.get(++r);
+				continue;
+			}
 			if(room.isSideConnected(dir)) continue;		//Eventually, we will want to reroll after 4 continues
 
 			Coordinate[] wall = room.getDirectionWall(dir);
@@ -59,34 +67,47 @@ public class Generator {
 			int corridorLength = randWithinBounds(corridorBounds.row, corridorBounds.col);
 
 			if(dir == Direction.UP) {
+				System.out.println("Picked up");
 				if(corridorLength >= start.row) {
 					System.out.println("Corridor gen exceed");
+					room.setConnectedSide(dir);
 					continue;
 				}
 			}
 			if(dir == Direction.DOWN) {
+				System.out.println("Picked down");
 				if(corridorLength >= sideSize - start.row) {
 					System.out.println("Corridor gen exceed");
+					room.setConnectedSide(dir);
 					continue;
 				}
 			}
 			if(dir == Direction.LEFT) {
+				System.out.println("Picked left");
 				if(corridorLength >= start.col) {
 					System.out.println("Corridor gen exceed");
+					room.setConnectedSide(dir);
 					continue;
 				}
 			}
 			if(dir == Direction.RIGHT) {
+				System.out.println("Picked right");
 				if(corridorLength >= sideSize - start.col) {
 					System.out.println("Corridor gen exceed");
+					room.setConnectedSide(dir);
 					continue;
 				}
 			}
-
+			
 			Heading head = startDigging(new Heading(start, dir), corridorLength);
 			room.setConnectedSide(dir);
 
-			Room rm = excavateRoom(head);
+			Room rm;
+			rm = excavateRoom(head);
+			if(rm == null) {
+				continue;
+			}
+			rooms.add(rm);	
 			addWalls(rm);
 			fillRoom(rm);
 
@@ -97,7 +118,9 @@ public class Generator {
 			else if(dir == Direction.RIGHT) rm.setConnectedSide(Direction.LEFT); 
 
 			//Experimental line
-			room = rm;
+			r = rand.nextInt(rooms.size());
+			System.out.println("Selecting room " + r);
+			room = rooms.get(r);
 
 			//VERY hacky and temporary fix to opening the new room to a corridor
 			map[head.pos.row][head.pos.col] = 1;
@@ -209,6 +232,7 @@ public class Generator {
 			//space to the up, left, right, or down before being passed in
 			maxHeight = cursor.row + 1;
 			roomDim = generateRoomBounds(roomMin, roomMax, maxWidth, maxHeight);
+			if(roomDim.row <= 3 || roomDim.col <= 3) return null;
 			int offset = randWithinBounds(1, roomDim.row - 2);		
 			col = ensureRange(cursor.col - offset, 0, sideSize);
 			row = ensureRange(cursor.row - roomDim.col + 1, 0, sideSize);
@@ -217,6 +241,7 @@ public class Generator {
 			maxWidth = sideSize - cursor.col;
 			maxHeight = sideSize - cursor.row;
 			roomDim = generateRoomBounds(roomMin, roomMax, maxWidth, maxHeight);
+			if(roomDim.row <= 3 || roomDim.col <= 3) return null;
 			int offset = randWithinBounds(1, roomDim.row - 2);		
 			col = ensureRange(cursor.col - offset, 0, sideSize);
 			row = ensureRange(cursor.row, 0, sideSize);
@@ -227,6 +252,7 @@ public class Generator {
 			maxWidth = sideSize - cursor.col;
 			maxHeight = sideSize - cursor.row;
 			roomDim = generateRoomBounds(roomMin, roomMax, maxWidth, maxHeight);
+			if(roomDim.row <= 3 || roomDim.col <= 3) return null;
 			int offset = randWithinBounds(1, roomDim.col - 2);		
 			row = ensureRange(cursor.row - offset, 0, sideSize);
 			col = ensureRange(cursor.col, 0, sideSize);
@@ -235,6 +261,7 @@ public class Generator {
 			maxWidth = cursor.col + 1;
 			maxHeight = sideSize - cursor.row;
 			roomDim = generateRoomBounds(roomMin, roomMax, maxWidth, maxHeight);
+			if(roomDim.row <= 3 || roomDim.col <= 3) return null;
 			int offset = randWithinBounds(1, roomDim.col - 2);		
 			row = ensureRange(cursor.row - offset, 0, sideSize);
 			col = ensureRange(cursor.col - roomDim.row + 1, 0, sideSize);

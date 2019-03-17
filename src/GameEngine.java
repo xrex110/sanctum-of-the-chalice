@@ -26,23 +26,25 @@ class GameEngine {
 	private GameObject[][] entityMap;
 	
 	public GameEngine() {
-		levelMap = new GameObject[30][30];
-		entityMap = new GameObject[30][30];
+		levelMap = new GameObject[50][50];
+		entityMap = new GameObject[50][50];
 
 		//entityMap[12][12] = Player.player;
-		Player.player.setX(12*32);
-		Player.player.setY(12*32);
 
-		levelGen = new Generator();
+		levelGen = new Generator(50);
 		generateMap();
 
-		int[] signPos = levelGen.getSignCoords();
+		int[] playPos = levelGen.getSpawnPos();
+		Player.player.setX((playPos[1] + 3) * 32);
+		Player.player.setY((playPos[0] + 3) * 32);
+
+		/*int[] signPos = levelGen.getSignCoords();
 		System.out.println("GE Row: " + signPos[0] + " GE Col: " + signPos[1]);
 		String help = "Use the W A S D keys to move around the map!";
 		
 		levelEnd = new Sign(signPos[1] * 32, signPos[0] * 32, "Insert end stats here");
 		entityMap[signPos[0]][signPos[1]] = levelEnd;
-		entityMap[12][12] = new Sign(12*32, 12*32, help);
+		entityMap[12][12] = new Sign(12*32, 12*32, help);*/
 
 		renderEngine = new RenderLoop();
 		renderEngine.setName("RenderEngine");
@@ -167,11 +169,11 @@ class GameEngine {
 
 		updatePlayer();
 		
-		if (!levelEnd.interact()); {
+		/*if (!levelEnd.interact()); {
 			levelEnd.setText(("Congratulations! Tutorial Complete\n" +
 					"Level Stats:\n" +
 					"\tNumber of Up Moves: " + tracker.getUpScore()));
-		}
+		}*/
 
 		//Clear currentInput at end of every slowTick
 		currentInput = "";

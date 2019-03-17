@@ -69,6 +69,10 @@ public class Room {
 		return connectedSide[dir.getValue()];
 	}
 
+	public boolean isAllConnected() {
+		return connectedSide[0] && connectedSide[1] && connectedSide[2] && connectedSide[3];
+	}
+
 	public Coordinate[] getCorners() {
 		return corners;
 	}
