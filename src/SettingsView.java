@@ -21,7 +21,7 @@ public class SettingsView extends Menu{
         int BUTTON_WIDTH = 250;
         int BUTTON_HEIGHT = 50;
         int leftX = (getWidth()/2 - BUTTON_WIDTH) / 2;
-        int rightX = 3 * leftX;
+        int rightX = getWidth() - BUTTON_WIDTH - leftX;
 
         String[] leftText = new String[] {
             "Difficulty: Normal",
@@ -30,7 +30,9 @@ public class SettingsView extends Menu{
                 "Player Sprite: Wizard.png",
                 "Back"
         };
-
+        String[] rightText = new String[] {
+            "Volume: 50",
+        };
         Color selectedColor = new Color(0xbb0a1e);
         Color outline = Color.white;
         Color fill = new Color(0x002663);
@@ -42,11 +44,21 @@ public class SettingsView extends Menu{
             b = new DynamicButton(s,leftX, 100 + 2*BUTTON_HEIGHT*i++, BUTTON_WIDTH, BUTTON_HEIGHT,fill,outline,selectedColor,menuText);
             options.add(b);
         }
+        i = 0;
+        for(String s : rightText) {
+            DynamicButton b;
+            b = new DynamicButton(s,rightX, 100 + 2*BUTTON_HEIGHT*i++, BUTTON_WIDTH, BUTTON_HEIGHT,fill,outline,selectedColor,menuText);
+            options.add(b);
+        }
+
 
         selected = options.get(selection);
         selected.isSelected = true;
 
     }
+    //TODO: remove me and make a volume call
+    int volume = 50;
+    int VOLUME_INCREMENT = 5;
     public void invoke(String key) {
         if(!isFocused) return;
         if(lastInputTime == 0) lastInputTime = System.nanoTime() + (long)3e8;
@@ -73,7 +85,14 @@ public class SettingsView extends Menu{
                         GameView.setInterpRate(GameView.getInterpRate()-5);
                     else GameView.setInterpRate(0);
                     selected.text = "Interp Rate: " + GameView.getInterpRate();
+                } else if(selection == 5) {
+                    //TODO: Refactor to alter a volume var
+                    if(volume - VOLUME_INCREMENT >= 0) {
+                        volume -= VOLUME_INCREMENT;
+                        selected.text = "Volume: " + volume;
+                    }
                 }
+
 
                 break;
             case "D":
@@ -82,6 +101,12 @@ public class SettingsView extends Menu{
                         GameView.setInterpRate(GameView.getInterpRate()+5);
                     else GameView.setInterpRate((int)(Sanctum.ge.SLOWRATE / RenderLoop.SLEEP_TIME)-1);
                     selected.text = "Interp Rate: " + GameView.getInterpRate();
+                } else if(selection == 5) {
+                    //TODO: Refactor to alter a volume var
+                    if(volume + VOLUME_INCREMENT <= 100) {
+                        volume += VOLUME_INCREMENT;
+                        selected.text = "Volume: " + volume;
+                    }
                 }
                 break;
             case "Enter":

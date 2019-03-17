@@ -248,6 +248,7 @@ public class GameView extends Menu {
     }
     private static final long INTERACTION_DELAY = 200; //In milliseconds
     private long lastInputTime = 0; 
+    private InventoryMenu inventoryMenu = new InventoryMenu(800,800,this);
     public void invoke(String key) {
         //Please do nothing ty
         if(!isFocused) return; 
@@ -265,10 +266,10 @@ public class GameView extends Menu {
         
         switch(key) {
             case "O":
-                playerStatusHud.health += 25;
+                playerStatusHud.reduceHP(25);
                 break;
             case "I":
-                playerStatusHud.reduceHP(25);
+                inventoryMenu.focus(this);
                 break;
             case "K":
                 playerStatusHud.stamina -= 25;
