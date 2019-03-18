@@ -6,7 +6,7 @@ public class DynamicButton {
     public boolean isSelected;
 
     private TextDevice font;
-    private int x, y, width, height;
+    public int x, y, width, height;
     String text;
     public Color originalOutline;
     public Color fill, outline, selectedColor;
@@ -62,5 +62,9 @@ public class DynamicButton {
         rend.drawRect(x,y,width,height);
         //System.out.printf("(%d,%d,%d,%d)\n",x,y,width,height);
     }
+    public DynamicButton copy() {
+        return new DynamicButton(text, x, y, width, height, fill, outline, selectedColor, font);
+    }
+
 
 }
