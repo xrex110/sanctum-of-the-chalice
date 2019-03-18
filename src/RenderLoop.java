@@ -96,8 +96,9 @@ public class RenderLoop extends Thread {
         }
         else if(in.isKeyPressed(KeyEvent.VK_L)) {
             ((Menu)window.getWindowView()).invoke("L");
+        }else if(in.isKeyPressed(KeyEvent.VK_Q)) {
+            ((Menu)window.getWindowView()).invoke("Q");
         }
-
 
 		else ((Menu)window.getWindowView()).invoke("");
 		
