@@ -4,24 +4,16 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import java.util.ArrayList;
 public class MenuView extends Menu {
-    private int volume = 5;
-    private static int menuSelection = 0;
-    private DynamicButton[] options;
-    private DynamicButton currentSelection;
     private TextDevice menuText;
     private TextDevice titleText;
-    private long lastInputTime = 0;
-    private static final long INTERACTION_DELAY = 200; //In milliseconds
 
     private ArrayList<Menu> children = new ArrayList<Menu>();
+    private DynamicButton[] buttons;
 
     public MenuView(int width, int height) {
-
-
-        this.setOpaque(true);
-        this.setBackground(Color.black);
-        this.setSize(width, height);
+        super(width, height, null);
         super.isFocused = true;
+
         menuText = new TextDevice("DPComic",20,Color.white, Color.black);
         titleText = new TextDevice("DPComic",40,Color.white, Color.black);
 
@@ -34,16 +26,14 @@ public class MenuView extends Menu {
         int x = (getWidth() - BUTTON_WIDTH) / 2;
 
         int i = 0;
-        options = new DynamicButton[]{
+        buttons = new DynamicButton[] {
             new DynamicButton("Start",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
                 new DynamicButton("Settings",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
-                new DynamicButton("Credits",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
+                new DynamicButton("Classes",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
                 new DynamicButton("Exit",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
         };
-
-        currentSelection = options[0];
-        currentSelection.isSelected = true;
-        
+        for(DynamicButton b : buttons) options.add(b);
+        selectButton(0);
         initializeChildren();
 
     }
@@ -51,6 +41,8 @@ public class MenuView extends Menu {
     private void initializeChildren(){
         SettingsView settings = new SettingsView(getWidth(), getHeight(), this);
         children.add(settings);
+        ClassView cv = new ClassView(getWidth(), getHeight(), this);
+        children.add(cv);
     }
 
     public boolean recursiveIsFocused() {
@@ -59,14 +51,6 @@ public class MenuView extends Menu {
             if(m.isFocused) return true;
         return false;
     }
-
-    public static void setMenuSelection(int id) {
-        menuSelection = id;
-    }
-    public static int getMenuSelection() {
-        return menuSelection;
-    }
-
     public void invoke(String key) {
         if(!isFocused) {
             for(Menu m : children) {
@@ -74,40 +58,31 @@ public class MenuView extends Menu {
             }
             return;
         }
-
-        if(lastInputTime == 0) lastInputTime = System.nanoTime() + (long)3e8;
-        if((System.nanoTime() - lastInputTime) / 1e6 < INTERACTION_DELAY) return;
-        else {
-            lastInputTime = System.nanoTime(); 
-        }
-
+        
+        if(!sanitizeInputTime(300, key)) return;
+        
         switch(key) {
             case "W":
-                menuSelection = menuSelection == 0 ? options.length - 1 : menuSelection - 1;
-                currentSelection.isSelected = false;
-                currentSelection = options[menuSelection];
-                currentSelection.isSelected = true;
+                selection = selection == 0 ? buttons.length - 1 : selection - 1;
+                selectButton(selection);
                 break;
             case "S":
-                menuSelection = menuSelection == options.length-1 ? 0 : menuSelection + 1;
-                currentSelection.isSelected = false;
-                currentSelection = options[menuSelection];
-                currentSelection.isSelected = true;
+                selection = selection == buttons.length-1 ? 0 : selection + 1;
+                selectButton(selection);
                 break; 
             case "Enter": {
                 RenderLoop re = Sanctum.ge.getRenderEngine();
-                if(getMenuSelection() == 0) {
+                if(selection == 0) {
                     //Start new game
                     System.out.println("Loading game!");
                     re.gm.focus(this);
-                } else if(getMenuSelection() == 1) {
+                } else if(selection == 1) {
                     //Settings
                     children.get(0).focus(this);
-                } else if(getMenuSelection() == 2) {
-                    //Unused
-                    isFocused = false;
-
-                } else if(getMenuSelection() == 3) {
+                } else if(selection == 2) {
+                    //Class Selection
+                    children.get(1).focus(this);
+                } else if(selection == 3) {
                     //Exit
                     Sanctum.ge.getRenderEngine().window.killWindow();
                     System.exit(0);
@@ -127,16 +102,12 @@ public class MenuView extends Menu {
             int titleY = 100;
             titleText.drawOutlineText(rend, "Sanctum of the Chalice", titleX, titleY);
 
-            for(int i = 0; i < options.length; ++i) {
-                options[i].draw(rend);
+            for(int i = 0; i < options.size(); ++i) {
+                options.get(i).draw(rend);
             }
         }
     public void setInputHandler(InputHandler ih) {
 		this.addKeyListener(ih);
 	}
-    @Override
-    void initializeFocus() {
-        lastInputTime = 0;
-    }
-
+    
 }

@@ -5,15 +5,11 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 public class InventoryMenu extends Menu {
-    private static final long INTERACTION_DELAY = 150; //In milliseconds
-    private long lastInputTime = 0; 
     //This is for debugging, hook in an Item[] later
     String[] inventory = new String[28];
     private DynamicButton[] inventoryButtons = new DynamicButton[28];
     //For this array, set each equipment slot ID's image to the current equipped item slot's sprite!
     private DynamicButton[] equipmentRender = new DynamicButton[4];
-    private int selection = 0;
-    private DynamicButton selected;
     private Menu parent;
     private SpriteLoader sp;
     //debugs for demonstration
@@ -23,10 +19,9 @@ public class InventoryMenu extends Menu {
     final int INVENT_HEIGHT = 7;
 
     public InventoryMenu(int width, int height, Menu parent) {
-        this.setSize(width, height);
+        super(width, height, parent);
         this.setOpaque(true);
         this.setBackground(Color.black);
-        this.parent = parent;
         sp = new SpriteLoader();
         /* Initialize inventory buttons */
         //Defines the top left corner of the inventory
@@ -46,6 +41,8 @@ public class InventoryMenu extends Menu {
 
             }
         }
+
+        for(DynamicButton b : inventoryButtons) options.add(b);
         
         int equipmentX = inventX;
         int equipmentY = inventY - 2*(BUTTON_HEIGHT+vertGap);
@@ -56,8 +53,6 @@ public class InventoryMenu extends Menu {
                     new DynamicButton(null, buttonX, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT, new Color(0x002663), Color.white, new Color(0xbb0a1e));
 
         }
-        inventoryButtons[0].isSelected = true;
-        selected = inventoryButtons[0];
     }
     @Override
         public void paint(Graphics g) {
@@ -73,53 +68,30 @@ public class InventoryMenu extends Menu {
 
         }
 
-    void initializeFocus() {
-        selection = 0;
-        selected = inventoryButtons[0];
-        for(DynamicButton db : inventoryButtons) {
-            db.isSelected = false;
-        }
-        selected.isSelected = true;
-        lastInputTime = 0;
-
-    }
     public void invoke(String key) {
-        if(!isFocused) return;
-        if(lastInputTime == 0) lastInputTime = System.nanoTime() + (long)3e8;
-        if((System.nanoTime() - lastInputTime) / 1e6 < INTERACTION_DELAY) return;
-        else {
-            lastInputTime = System.nanoTime(); 
-        }
+        if(!sanitizeInputTime(150, key)) return;
         switch(key) {
             case "W":
                 selection -= 1;
                 if(selection%INVENT_HEIGHT == INVENT_HEIGHT-1 || selection < 0) selection += INVENT_HEIGHT;
-                selected.isSelected = false;
-                selected = inventoryButtons[selection];
-                selected.isSelected = true;
+                selectButton(selection); 
                 break;
             case "D":
                 selection += INVENT_HEIGHT;
                 if(selection > inventoryButtons.length-1)
                     selection -= inventoryButtons.length;
-                selected.isSelected = false;
-                selected = inventoryButtons[selection];
-                selected.isSelected = true;
+                selectButton(selection); 
                 break;
             case "A":
                 selection -= INVENT_HEIGHT;
                 if(selection < 0) selection += inventoryButtons.length;
-                selected.isSelected = false;
-                selected = inventoryButtons[selection];
-                selected.isSelected = true;
+                selectButton(selection); 
                 break;
             case "S":
                 selection += 1;
                 if(selection%INVENT_HEIGHT == 0)
                     selection -= INVENT_HEIGHT;
-                selected.isSelected = false;
-                selected = inventoryButtons[selection];
-                selected.isSelected = true;
+                selectButton(selection); 
 
                 break;
             case "I":

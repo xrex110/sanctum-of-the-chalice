@@ -42,6 +42,7 @@ public class GameView extends Menu {
     
     //Handles the rendering of time until next tick
 	public GameView() {
+        super(0,0,null);
 		//this.setIgnoreRepaint(true);
 		loader = new SpriteLoader();
 		sheetPath = "test_tile.png";
@@ -243,11 +244,6 @@ public class GameView extends Menu {
     public static int getInterpRate() {
         return interpRate;
     }
-    void initializeFocus() {
-
-    }
-    private static final long INTERACTION_DELAY = 200; //In milliseconds
-    private long lastInputTime = 0; 
     private InventoryMenu inventoryMenu = new InventoryMenu(800,800,this);
     public void invoke(String key) {
         //Please do nothing ty
@@ -257,13 +253,8 @@ public class GameView extends Menu {
             GameEngine.updateInput(key);
             return;
         }
-        /* Debug options for now */
-        if(lastInputTime == 0) lastInputTime = System.nanoTime() + (long)3e8;
-        if((System.nanoTime() - lastInputTime) / 1e6 < INTERACTION_DELAY) return;
-        else {
-            lastInputTime = System.nanoTime(); 
-        }
-        
+        if(!sanitizeInputTime(200, key)) return;
+        /* Debug options for now */ 
         switch(key) {
             case "O":
                 playerStatusHud.reduceHP(25);

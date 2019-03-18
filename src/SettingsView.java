@@ -6,17 +6,10 @@ import java.util.ArrayList;
 
 public class SettingsView extends Menu{
 
-    ArrayList<DynamicButton> options; 
-    private int selection = 0;
-    private DynamicButton selected;
-    private long lastInputTime = 0; 
-    private Menu parent;
-    private static final long INTERACTION_DELAY = 200; //In milliseconds
     public SettingsView(int width, int height, Menu parent) {
-        this.setSize(width, height);
+        super(width, height, parent);
         this.setOpaque(true);
         this.setBackground(Color.black);
-        this.parent = parent;
         TextDevice menuText = new TextDevice("DPComic",20,Color.white, Color.black);
         int BUTTON_WIDTH = 250;
         int BUTTON_HEIGHT = 50;
@@ -37,7 +30,6 @@ public class SettingsView extends Menu{
         Color outline = Color.white;
         Color fill = new Color(0x002663);
 
-        options = new ArrayList<DynamicButton>();
         int i = 0;
         for(String s : leftText) {
             DynamicButton b;
@@ -51,21 +43,14 @@ public class SettingsView extends Menu{
             options.add(b);
         }
 
-
-        selected = options.get(selection);
-        selected.isSelected = true;
+        selectButton(0);
 
     }
     //TODO: remove me and make a volume call
     int volume = 50;
     int VOLUME_INCREMENT = 5;
     public void invoke(String key) {
-        if(!isFocused) return;
-        if(lastInputTime == 0) lastInputTime = System.nanoTime() + (long)3e8;
-        if((System.nanoTime() - lastInputTime) / 1e6 < INTERACTION_DELAY) return;
-        else {
-            lastInputTime = System.nanoTime(); 
-        }
+        if(!sanitizeInputTime(300, key)) return;
         switch(key) {
             case "W":
                 selection = selection == 0 ? options.size()-1 : selection-1;
