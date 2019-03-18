@@ -50,7 +50,7 @@ public class SettingsView extends Menu{
     int volume = 50;
     int VOLUME_INCREMENT = 5;
     public void invoke(String key) {
-        if(!sanitizeInputTime(300, key)) return;
+        if(!sanitizeInputTime(key)) return;
         switch(key) {
             case "W":
                 selection = selection == 0 ? options.size()-1 : selection-1;
@@ -117,6 +117,9 @@ public class SettingsView extends Menu{
                         parent.focus(this);
                         break;
                 }
+                break;
+            case "Q":
+                parent.focus(this);
                 break;
         }
 

@@ -41,7 +41,7 @@ public class ClassView extends Menu{
     }
 
     public void invoke(String key) {
-       if(!sanitizeInputTime(200, key) || interp.size() > 0) return;
+       if(!sanitizeInputTime(key) || interp.size() > 0) return;
        int initX = (options.size() - selection - 3) * getWidth() / 3;
        switch(key) {
             case "D":
@@ -55,6 +55,9 @@ public class ClassView extends Menu{
                     interp.add(initX+i);
                 }
                 selectButton(selection > 0 ? selection-1 : options.size()-1);
+                break;
+            case "Q":
+                parent.focus(this);
                 break;
        }
     }
