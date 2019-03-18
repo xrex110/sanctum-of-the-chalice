@@ -10,7 +10,6 @@ public class InventoryMenu extends Menu {
     private DynamicButton[] inventoryButtons = new DynamicButton[28];
     //For this array, set each equipment slot ID's image to the current equipped item slot's sprite!
     private DynamicButton[] equipmentRender = new DynamicButton[4];
-    private Menu parent;
     private SpriteLoader sp;
     //debugs for demonstration
     int top = -1, legs = -1, helm = -1, weapon = -1;
@@ -57,7 +56,7 @@ public class InventoryMenu extends Menu {
     @Override
         public void paint(Graphics g) {
             if(!isFocused) return;
-            super.paint(g);
+            //super.paint(g);
             Graphics2D rend = (Graphics2D) g;
             for(DynamicButton b : inventoryButtons) {
                 b.draw(rend);
@@ -96,6 +95,7 @@ public class InventoryMenu extends Menu {
                 break;
             case "I":
                 //focus gameview cba to do on plane pls
+                parent.focus(this);
                 break;
             case "Enter":
                 //Pls handle item equipping FEETBUS or JONTRON or SHOEMAN or TEA
