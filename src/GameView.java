@@ -40,6 +40,8 @@ public class GameView extends Menu {
     private static int interpRate = 5;
     private Sign signSelected = null;
     
+    private InventoryMenu inventoryMenu;
+    
     //Handles the rendering of time until next tick
 	public GameView() {
         super(0,0,null);
@@ -61,7 +63,7 @@ public class GameView extends Menu {
 		emap = new GameObject[1][1];
         
         cameraInterp = new ArrayList<Pair<Integer, Integer>>(); 
-
+        inventoryMenu = new InventoryMenu(800,800,this);
 		this.setBackground(Color.BLACK);
 	}
     
@@ -130,6 +132,7 @@ public class GameView extends Menu {
         
         //testText.drawText(rend, "Normal Text", 50, 150);
 		//testText.drawOutlineText(rend, "Outlined", 50, 250);
+        drawFog(rend);
 		drawFPS(rend);
         drawPos(rend);
         drawMem(rend);
@@ -143,6 +146,17 @@ public class GameView extends Menu {
 
 		rend.setTransform(oldAt);
 
+    }
+    
+    Gradient fogVertical = new Gradient(0,0,800,800,true,400,0,2,Color.black);
+    Gradient fogHorizontal = new Gradient(0,0,800,800,false,400,0,2,Color.black);
+
+    public void drawFog(Graphics2D rend) {
+        float fogDensity = 1.5f;
+        fogHorizontal.setDensity(fogDensity);
+        fogHorizontal.drawInverted(rend);
+        fogVertical.setDensity(fogDensity);
+        fogVertical.drawInverted(rend);
     }
 
     public void drawSign(Graphics2D rend, Sign sign) {
@@ -244,7 +258,6 @@ public class GameView extends Menu {
     public static int getInterpRate() {
         return interpRate;
     }
-    private InventoryMenu inventoryMenu = new InventoryMenu(800,800,this);
     public void invoke(String key) {
         //Please do nothing ty
         if(!isFocused) return; 
