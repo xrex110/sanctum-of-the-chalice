@@ -14,7 +14,7 @@ public class PlayerStatusHUD {
     private int width, height;
     private TextDevice font;
     
-    ArrayList<Color> hurtFilter = new ArrayList<Color>();
+    ArrayList<Gradient> hurtFilter = new ArrayList<Gradient>();
     private int frames = 0;
 
     public PlayerStatusHUD(int width, int height, TextDevice font) {
@@ -26,9 +26,12 @@ public class PlayerStatusHUD {
     public void setKey(String s) { key = s; }
     public void reduceHP(int loss) {
         health -= loss;
+        if(!hurtFilter.isEmpty()) return;
         int n = 20;
         for(int i = 0; i < n; ++i) {
-            hurtFilter.add(new Color(255,0,0,255- (255/n) * i));
+            Color input = new Color(255,0,0,255 - (255/n) * i);
+            hurtFilter.add(new Gradient(0,0,width,height,true,400,200,5,input));
+            hurtFilter.add(new Gradient(0,0,width,height,false,400,200,5,input));
         }
     }
     
@@ -50,8 +53,9 @@ public class PlayerStatusHUD {
     
     private void drawHurt(Graphics2D rend) {
         if(hurtFilter.size() == 0) return;
-        rend.setColor(hurtFilter.remove(0));
-        rend.fillRect(0,0,width, height);
+        hurtFilter.remove(0).drawInverted(rend);
+        hurtFilter.remove(0).drawInverted(rend);
+        
     }
 
     public void draw(Graphics2D rend) {
