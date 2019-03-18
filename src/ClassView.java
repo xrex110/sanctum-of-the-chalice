@@ -107,7 +107,7 @@ public class ClassView extends Menu{
         rend.setTransform(oldAt);
 
         Gradient grad;
-        grad = new Gradient(0,0,getWidth(),getHeight(),false, getWidth()/2, 50, 1,  Color.black);
+        grad = new Gradient(0,0,getWidth(),getHeight(),true, getWidth()/2, 50, 1,  Color.black);
         grad.drawInverted(rend);
     }
 }
