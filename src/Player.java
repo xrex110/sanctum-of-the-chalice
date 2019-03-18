@@ -7,6 +7,7 @@ public class Player extends GameObject {
     SpriteLoader sp = new SpriteLoader();
     static Player player = new Player(0,0);
     public static int TILE_SIZE_X = 32, TILE_SIZE_Y = 32;
+     
     public Player(int x, int y) {
         super(x,y, true);
     }

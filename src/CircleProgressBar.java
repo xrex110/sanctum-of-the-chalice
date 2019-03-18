@@ -5,10 +5,7 @@ import static java.lang.Math.*;
 
 public class CircleProgressBar {
 
-    public static CircleProgressBar tickTimer = new CircleProgressBar(25, 100, 50, 50, 5,new Color(0xFFD700));
-    public static CircleProgressBar tickTimer2 = new CircleProgressBar(25, 175, 100, 50, Color.RED);
-
-    private int GRANULARITY;    
+    private static int GRANULARITY = (int)(GameEngine.SLOWRATE/RenderLoop.SLEEP_TIME);    
 
     private Color fill;
     private int x, y, width, height;
@@ -27,7 +24,6 @@ public class CircleProgressBar {
         this.height = height;
         this.isHollow = true;
         this.thickness = thickness;
-        this.GRANULARITY = (int)(Sanctum.ge.SLOWRATE/RenderLoop.SLEEP_TIME);
         states = new Polygon[GRANULARITY];
         computePolygon();
 
@@ -41,7 +37,6 @@ public class CircleProgressBar {
         this.width = width;
         this.height = height;
         this.isHollow = false;
-        this.GRANULARITY = (int)(Sanctum.ge.SLOWRATE/RenderLoop.SLEEP_TIME);
         states = new Polygon[GRANULARITY];
         computePolygon();
 
@@ -87,6 +82,11 @@ public class CircleProgressBar {
                 states[i] = current;
             }
         }
+    }
+    
+    public void translate(int x, int y) {
+        for(Polygon p : states)
+            p.translate(x,y);
     }
 
     public void draw(Graphics2D rend) {
