@@ -68,7 +68,7 @@ public class InventoryMenu extends Menu {
         }
 
     public void invoke(String key) {
-        if(!sanitizeInputTime(150, key)) return;
+        if(!sanitizeInputTime(key)) return;
         switch(key) {
             case "W":
                 selection -= 1;

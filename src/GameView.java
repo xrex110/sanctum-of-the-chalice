@@ -266,7 +266,7 @@ public class GameView extends Menu {
             GameEngine.updateInput(key);
             return;
         }
-        if(!sanitizeInputTime(200, key)) return;
+        if(!sanitizeInputTime(key)) return;
         /* Debug options for now */ 
         switch(key) {
             case "O":

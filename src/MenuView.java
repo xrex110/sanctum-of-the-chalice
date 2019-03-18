@@ -59,7 +59,7 @@ public class MenuView extends Menu {
             return;
         }
         
-        if(!sanitizeInputTime(300, key)) return;
+        if(!sanitizeInputTime(key)) return;
         
         switch(key) {
             case "W":

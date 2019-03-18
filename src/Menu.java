@@ -7,7 +7,7 @@ public abstract class Menu extends JPanel{
     boolean isFocused = false;
     Menu parent;
 
-    long INTERACTION_DELAY = 150;
+    long INTERACTION_DELAY = 200;
     long lastInputTime = 0;
     
     private String lastKey = null;
@@ -35,18 +35,21 @@ public abstract class Menu extends JPanel{
         selected = options.get(i);
         selected.isSelected = true;
     }
-
-    boolean sanitizeInputTime(int delay, String key) {
+    boolean sanitizeInputTime(String key) {
+        return sanitizeInputTime(INTERACTION_DELAY, key);
+    }
+    boolean sanitizeInputTime(long delay, String key) {
         
         if(!isFocused) return false; 
         //Prevent double input when refocusing
         String oldKey = lastKey;
         lastKey = key;
 
-        if(lastInputTime == 0) lastInputTime = System.nanoTime()+100;
-        if(oldKey != null && oldKey.equals(lastKey)) {
+        if(lastInputTime == 0) lastInputTime = System.nanoTime()+100000000;
+        if(oldKey == null) return false;
+        if(oldKey.equals(lastKey)) {
             if((System.nanoTime() - lastInputTime) / 1e6 < delay) return false;
-        }
+        } 
         lastInputTime = System.nanoTime();
         return true;
 
