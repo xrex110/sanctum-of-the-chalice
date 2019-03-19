@@ -49,7 +49,7 @@ public class RenderLoop extends Thread {
 	}
 	public void handleInput() {
 		in.poll();
-
+        
 		if(in.isKeyPressed(KeyEvent.VK_ESCAPE)) {
 			log("Window killed");
 			window.killWindow();
@@ -62,41 +62,45 @@ public class RenderLoop extends Thread {
 		if(in.isKeyPressed(KeyEvent.VK_W)) {
 			//log("W was pressed on RE");
 			//Player.player.moveUp();
-            if(menuView.recursiveIsFocused())
-                menuView.invoke("W");
-			else
-                GameEngine.updateInput("W");			
+            ((Menu)window.getWindowView()).invoke("W");
+			
 		}
 		else if(in.isKeyPressed(KeyEvent.VK_S)) {
 			//log("S was pressed on RE");
 			//Player.player.moveDown();
-            
-            if(menuView.recursiveIsFocused())
-                menuView.invoke("S");
-			else
-                GameEngine.updateInput("S");
+        
+            ((Menu)window.getWindowView()).invoke("S");
 		}
 		else if(in.isKeyPressed(KeyEvent.VK_A)) {
 			//log("A was pressed on RE");
 			//Player.player.moveLeft();
-            if(menuView.recursiveIsFocused())
-                menuView.invoke("A");
-			else
-                GameEngine.updateInput("A");
+            ((Menu)window.getWindowView()).invoke("A");
+            
 		}
 		else if(in.isKeyPressed(KeyEvent.VK_D)) {
 			//log("D was pressed on RE");
 			//Player.player.moveRight();
-            if(menuView.recursiveIsFocused())
-                menuView.invoke("D");
-			else
-                GameEngine.updateInput("D");
-		}
-        else if(in.isKeyPressed(KeyEvent.VK_ENTER)) {
-            if(menuView.recursiveIsFocused())
-                menuView.invoke("Enter");
+            ((Menu)window.getWindowView()).invoke("D");
         }
-		else GameEngine.updateInput("");
+        else if(in.isKeyPressed(KeyEvent.VK_ENTER)) {
+            ((Menu)window.getWindowView()).invoke("Enter");
+        }
+        else if(in.isKeyPressed(KeyEvent.VK_O)) {
+            ((Menu)window.getWindowView()).invoke("O");
+        }
+        else if(in.isKeyPressed(KeyEvent.VK_I)) {
+            ((Menu)window.getWindowView()).invoke("I");
+        }
+        else if(in.isKeyPressed(KeyEvent.VK_K)) {
+            ((Menu)window.getWindowView()).invoke("K");
+        }
+        else if(in.isKeyPressed(KeyEvent.VK_L)) {
+            ((Menu)window.getWindowView()).invoke("L");
+        }else if(in.isKeyPressed(KeyEvent.VK_Q)) {
+            ((Menu)window.getWindowView()).invoke("Q");
+        }
+
+		else ((Menu)window.getWindowView()).invoke("");
 		
 	}
 

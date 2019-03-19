@@ -2,7 +2,7 @@ import java.util.*;
 
 class GameEngine {
 	public final float FASTRATE = 31.25f;
-	public final float SLOWRATE = 500f;
+	public static final float SLOWRATE = 500f;
 	private final float MILLITONANO = 1_000_000;
 	private final int MAXHISTORY = 10;
 	private float slowCount;

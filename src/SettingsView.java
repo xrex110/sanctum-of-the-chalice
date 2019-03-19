@@ -6,22 +6,15 @@ import java.util.ArrayList;
 
 public class SettingsView extends Menu{
 
-    ArrayList<DynamicButton> options; 
-    private int selection = 0;
-    private DynamicButton selected;
-    private long lastInputTime = 0; 
-    private Menu parent;
-    private static final long INTERACTION_DELAY = 200; //In milliseconds
     public SettingsView(int width, int height, Menu parent) {
-        this.setSize(width, height);
+        super(width, height, parent);
         this.setOpaque(true);
         this.setBackground(Color.black);
-        this.parent = parent;
         TextDevice menuText = new TextDevice("DPComic",20,Color.white, Color.black);
         int BUTTON_WIDTH = 250;
         int BUTTON_HEIGHT = 50;
         int leftX = (getWidth()/2 - BUTTON_WIDTH) / 2;
-        int rightX = 3 * leftX;
+        int rightX = getWidth() - BUTTON_WIDTH - leftX;
 
         String[] leftText = new String[] {
             "Difficulty: Normal",
@@ -30,30 +23,34 @@ public class SettingsView extends Menu{
                 "Player Sprite: Wizard.png",
                 "Back"
         };
-
+        String[] rightText = new String[] {
+            "Volume: 50",
+        };
         Color selectedColor = new Color(0xbb0a1e);
         Color outline = Color.white;
         Color fill = new Color(0x002663);
 
-        options = new ArrayList<DynamicButton>();
         int i = 0;
         for(String s : leftText) {
             DynamicButton b;
             b = new DynamicButton(s,leftX, 100 + 2*BUTTON_HEIGHT*i++, BUTTON_WIDTH, BUTTON_HEIGHT,fill,outline,selectedColor,menuText);
             options.add(b);
         }
+        i = 0;
+        for(String s : rightText) {
+            DynamicButton b;
+            b = new DynamicButton(s,rightX, 100 + 2*BUTTON_HEIGHT*i++, BUTTON_WIDTH, BUTTON_HEIGHT,fill,outline,selectedColor,menuText);
+            options.add(b);
+        }
 
-        selected = options.get(selection);
-        selected.isSelected = true;
+        selectButton(0);
 
     }
+    //TODO: remove me and make a volume call
+    int volume = 50;
+    int VOLUME_INCREMENT = 5;
     public void invoke(String key) {
-        if(!isFocused) return;
-        if(lastInputTime == 0) lastInputTime = System.nanoTime() + (long)3e8;
-        if((System.nanoTime() - lastInputTime) / 1e6 < INTERACTION_DELAY) return;
-        else {
-            lastInputTime = System.nanoTime(); 
-        }
+        if(!sanitizeInputTime(key)) return;
         switch(key) {
             case "W":
                 selection = selection == 0 ? options.size()-1 : selection-1;
@@ -73,7 +70,14 @@ public class SettingsView extends Menu{
                         GameView.setInterpRate(GameView.getInterpRate()-5);
                     else GameView.setInterpRate(0);
                     selected.text = "Interp Rate: " + GameView.getInterpRate();
+                } else if(selection == 5) {
+                    //TODO: Refactor to alter a volume var
+                    if(volume - VOLUME_INCREMENT >= 0) {
+                        volume -= VOLUME_INCREMENT;
+                        selected.text = "Volume: " + volume;
+                    }
                 }
+
 
                 break;
             case "D":
@@ -82,6 +86,12 @@ public class SettingsView extends Menu{
                         GameView.setInterpRate(GameView.getInterpRate()+5);
                     else GameView.setInterpRate((int)(Sanctum.ge.SLOWRATE / RenderLoop.SLEEP_TIME)-1);
                     selected.text = "Interp Rate: " + GameView.getInterpRate();
+                } else if(selection == 5) {
+                    //TODO: Refactor to alter a volume var
+                    if(volume + VOLUME_INCREMENT <= 100) {
+                        volume += VOLUME_INCREMENT;
+                        selected.text = "Volume: " + volume;
+                    }
                 }
                 break;
             case "Enter":
@@ -107,6 +117,9 @@ public class SettingsView extends Menu{
                         parent.focus(this);
                         break;
                 }
+                break;
+            case "Q":
+                parent.focus(this);
                 break;
         }
 

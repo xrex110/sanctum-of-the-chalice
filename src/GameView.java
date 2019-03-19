@@ -28,6 +28,7 @@ public class GameView extends Menu {
 
 	TextDevice fpsText;
 	TextDevice testText;
+    PlayerStatusHUD playerStatusHud;
     
     //TODO: Delete me later please and thank
     //Sign sign = new Sign(-128, -128, "Hello general kenobi");
@@ -37,8 +38,13 @@ public class GameView extends Menu {
     private List<Pair<Integer, Integer>> cameraInterp; 
     
     private static int interpRate = 5;
-
+    private Sign signSelected = null;
+    
+    private InventoryMenu inventoryMenu;
+    
+    //Handles the rendering of time until next tick
 	public GameView() {
+        super(0,0,null);
 		//this.setIgnoreRepaint(true);
 		loader = new SpriteLoader();
 		sheetPath = "test_tile.png";
@@ -51,12 +57,13 @@ public class GameView extends Menu {
 
 		fpsText = new TextDevice("DPComic", 20, Color.WHITE, Color.BLACK);
 		testText = new TextDevice("DPComic", 45, Color.BLUE, Color.RED);
+        playerStatusHud = new PlayerStatusHUD(800,800, fpsText);
 		
 		map = new GameObject[1][1][1];
 		//emap = new GameObject[1][1];
         
         cameraInterp = new ArrayList<Pair<Integer, Integer>>(); 
-
+        inventoryMenu = new InventoryMenu(800,800,this);
 		this.setBackground(Color.BLACK);
 	}
     
@@ -70,6 +77,9 @@ public class GameView extends Menu {
 		int xTiles = 25;	/* Number of tiles window can accomodate in x axis */
 		int yTiles = 25;	/* Number of tiles window can accomodate in y axis */
         
+        if(frameCount % (int)(GameEngine.SLOWRATE / RenderLoop.SLEEP_TIME) == 0)
+            playerStatusHud.setKey("");
+
 		/*for(int i = 0; i < xTiles; i++) {
 			for(int j = 0; j < yTiles; j++) {
 				int randNum = rand.nextInt(12);
@@ -87,7 +97,6 @@ public class GameView extends Menu {
 		}
         
 		if(map[1].length != 1) {
-            Sign signSelected = null;
 			for(int i = 0; i < map[1].length; i++) {
 				for(int j = 0; j < map[1][i].length; j++) {
 					if(map[1][i][j] instanceof Sign) {
@@ -98,16 +107,12 @@ public class GameView extends Menu {
 					}
 				}
 			}
-            if(signSelected != null) {
-                drawSign(rend, signSelected);
-            }
-		}
+ 		}
 		//rend.drawImage(wizard, null, 320, 320);
         
         //sign.draw(rend);
 
         Player.player.draw(rend, playerXCopy, playerYCopy);
-        
         drawHud(rend);
 	}
 
@@ -127,9 +132,31 @@ public class GameView extends Menu {
         
         //testText.drawText(rend, "Normal Text", 50, 150);
 		//testText.drawOutlineText(rend, "Outlined", 50, 250);
+        drawFog(rend);
 		drawFPS(rend);
         drawPos(rend);
+        drawMem(rend);
+        
+        playerStatusHud.draw(rend);
+
+        if(signSelected != null) {
+                drawSign(rend, signSelected);
+                signSelected = null;
+        }
+
 		rend.setTransform(oldAt);
+
+    }
+    
+    Gradient fogVertical = new Gradient(0,0,800,800,true,400,0,2,Color.black);
+    Gradient fogHorizontal = new Gradient(0,0,800,800,false,400,0,2,Color.black);
+
+    public void drawFog(Graphics2D rend) {
+        float fogDensity = 1.5f;
+        fogHorizontal.setDensity(fogDensity);
+        fogHorizontal.drawInverted(rend);
+        fogVertical.setDensity(fogDensity);
+        fogVertical.drawInverted(rend);
     }
 
     public void drawSign(Graphics2D rend, Sign sign) {
@@ -159,6 +186,15 @@ public class GameView extends Menu {
     public void drawPos(Graphics2D rend) {
         String posStr = "Pos: (" + Player.player.getX() + ", " + Player.player.getY() + ")";
         fpsText.drawOutlineText(rend, posStr, 25, 50);
+    }
+
+    public void drawMem(Graphics2D rend) {
+        int memoryTotal = (int)(Runtime.getRuntime().totalMemory() / 1024); 
+        int memoryFree = (int)(Runtime.getRuntime().freeMemory() / 1024);
+        int memoryUsed = memoryTotal - memoryFree;
+        int memoryMax = (int)(Runtime.getRuntime().maxMemory() / 1024);
+        String ramString = "Heap: " + memoryUsed + " / " + memoryMax + " KB";
+        fpsText.drawOutlineText(rend, ramString, 25, 75);
     }
 	
     private void updateFPS() {
@@ -222,10 +258,32 @@ public class GameView extends Menu {
     public static int getInterpRate() {
         return interpRate;
     }
-    void initializeFocus() {
-
-    }
     public void invoke(String key) {
         //Please do nothing ty
+        if(!isFocused) return; 
+        if(key.matches("[WASD]")) {
+            playerStatusHud.setKey(key);
+            GameEngine.updateInput(key);
+            return;
+        }
+        if(!sanitizeInputTime(key)) return;
+        /* Debug options for now */ 
+        switch(key) {
+            case "O":
+                playerStatusHud.reduceHP(25);
+                break;
+            case "I":
+                inventoryMenu.focus(this);
+                break;
+            case "K":
+                playerStatusHud.stamina -= 25;
+                break;
+            case "L":
+                playerStatusHud.stamina += 25;
+                break;
+
+        }
+        
+
     }
 }
