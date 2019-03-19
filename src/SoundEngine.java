@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ArrayList;
+import javax.sound.sampled.*;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -21,7 +22,7 @@ public class SoundEngine{
 	
 	private String name = null;
 	public ArrayList<SoundRequest> requests = new ArrayList<SoundRequest>();
-	
+	public float volume=0.0f;
 
 	public void testFile(String fileName, SoundRequest requestInstance){
 		
@@ -37,12 +38,12 @@ public class SoundEngine{
 				AudioFormat baseFormat = in.getFormat();
 				//System.out.println("SourceFormat : "+ baseFormat.toString());
 				AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 
-															 baseFormat.getSampleRate(),
-															 16,
-															 baseFormat.getChannels(),
-															 baseFormat.getChannels() *2,
-															 baseFormat.getSampleRate(),
-															 false);
+								 baseFormat.getSampleRate(),
+								 16,
+								 baseFormat.getChannels(),
+								 baseFormat.getChannels() *2,
+								 baseFormat.getSampleRate(),
+								 false);
 				//System.out.println("Target Format: " + decodedFormat.toString());
 				din = AudioSystem.getAudioInputStream(decodedFormat, in);
 				/*
@@ -77,25 +78,43 @@ public class SoundEngine{
 	private void rawplay(AudioFormat targetFormat, AudioInputStream din, SoundRequest requestInstance) throws IOException, LineUnavailableException
 	{
 		byte[] data = new byte[4096];
-		SourceDataLine line = getLine(targetFormat);		
+		SourceDataLine line = getLine(targetFormat);	
+		
 		if (line != null)
 		{
 		  // Start
+		  
+		  //FloatControl gainControl = (FloatControl)line.
+		  FloatControl gControl = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
+		  //
+		  
 		  line.start();
+		
 		  int nBytesRead = 0, nBytesWritten = 0;
 		  while (requestInstance.notStopped && nBytesRead != -1)
 		  {
 			nBytesRead = din.read(data, 0, data.length);
 			if (nBytesRead != -1) nBytesWritten = line.write(data, 0, nBytesRead);
+			// volume +50.0f louder
+			// volume -50.0f 
+			// volume -90.0f //
+			//setVolume(volume);
+			gControl.setValue(volume);
 		  }
 		  // Stop
 		  line.drain();
 		  line.stop();
 		  line.close();
 		  din.close();
+		  
 		}		
+		
 	}
-
+	public void setVolume(float vol){
+		
+		volume=vol;
+		//control.setValue(vol);
+	}
 	public void play(String fName, String label){
 		SoundRequest requestInstance = new SoundRequest(label);
 		requests.add(requestInstance);
@@ -135,7 +154,6 @@ public class SoundEngine{
 			}
 		}
 	}
-
 }
 
 class SoundRequest {
