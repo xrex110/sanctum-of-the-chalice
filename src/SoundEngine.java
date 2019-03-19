@@ -22,7 +22,7 @@ public class SoundEngine{
 	
 	private String name = null;
 	public ArrayList<SoundRequest> requests = new ArrayList<SoundRequest>();
-	public float volume=0.0f;
+	public static float volume=0.5f;
 
 	public void testFile(String fileName, SoundRequest requestInstance){
 		
@@ -86,7 +86,7 @@ public class SoundEngine{
 		  
 		  //FloatControl gainControl = (FloatControl)line.
 		  FloatControl gControl = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
-		  //
+		  //FloatControl gControl = (FloatControl) line.getControl(FloatControl.Type.VOLUME);
 		  
 		  line.start();
 		
@@ -99,7 +99,9 @@ public class SoundEngine{
 			// volume -50.0f 
 			// volume -90.0f //
 			//setVolume(volume);
-			gControl.setValue(volume);
+			float range = gControl.getMaximum() - gControl.getMinimum();
+		    float gain = (range * volume) + gControl.getMinimum();
+			gControl.setValue(gain);
 		  }
 		  // Stop
 		  line.drain();
@@ -110,10 +112,10 @@ public class SoundEngine{
 		}		
 		
 	}
-	public void setVolume(float vol){
+	public static void setVolume(float vol){
+		//default = -50.0f
+		volume = vol/100;
 		
-		volume=vol;
-		//control.setValue(vol);
 	}
 	public void play(String fName, String label){
 		SoundRequest requestInstance = new SoundRequest(label);
