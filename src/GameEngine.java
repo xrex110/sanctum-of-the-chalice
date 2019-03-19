@@ -270,6 +270,37 @@ class GameEngine {
 
 	}
 
+	public void pathAll(int maxDist) {
+		int height = levelMap[0].length;
+		int width = levelMap[0][0].length;
+		int[][][] pathMap = new Pair<Integer,Integer>[height][width][5];
+		ArrayList<int[]> queue = new ArrayList<int[]>(); 
+		int[] current;
+		int[] next;
+		
+		//{currentY, currentX, prevY, prevX, dist}
+		current = {Player.player.getY()/32,[Player.player.getX()/32,-1,-1,0};
+		pathMap[Player.player.getY()/32][Player.player.getX()/32] = current;
+		queue.add(current);
+		//Begin BFS
+		while (queue.size() > 0) {
+			current = queue.remove(0);
+			//look up
+			if (current[0] > 0) {
+				next = {current[0] - 1, current[1], current[0], current[1], current[4]+1};
+				pathMap[next[0]][next[1]] = next;
+				queue.add(next);
+			}
+			
+			
+			
+			
+			
+			
+		}
+		
+	}
+
 	public static void updateInput(String input) {
 		if(!input.equals("") && !input.equals(currentInput)) {
 			currentInput = input;
