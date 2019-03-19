@@ -190,7 +190,7 @@ class GameEngine {
 		}
 		
 		//System.out.println(moveHist);
-
+		pathAll(10);
 		//Clear currentInput at end of every slowTick
 		currentInput = "";
 		/*if (slowIts >= 30)
@@ -273,32 +273,118 @@ class GameEngine {
 	public void pathAll(int maxDist) {
 		int height = levelMap[0].length;
 		int width = levelMap[0][0].length;
-		int[][][] pathMap = new Pair<Integer,Integer>[height][width][5];
-		ArrayList<int[]> queue = new ArrayList<int[]>(); 
-		int[] current;
-		int[] next;
-		
+		int[][][] pathMap = new int[height][width][5];
+		ArrayList<int[]> queue = new ArrayList<int[]>();
+		//initialize all distances to -1
+		for (int i = 0; i < pathMap.length; i++) {
+			for (int j = 0; j < pathMap[i].length; j++) {
+				pathMap[i][j][4] = -1;
+			}
+		}
 		//{currentY, currentX, prevY, prevX, dist}
-		current = {Player.player.getY()/32,[Player.player.getX()/32,-1,-1,0};
-		pathMap[Player.player.getY()/32][Player.player.getX()/32] = current;
+		int[] current = {Player.player.getY()/32,Player.player.getX()/32,-1,-1,0};
+		pathMap[Player.player.getY()/32][Player.player.getX()/32][0] = current[0];
+		pathMap[Player.player.getY()/32][Player.player.getX()/32][1] = current[1];
+		pathMap[Player.player.getY()/32][Player.player.getX()/32][2] = current[2];
+		pathMap[Player.player.getY()/32][Player.player.getX()/32][3] = current[3];
+		pathMap[Player.player.getY()/32][Player.player.getX()/32][4] = current[4];
+
 		queue.add(current);
 		//Begin BFS
 		while (queue.size() > 0) {
 			current = queue.remove(0);
 			//look up
-			if (current[0] > 0) {
-				next = {current[0] - 1, current[1], current[0], current[1], current[4]+1};
-				pathMap[next[0]][next[1]] = next;
-				queue.add(next);
+			if (current[0] > 0 && pathMap[current[0]-1][current[1]][4] < 0) {
+				int[] next = {current[0] - 1, current[1], current[0], current[1], current[4]+1};
+				pathMap[next[0]][next[1]][0] = next[0];
+				pathMap[next[0]][next[1]][1] = next[1];
+				pathMap[next[0]][next[1]][2] = next[2];
+				pathMap[next[0]][next[1]][3] = next[3];
+				pathMap[next[0]][next[1]][4] = next[4];
+
+				if (levelMap[0][next[0]][next[1]] != null && 
+					!levelMap[0][next[0]][next[1]].isSolid()) {
+					queue.add(next);
+				}
 			}
-			
-			
-			
+			//look left
+			if (current[1] > 0 && pathMap[current[0]][current[1]-1][4] < 0) {
+				int[] next = {current[0], current[1]-1, current[0], current[1], current[4]+1};
+				pathMap[next[0]][next[1]][0] = next[0];
+				pathMap[next[0]][next[1]][1] = next[1];
+				pathMap[next[0]][next[1]][2] = next[2];
+				pathMap[next[0]][next[1]][3] = next[3];
+				pathMap[next[0]][next[1]][4] = next[4];
+
+				if (levelMap[0][next[0]][next[1]] != null && 
+					!levelMap[0][next[0]][next[1]].isSolid()) {
+					queue.add(next);
+				}
+			}
+			//look down
+			if (current[0] < pathMap.length-1 && pathMap[current[0]+1][current[1]][4] < 0) {
+				int[] next = {current[0] + 1, current[1], current[0], current[1], current[4]+1};
+				pathMap[next[0]][next[1]][0] = next[0];
+				pathMap[next[0]][next[1]][1] = next[1];
+				pathMap[next[0]][next[1]][2] = next[2];
+				pathMap[next[0]][next[1]][3] = next[3];
+				pathMap[next[0]][next[1]][4] = next[4];
+
+				if (levelMap[0][next[0]][next[1]] != null && 
+					!levelMap[0][next[0]][next[1]].isSolid()) {
+					queue.add(next);
+				}
+			}
+			//look right
+			if (current[0] < pathMap[0].length-1 && pathMap[current[0]][current[1]+1][4] < 0) {
+				int[] next = {current[0], current[1]+1, current[0], current[1], current[4]+1};
+				pathMap[next[0]][next[1]][0] = next[0];
+				pathMap[next[0]][next[1]][1] = next[1];
+				pathMap[next[0]][next[1]][2] = next[2];
+				pathMap[next[0]][next[1]][3] = next[3];
+				pathMap[next[0]][next[1]][4] = next[4];
+
+				if (levelMap[0][next[0]][next[1]] != null && 
+					!levelMap[0][next[0]][next[1]].isSolid()) {
+					queue.add(next);
+				}
+			}
 			
 			
 			
 		}
 		
+		/*
+		for (int i = 0; i < pathMap.length; i++) {
+			for (int j = 0; j < pathMap[i].length; j++) {
+				//System.out.print("("+pathMap[i][j][3] + "," + pathMap[i][j][2]+")\t");
+				System.out.print(pathMap[i][j][4]+"\t");
+			}
+			System.out.println();
+		}
+		*/
+		//System.out.println(extractPath(pathMap, 12, 12));
+		System.out.println("done");
+	}
+
+	//Given a pathMap and a set of coordinates, this method extracts a series of locations that comprise a path towards the player spot
+	//If the size of the returned arraylist is 0, then either there is no valid path or the given coordinates are equal to those of the player
+	//The size of the array is equal to the pathing distance to the player
+	public ArrayList<Pair<Integer,Integer>> extractPath(int[][][] pathMap, int y, int x) {
+		ArrayList<Pair<Integer,Integer>> path = new ArrayList<Pair<Integer,Integer>>();
+		Pair<Integer,Integer> current;
+		int currx = x;
+		int curry = y;
+		while (curry >= 0 && curry < pathMap.length 
+				&& currx >= 0 && currx < pathMap[curry].length 
+				&& pathMap[curry][currx][4] > 0) {
+			current = new Pair<Integer,Integer>(pathMap[curry][currx][3],pathMap[curry][currx][2]);
+			path.add(current);
+			currx = current.x;
+			curry = current.y;
+		}
+		
+		return path;
 	}
 
 	public static void updateInput(String input) {
