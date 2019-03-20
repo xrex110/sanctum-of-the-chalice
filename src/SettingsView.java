@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class SettingsView extends Menu{
 
+	
     public SettingsView(int width, int height, Menu parent) {
         super(width, height, parent);
         this.setOpaque(true);
@@ -75,6 +76,10 @@ public class SettingsView extends Menu{
                     if(volume - VOLUME_INCREMENT >= 0) {
                         volume -= VOLUME_INCREMENT;
                         selected.text = "Volume: " + volume;
+						// start 50
+						// volume / 50 
+						// increase 10 -> 10 times louder.
+						SoundEngine.setVolume(volume);
                     }
                 }
 
@@ -91,6 +96,7 @@ public class SettingsView extends Menu{
                     if(volume + VOLUME_INCREMENT <= 100) {
                         volume += VOLUME_INCREMENT;
                         selected.text = "Volume: " + volume;
+						SoundEngine.setVolume(volume);
                     }
                 }
                 break;
