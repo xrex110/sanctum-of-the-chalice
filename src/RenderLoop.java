@@ -10,6 +10,9 @@ public class RenderLoop extends Thread {
 	//private static int frame = 1;	/* Used for theoretical FPS calculation */
 	//static long startTime = System.nanoTime();	/* Used for theoretical FPS calculation. Uncomment when needed*/
 
+    public static final int tileSizeX = 32;
+    public static final int tileSizeY = 32;
+
 	public RenderLoop() {
         
         int width = 800;
@@ -127,5 +130,13 @@ public class RenderLoop extends Thread {
 	public void log(String msg) {
 		System.out.println(msg);
 	}
+
+    public static boolean invokedByRE() {
+        if(Thread.currentThread().getName().startsWith("AWT"))
+            return true;
+        if(Thread.currentThread().getName().startsWith("Render"))
+            return true;
+        return false;
+    }
 
 }
