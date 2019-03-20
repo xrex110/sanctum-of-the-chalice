@@ -59,6 +59,7 @@ public class InventoryMenu extends Menu {
         public void paint(Graphics g) {
             if(!isFocused) return;
             //super.paint(g);
+
             Graphics2D rend = (Graphics2D) g;
             
             drawOutlinedRectangle(rend, Color.white, Color.black, inventX - horizGap, inventY - vertGap,4 * (BUTTON_WIDTH + horizGap) + horizGap, 7*(BUTTON_HEIGHT + vertGap) + vertGap);
