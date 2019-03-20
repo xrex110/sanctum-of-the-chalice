@@ -97,7 +97,7 @@ public class GameView extends Menu {
 		}
         
 		if(map[1].length != 1) {
-            Sign signSelected = null;
+            signSelected = null;
 			for(int i = 0; i < map[1].length; i++) {
 				for(int j = 0; j < map[1][i].length; j++) {
 					if(map[1][i][j] instanceof Sign) {
