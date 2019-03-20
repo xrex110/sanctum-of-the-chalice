@@ -24,6 +24,7 @@ public class InventoryMenu extends Menu {
     int vertGap = 10;
     int equipmentX = inventX;
     int equipmentY = inventY - 2*(BUTTON_HEIGHT+vertGap);
+    TextDevice font = new TextDevice("DPComic",20,Color.white, Color.black);
 
 
     public InventoryMenu(int width, int height, Menu parent) {
@@ -62,6 +63,10 @@ public class InventoryMenu extends Menu {
             
             drawOutlinedRectangle(rend, Color.white, Color.black, inventX - horizGap, inventY - vertGap,4 * (BUTTON_WIDTH + horizGap) + horizGap, 7*(BUTTON_HEIGHT + vertGap) + vertGap);
             drawOutlinedRectangle(rend, Color.white, Color.black, equipmentX - horizGap, equipmentY - vertGap,4 * (BUTTON_WIDTH + horizGap) + horizGap, BUTTON_HEIGHT + vertGap + vertGap);
+
+            drawStats(rend);
+            drawLevelInfo(rend);
+
             for(DynamicButton b : inventoryButtons) {
                 b.draw(rend);
             }
@@ -70,6 +75,47 @@ public class InventoryMenu extends Menu {
             }
 
         }
+    int statsW = 4 * (BUTTON_WIDTH + horizGap) + horizGap;
+    int statsX = getWidth() - equipmentX - statsW + horizGap;
+    int statsH = 128 + 26; //Bs magic number to fit text xd
+    public void drawStats(Graphics2D rend) {
+    
+        drawOutlinedRectangle(rend, Color.white, Color.black, statsX-horizGap,equipmentY-vertGap, statsW, statsH);
+
+        int textY = equipmentY + vertGap;
+        String[] statText = new String[] {
+            "Strength: " + Player.player.getStr(),
+            "Dexterity: " + Player.player.getDex(),
+            "Consitution: " + Player.player.getCon(),
+            "Intellect: " + Player.player.getInt(),
+            "Defense: " + Player.player.getDef(),
+        };
+        for(String s : statText) {
+            font.drawOutlineText(rend, s, statsX, textY);
+            textY += 30;
+        }
+        
+    }
+
+    public void drawLevelInfo(Graphics2D rend) {
+        int levelY = statsH + equipmentY + BUTTON_HEIGHT;
+        drawOutlinedRectangle(rend, Color.white, Color.black, statsX-horizGap,levelY-vertGap, statsW, 120);
+        int textY = levelY + vertGap;
+
+        String[] levelText = new String[] {
+            "Level: " + Player.player.getLevel(),
+            "XP: " + Player.player.getXP() + "/" + (Player.player.getXP()+Player.player.getXPDelta()),
+            "Level Points: " + Player.player.getFreePoints(),
+            "Gold: " + Player.player.getGold()
+        };
+        for(String s : levelText) {
+            font.drawOutlineText(rend, s, statsX, textY);
+            textY += 30;
+        }
+        
+        //TODO: Remove me am debug
+    }
+    
     public void drawOutlinedRectangle(Graphics2D rend, Color outline, Color fill, int x, int y, int width, int height) {
         rend.setColor(fill);
         rend.fillRect(x,y,width,height);
