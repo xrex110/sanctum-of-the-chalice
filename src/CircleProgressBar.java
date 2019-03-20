@@ -1,11 +1,15 @@
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Polygon;
+import java.util.HashMap;
 import static java.lang.Math.*;
 
 public class CircleProgressBar {
 
-    private static int GRANULARITY = (int)(GameEngine.SLOWRATE/RenderLoop.SLEEP_TIME);    
+    private static int DEFAULT_GRANULARITY = (int)(GameEngine.SLOWRATE/RenderLoop.SLEEP_TIME);
+
+    //Caches different interp rates for the animation
+    private HashMap<Integer, Polygon[]> stateMap = new HashMap<Integer, Polygon[]>();
 
     private Color fill;
     private int x, y, width, height;
@@ -24,8 +28,8 @@ public class CircleProgressBar {
         this.height = height;
         this.isHollow = true;
         this.thickness = thickness;
-        states = new Polygon[GRANULARITY];
-        computePolygon();
+        states = new Polygon[DEFAULT_GRANULARITY];
+        computePolygon(DEFAULT_GRANULARITY);
 
     }
 
@@ -37,12 +41,19 @@ public class CircleProgressBar {
         this.width = width;
         this.height = height;
         this.isHollow = false;
-        states = new Polygon[GRANULARITY];
-        computePolygon();
+        states = new Polygon[DEFAULT_GRANULARITY];
+        computePolygon(DEFAULT_GRANULARITY);
 
     }
 
-    private void computePolygon() {
+    private void computePolygon(int GRANULARITY) {
+        if(stateMap.get(GRANULARITY) != null) {
+            states = stateMap.get(GRANULARITY);
+            return;
+        }
+        
+        states = new Polygon[GRANULARITY];
+
         int centerX = x + width / 2;
         int centerY = y + height / 2;
 
@@ -82,6 +93,7 @@ public class CircleProgressBar {
                 states[i] = current;
             }
         }
+        stateMap.put(GRANULARITY, states);
     }
     
     public void translate(int x, int y) {
@@ -91,9 +103,18 @@ public class CircleProgressBar {
 
     public void draw(Graphics2D rend) {
         rend.setColor(fill);
+        int currentGranularity = DEFAULT_GRANULARITY;
+        
+        if(GameEngine.gameMode == GameEngine.MODE.REVERSION) {
+            currentGranularity /= 2;
+        }
+        
+        //Set which animation rate to render
+        computePolygon(currentGranularity);
+        System.out.println(states.length);
 
-        Polygon current = states[frame % GRANULARITY];
-        rend.fillPolygon(current);
+        Polygon currentFrame = states[frame % currentGranularity];
+        rend.fillPolygon(currentFrame);
 
         frame++;
     }
