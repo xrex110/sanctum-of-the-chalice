@@ -14,7 +14,13 @@ public class Coordinate {
 		col = b;
 	}
 
-	public boolean equals(Coordinate a) {
+	@Override
+	public boolean equals(Object o) {
+		if(o == this) return true;
+
+		if(!(o instanceof Coordinate)) return false;
+
+		Coordinate a = (Coordinate) o;
 		return (this.row == a.row && this.col == a.col);
 	}
 

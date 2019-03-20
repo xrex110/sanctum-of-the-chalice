@@ -96,6 +96,10 @@ public class GameView extends Menu {
 						sign.draw(rend);
 						if(sign.interact(playerXCopy, playerYCopy)) signSelected = sign; 
 					}
+					else if(emap[i][j] instanceof Chest) {
+						Chest chest = (Chest) emap[i][j];
+						chest.draw(rend);
+					}
 				}
 			}
             if(signSelected != null) {
