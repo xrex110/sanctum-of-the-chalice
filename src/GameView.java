@@ -70,6 +70,7 @@ public class GameView extends Menu {
 	@Override
 	public void paint(Graphics g) {
         updateFPS();
+        //TODO: Ask shu why we need super.paint(g) for GV specifically
 		super.paint(g);		//Clears screen before every paint
         
 		Graphics2D rend = (Graphics2D) g;
@@ -106,8 +107,8 @@ public class GameView extends Menu {
 						sign.draw(rend);
 						if(sign.interact(playerXCopy, playerYCopy)) signSelected = sign; 
 					}
-					else if(emap[i][j] instanceof Chest) {
-						Chest chest = (Chest) emap[i][j];
+					else if(map[1][i][j] instanceof Chest) {
+						Chest chest = (Chest) map[1][i][j];
 						chest.draw(rend);
 					}
 				}
