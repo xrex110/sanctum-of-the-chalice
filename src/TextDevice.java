@@ -86,7 +86,7 @@ public class TextDevice {
         return res;
     }
 
-	public void setColors(Color ic, Color oc) {
+  public void setColors(Color ic, Color oc) {
 		innerColor = ic;
 		outlineColor = oc;
 	}

@@ -6,36 +6,20 @@ public class Generator {
 	private Random rand;
 
 	private int sideSize;
-	private Coordinate spawnPos;
 
 	Coordinate signPos;
-	private int numRooms;
-	private boolean linear;
 
-	private ArrayList<Room> rooms;
-	//Keeps track of all the coordinates that are occupied by either a sign or chest
-	//To prevent overlap
-	private ArrayList<Coordinate> occupiedTiles;
-
-	public Generator(long seed, int sideSize, int numRooms, boolean linear) {
+	public Generator(long seed, int sideSize) {
 		rand = new Random(seed);
 		this.sideSize = sideSize;
-		this.numRooms = numRooms;
-		this.linear = linear;
 		map = new int[sideSize][sideSize];
 		signPos = new Coordinate(0, 0);
-		rooms = new ArrayList<>();
-		occupiedTiles = new ArrayList<>();
 	}
 
-	public Generator(int sideSize, int numRooms, boolean linear) {
+	public Generator(int sideSize) {
 		rand = new Random();
 		this.sideSize = sideSize;
-		this.numRooms = numRooms;
-		this.linear = linear;
 		map = new int[sideSize][sideSize];
-		rooms = new ArrayList<>();
-		occupiedTiles = new ArrayList<>();
 	}
 
 	private class Heading {
@@ -51,19 +35,20 @@ public class Generator {
 	public void generateDungeon() {	
 		//Spawn room
 		//Make spawn room inside a square 20 blocks inside the canvas map
+
+		ArrayList<Room> rooms = new ArrayList<>();
 		int minSpawn = 9;
 		int maxSpawn = 14;
 
 		Coordinate pt = Coordinate.generateInBounds(new Coordinate(0, sideSize - 10), new Coordinate(0, sideSize - 10));
 		Room room = generateRoom(pt, generateRoomBounds(minSpawn, maxSpawn, sideSize - pt.col, sideSize - pt.row));
-		spawnPos = pt;
 		addWalls(room);
 		fillRoom(room);
 		rooms.add(room);
-		int genRooms = 1;
+		int numRooms = 1;
 		int r = 0;
 		
-		while(genRooms != numRooms) {
+		while(numRooms != 10) {
 			Direction dir = Direction.values()[rand.nextInt(4)];
 
 			//We check if this direction on this room already has a connection
@@ -135,12 +120,11 @@ public class Generator {
 			//Experimental line
 			r = rand.nextInt(rooms.size());
 			System.out.println("Selecting room " + r);
-			if(linear) room = rm;
-			else room = rooms.get(r);
+			room = rooms.get(r);
 
 			//VERY hacky and temporary fix to opening the new room to a corridor
 			map[head.pos.row][head.pos.col] = 1;
-			genRooms++;
+			numRooms++;
 		}
 
 	/*	int srow = randWithinBounds(rm.origin.row + 1, rm.origin.row + rm.height - 2);
@@ -369,85 +353,8 @@ public class Generator {
 		return map;
 	}
 
-	/* Generates coordinates for 2 signs, one at spawn, and one at the last room */
-	public Coordinate[] getSignCoords() {
-		//First sign always at spawn
-		Coordinate[] coords = new Coordinate[2];	
-		int generated = 0;
-		Room rm = rooms.get(0); 
-
-		Coordinate ret = spawnArtifactInRoom(rm);
-		if(ret == null) {
-			System.out.println("Outplayed");
-			System.exit(1);
-		}
-		coords[generated++] = ret;
-
-		rm = rooms.get(rooms.size() - 1);
-		ret = spawnArtifactInRoom(rm);
-		if(ret == null) {
-			System.out.println("Outplayed");
-			System.exit(1);
-		}
-		coords[generated++] = ret;
-
-		return coords;
-	}
-
-	//chance is the chance per room local that a chest be generated.
-	//maxFloor is the max number of chests per floor
-	//penalty is the % chance penalty each subsequent chest after the first per room suffers
-	public ArrayList<Coordinate> getChestCoordinates(int chance, int penalty, int maxFloor, int maxPerRoom) {
-		ArrayList<Coordinate> coords = new ArrayList<>();
-		//Start from 1 to prevent anything from spawning in spawn room
-highest:
-		for(int i = 1; i < rooms.size(); i++) {
-			//Go over each room and do the following
-			Room curRoom = rooms.get(i);
-			boolean rolling = true;
-			int chanceThisRoll = chance;
-			int numThisRoom = 0;
-			while(rolling) {
-				if(coords.size() >= maxFloor) {
-					System.out.println("Max floor reached, abort.");
-					break highest;
-				}
-				if(numThisRoom >= maxPerRoom) break;
-				double roll = Math.random() * 100;
-				if(roll < chance) {
-					//This roll was a success!
-					//Attempt to generate a chest at a random location in this room
-					Coordinate ret = spawnArtifactInRoom(curRoom);
-					coords.add(ret);
-					numThisRoom++;
-					System.out.println("Generated chest at row: " + ret.row + ", col: " + ret.col);
-					//Inflict stacking penalty
-					chanceThisRoll = chanceThisRoll - penalty;
-				}
-				else rolling = false;
-			}
-		}
-		return coords;
-	}
-
-	private Coordinate spawnArtifactInRoom(Room rm) {
-		Coordinate cursor = rm.origin;
-		boolean success = false;
-	
-		while(!success) {
-			int iRow = randWithinBounds(rm.origin.row + 1, rm.origin.row + rm.height - 1);
-			int iCol = randWithinBounds(rm.origin.col + 1, rm.origin.col + rm.width - 1);
-			if(map[iRow][iCol] != 1) continue;
-			Coordinate ret = new Coordinate(iRow, iCol);
-			if(occupiedTiles.contains(ret)) continue;
-			occupiedTiles.add(ret);
-			return ret;
-		}
-		return null;
-
-	}
-	public int[] getSpawnPos() {
-		int[] coords = {spawnPos.row, spawnPos.col};
+	public int[] getSignCoords() {
+		int[] coords = {signPos.row, signPos.col};
 		return coords;
 	}
 }

@@ -46,29 +46,60 @@ class GameEngine {
 		levelMap = new GameObject[30][30];
 		entityMap = new GameObject[30][30];
 		*/
-		levelMap = new GameObject[3][30][30];
+		int mapSize = 200;
+		levelMap = new GameObject[3][mapSize][mapSize];
 
 		//entityMap[12][12] = Player.player;
 		Player.player.setX(12*32);
 		Player.player.setY(12*32);
 		levelMap[2][12][12]=Player.player;
+		int numRooms = 15;
+		//levelMap = new GameObject[mapSize][mapSize];
+		//entityMap = new GameObject[mapSize][mapSize];
 
-		levelGen = new Generator();
+		//entityMap[12][12] = Player.player;
+
+		//Recommended that mapSize be 10x number of Rooms
+		//last arg is for linearty. Set true for linear levels,
+		//false for random radially generated levels
+		levelGen = new Generator(mapSize, numRooms, true);
 		generateMap();
 
-		int[] signPos = levelGen.getSignCoords();
-		System.out.println("GE Row: " + signPos[0] + " GE Col: " + signPos[1]);
+		int[] playPos = levelGen.getSpawnPos();
+		Player.player.setX((playPos[1] + 3) * 32);
+		Player.player.setY((playPos[0] + 3) * 32);
+
+		//getSignCoordinates generates randomized coordinates for 2 signs,
+		//one at spawn, and one at the end of the map, and returns them in a Coordinate array
+		//of size 2, with index 0 containing the spawn size coords, and index 1 containing the end sign
+		//coordinates
+		Coordinate[] signPositions = levelGen.getSignCoords();
+		System.out.println("GE Row: " + signPositions[0].row + " GE Col: " + signPositions[0].col);
 		String help = "Use the W A S D keys to move around the map!";
 		
-		levelEnd = new Sign(signPos[1] * 32, signPos[0] * 32, "Insert end stats here");
+		//levelEnd = new Sign(signPos[1] * 32, signPos[0] * 32, "Insert end stats here");
 		/*
 		entityMap[signPos[0]][signPos[1]] = levelEnd;
 		entityMap[12][12] = new Sign(12*32, 12*32, help);
 		*/
-		levelMap[1][signPos[0]][signPos[1]]=levelEnd;
-		levelMap[1][12][12] = new Sign(12*32, 12*32, help);
+		//levelMap[1][signPos[0]][signPos[1]]=levelEnd;
+		//levelMap[1][12][12] = new Sign(12*32, 12*32, help);
 
 		moveHist = new MoveHistory(MAXHISTORY);
+		levelEnd = new Sign(signPositions[1].col * 32, signPositions[1].row * 32, "Insert end stats here");
+		levelMap[1][signPositions[1].row][signPositions[1].col] = levelEnd;
+		levelMap[1][signPositions[0].row][signPositions[0].col] = new Sign(signPositions[0].col * 32, signPositions[0].row * 32, help);
+
+		//Populate chests!
+		//First arg is the chance to spawn a chest per non spawn room of the level
+		//Second arg dictates the penalty that the % chance of chest spawn will suffer
+		//per chest after the first one per room
+		//and third one is the max number of chests allowed per floor
+		//last one is for max number of chests allowed per room
+		ArrayList<Coordinate> chestCoords = levelGen.getChestCoordinates(40, 15, 11, 3);
+		for(Coordinate coord : chestCoords) {
+			levelMap[1][coord.row][coord.col] = new Chest(coord.col * 32, coord.row  * 32);
+		}
 
 		renderEngine = new RenderLoop();
 		renderEngine.setName("RenderEngine");
