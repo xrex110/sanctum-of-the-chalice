@@ -4,14 +4,14 @@ public class Coordinate {
 	public int row, col;
 	private static Random rand = new Random();
 
-	public Coordinate(int a, int b) {
-		row = a;
-		col = b;
+	public Coordinate(int y, int x) {
+		row = y;
+		col = x;
 	}
 
-	public void setValue(int a, int b) {
-		row = a;
-		col = b;
+	public void setValue(int y, int x) {
+		row = y;
+		col = x;
 	}
 
 	@Override
