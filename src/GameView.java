@@ -117,7 +117,13 @@ public class GameView extends Menu {
 		//rend.drawImage(wizard, null, 320, 320);
         
         //sign.draw(rend);
-
+		if(map[2].length != 1) {
+			for(int i = 0; i < map[2].length; i++) {
+				for(int j = 0; j < map[2][i].length; j++) {
+					if(map[2][i][j] != null && map[2][i][j] != Player.player) map[2][i][j].draw(rend);	
+				}
+			}
+		}
         Player.player.draw(rend, playerXCopy, playerYCopy);
         drawHud(rend);
 	}
