@@ -153,8 +153,8 @@ public class InventoryMenu extends Menu {
 
                 break;
             case "I":
-                //focus gameview cba to do on plane pls
                 parent.focus(this);
+                GameEngine.unPause();
                 break;
             case "Enter":
                 //Pls handle item equipping FEETBUS or JONTRON or SHOEMAN or TEA

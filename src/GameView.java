@@ -145,11 +145,11 @@ public class GameView extends Menu {
         //testText.drawText(rend, "Normal Text", 50, 150);
 		//testText.drawOutlineText(rend, "Outlined", 50, 250);
         drawFog(rend);
+        playerStatusHud.draw(rend);
 		drawFPS(rend);
         drawPos(rend);
         drawMem(rend);
         
-        playerStatusHud.draw(rend);
 
         if(signSelected != null) {
                 drawSign(rend, signSelected);
@@ -286,6 +286,7 @@ public class GameView extends Menu {
                 break;
             case "I":
                 inventoryMenu.focus(this);
+                GameEngine.setPause();
                 break;
             case "K":
                 playerStatusHud.stamina -= 25;
