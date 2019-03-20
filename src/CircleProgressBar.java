@@ -111,7 +111,6 @@ public class CircleProgressBar {
         
         //Set which animation rate to render
         computePolygon(currentGranularity);
-        System.out.println(states.length);
 
         Polygon currentFrame = states[frame % currentGranularity];
         rend.fillPolygon(currentFrame);
