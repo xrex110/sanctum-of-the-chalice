@@ -52,8 +52,8 @@ class GameEngine {
         levelMap = new GameObject[3][mapSize][mapSize];
 
         //entityMap[12][12] = Player.player;
-        Player.player.setX(12*32);
-        Player.player.setY(12*32);
+        Player.player.setX(12);
+        Player.player.setY(12);
         levelMap[2][12][12]=Player.player;
         int numRooms = 8;
         //levelMap = new GameObject[mapSize][mapSize];
@@ -68,8 +68,8 @@ class GameEngine {
         generateMap();
 
         int[] playPos = levelGen.getSpawnPos();
-        Player.player.setX((playPos[1] + 3) * 32);
-        Player.player.setY((playPos[0] + 3) * 32);
+        Player.player.setX((playPos[1] + 3));
+        Player.player.setY((playPos[0] + 3));
 
         //getSignCoordinates generates randomized coordinates for 2 signs,
         //one at spawn, and one at the end of the map, and returns them in a Coordinate array
@@ -89,14 +89,14 @@ class GameEngine {
 
         enemyUpdateList = new ArrayList<EnemyObject>();
 
-        theEnemy = new EnemyObject(signPositions[1].col * 32, (signPositions[1].row) * 32);
+        theEnemy = new EnemyObject(signPositions[1].col, (signPositions[1].row));
 
         levelMap[2][signPositions[1].row][signPositions[1].col] = theEnemy;
 
         moveHist = new MoveHistory(MAXHISTORY);
-        levelEnd = new Sign(signPositions[1].col * 32, signPositions[1].row * 32, "Insert end stats here");
+        levelEnd = new Sign(signPositions[1].col, signPositions[1].row, "Insert end stats here");
         levelMap[1][signPositions[1].row][signPositions[1].col] = levelEnd;
-        levelMap[1][signPositions[0].row][signPositions[0].col] = new Sign(signPositions[0].col * 32, signPositions[0].row * 32, help);
+        levelMap[1][signPositions[0].row][signPositions[0].col] = new Sign(signPositions[0].col, signPositions[0].row, help);
 
         //Populate chests!
         //First arg is the chance to spawn a chest per non spawn room of the level
@@ -106,7 +106,7 @@ class GameEngine {
         //last one is for max number of chests allowed per room
         ArrayList<Coordinate> chestCoords = levelGen.getChestCoordinates(40, 15, 11, 3);
         for(Coordinate coord : chestCoords) {
-            levelMap[1][coord.row][coord.col] = new Chest(coord.col * 32, coord.row  * 32);
+            levelMap[1][coord.row][coord.col] = new Chest(coord.col, coord.row);
         }
 
         renderEngine = new RenderLoop();
@@ -133,10 +133,10 @@ class GameEngine {
             for(int j = 0; j < rawMap[i].length; j++) {
                 int tileType = rawMap[i][j];
                 if(tileType == 2) {
-                    levelMap[0][i][j] = new Tile(j * 32, i * 32, "test_tile.png", 0, true);
+                    levelMap[0][i][j] = new Tile(j, i, "test_tile.png", 0, true);
                 }
                 else if(tileType == 1) {
-                    levelMap[0][i][j] = new Tile(j * 32, i * 32, "test_tile.png", 1, false);
+                    levelMap[0][i][j] = new Tile(j, i, "test_tile.png", 1, false);
                 }
                 else if(tileType == 0) {
                     levelMap[0][i][j] = null;
@@ -248,7 +248,7 @@ class GameEngine {
         if (gameMode == MODE.GAME) {
             if(prevMode == MODE.REVERSION) {
                 //TODO: Handle revert collision checks
-                levelMap[2][Player.player.getY()/32][Player.player.getX()/32] = Player.player;
+                levelMap[2][Player.player.getY()][Player.player.getX()] = Player.player;
             }
             updatePlayer();
 
@@ -267,10 +267,10 @@ class GameEngine {
                 if (nextLoc != null 
                         && !levelMap[0][nextLoc.y][nextLoc.x].isSolid() 
                         && levelMap[2][nextLoc.y][nextLoc.x] == null) {
-                    levelMap[2][en.getY()/32][en.getX()/32] = null;
+                    levelMap[2][en.getY()][en.getX()] = null;
                     levelMap[2][nextLoc.y][nextLoc.x] = en;
-                    en.setX(nextLoc.x * 32);
-                    en.setY(nextLoc.y * 32);
+                    en.setX(nextLoc.x);
+                    en.setY(nextLoc.y);
                 }
             }
 
@@ -316,8 +316,8 @@ class GameEngine {
     }
 
     public void updatePlayer() {
-        int xPos = Player.player.getX()/32;
-        int yPos = Player.player.getY()/32;
+        int xPos = Player.player.getX();
+        int yPos = Player.player.getY();
         if(currentInput.equals("W"))
         {
             //Player.player.moveUp();
@@ -346,19 +346,19 @@ class GameEngine {
         if(levelMap[0][yPos][xPos] != null) {
             if (!levelMap[0][yPos][xPos].isSolid() && levelMap[2][yPos][xPos] == null)
             {
-                int[] displace = {yPos - Player.player.getY()/32, xPos - Player.player.getX()/32};
-                levelMap[2][Player.player.getY()/32][Player.player.getX()/32] = null;
+                int[] displace = {yPos - Player.player.getY(), xPos - Player.player.getX()};
+                levelMap[2][Player.player.getY()][Player.player.getX()] = null;
 
                 tracker.notify(displace, ScoreTracker.MOVEEVENT);
-                Player.player.setX(xPos * 32);
-                Player.player.setY(yPos * 32);
+                Player.player.setX(xPos);
+                Player.player.setY(yPos);
                 //System.out.println(xPos + " " + yPos);
 
                 levelMap[2][yPos][xPos] = Player.player;
             }
         }
 
-        moveHist.push(Player.player.getX()/32 , Player.player.getY()/32);
+        moveHist.push(Player.player.getX() , Player.player.getY());
 
 
 
@@ -370,9 +370,9 @@ class GameEngine {
         if (prevPos != null) {
             //do stuff
             if(prevMode == MODE.GAME)
-                levelMap[2][Player.player.getY()/32][Player.player.getX()/32] = null;
-            Player.player.setX(prevPos.x * 32);
-            Player.player.setY(prevPos.y * 32);
+                levelMap[2][Player.player.getY()][Player.player.getX()] = null;
+            Player.player.setX(prevPos.x);
+            Player.player.setY(prevPos.y);
 
             //levelMap[2][prevPos.y][prevPos.x] = Player.player;
 
@@ -417,12 +417,12 @@ class GameEngine {
             }
         }
         //{currentY, currentX, prevY, prevX, dist}
-        int[] current = {Player.player.getY()/32,Player.player.getX()/32,-1,-1,0};
-        pathMap[Player.player.getY()/32][Player.player.getX()/32][0] = current[0];
-        pathMap[Player.player.getY()/32][Player.player.getX()/32][1] = current[1];
-        pathMap[Player.player.getY()/32][Player.player.getX()/32][2] = current[2];
-        pathMap[Player.player.getY()/32][Player.player.getX()/32][3] = current[3];
-        pathMap[Player.player.getY()/32][Player.player.getX()/32][4] = current[4];
+        int[] current = {Player.player.getY(),Player.player.getX(),-1,-1,0};
+        pathMap[Player.player.getY()][Player.player.getX()][0] = current[0];
+        pathMap[Player.player.getY()][Player.player.getX()][1] = current[1];
+        pathMap[Player.player.getY()][Player.player.getX()][2] = current[2];
+        pathMap[Player.player.getY()][Player.player.getX()][3] = current[3];
+        pathMap[Player.player.getY()][Player.player.getX()][4] = current[4];
 
         queue.add(current);
         //Begin BFS

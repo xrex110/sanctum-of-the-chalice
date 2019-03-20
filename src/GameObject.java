@@ -1,19 +1,18 @@
 import java.awt.Graphics2D;
 
 public abstract class GameObject {
-    private int xPos, yPos;
+    private CoordinateManager cm;
 	private boolean solid;
     
     public GameObject(int x, int y, boolean solid) {
-        xPos = x;
-        yPos = y;
+        cm = new CoordinateManager(x,y);
 		this.solid = solid;
     }
     
-    public int getX() { return xPos; }
-    public int getY() { return yPos; }
-    public void setX(int x) { xPos = x; }
-    public void setY(int y) { yPos = y; }
+    public int getX() { return cm.getX(); }
+    public int getY() { return cm.getY(); }
+    public void setX(int x) { cm.setX(x); }
+    public void setY(int y) { cm.setY(y); }
     public abstract void draw(Graphics2D rend);
 	public boolean isSolid() {
 		return solid;
