@@ -26,12 +26,13 @@ class GameEngine {
 	private GameObject[][] entityMap;
 	
 	public GameEngine() {
-		levelMap = new GameObject[50][50];
-		entityMap = new GameObject[50][50];
+		int mapSize = 50;
+		levelMap = new GameObject[mapSize][mapSize];
+		entityMap = new GameObject[mapSize][mapSize];
 
 		//entityMap[12][12] = Player.player;
 
-		levelGen = new Generator(50);
+		levelGen = new Generator(mapSize, 6, false);
 		generateMap();
 
 		int[] playPos = levelGen.getSpawnPos();

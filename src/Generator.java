@@ -9,17 +9,23 @@ public class Generator {
 	private Coordinate spawnPos;
 
 	Coordinate signPos;
+	private int numRooms;
+	private boolean linear;
 
-	public Generator(long seed, int sideSize) {
+	public Generator(long seed, int sideSize, int numRooms, boolean linear) {
 		rand = new Random(seed);
 		this.sideSize = sideSize;
+		this.numRooms = numRooms;
+		this.linear = linear;
 		map = new int[sideSize][sideSize];
 		signPos = new Coordinate(0, 0);
 	}
 
-	public Generator(int sideSize) {
+	public Generator(int sideSize, int numRooms, boolean linear) {
 		rand = new Random();
 		this.sideSize = sideSize;
+		this.numRooms = numRooms;
+		this.linear = linear;
 		map = new int[sideSize][sideSize];
 	}
 
@@ -47,10 +53,10 @@ public class Generator {
 		addWalls(room);
 		fillRoom(room);
 		rooms.add(room);
-		int numRooms = 1;
+		int genRooms = 1;
 		int r = 0;
 		
-		while(numRooms != 6) {
+		while(genRooms != numRooms) {
 			Direction dir = Direction.values()[rand.nextInt(4)];
 
 			//We check if this direction on this room already has a connection
@@ -122,11 +128,12 @@ public class Generator {
 			//Experimental line
 			r = rand.nextInt(rooms.size());
 			System.out.println("Selecting room " + r);
-			room = rooms.get(r);
+			if(linear) room = rm;
+			else room = rooms.get(r);
 
 			//VERY hacky and temporary fix to opening the new room to a corridor
 			map[head.pos.row][head.pos.col] = 1;
-			numRooms++;
+			genRooms++;
 		}
 
 	/*	int srow = randWithinBounds(rm.origin.row + 1, rm.origin.row + rm.height - 2);
