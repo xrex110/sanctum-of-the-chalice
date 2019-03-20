@@ -5,7 +5,7 @@ import java.util.*;
 public class EnemyObject extends GameObject {
     SpriteLoader sp = new SpriteLoader();
     ArrayList<Pair<Integer,Integer>> path;
-
+    FireAnimation animation = new FireAnimation();
     public EnemyObject(int x, int y){
         super(x,y, false);
         path = new ArrayList<Pair<Integer,Integer>>();
@@ -14,8 +14,10 @@ public class EnemyObject extends GameObject {
     public void draw(Graphics2D rend) {
         //rend.setColor(Color.blue);
         //rend.fillRect(getX(),getY(),Player.TILE_SIZE_X, Player.TILE_SIZE_Y);
-        BufferedImage sprite = sp.getSprite("sign.png",0,32,32);
-        rend.drawImage(sprite, null, getX(), getY());
+        //BufferedImage sprite = sp.getSprite("sign.png",0,32,32);
+        
+        BufferedImage sprite = animation.getUpdate();
+        rend.drawImage(sprite, null, getX()-28, getY()-60);
     }
     
     public void setPath(ArrayList<Pair<Integer,Integer>> p) {
