@@ -115,7 +115,9 @@ public class InventoryMenu extends Menu {
         }
         
         //TODO: Remove me am debug
+        rend.drawImage(test.getUpdate(), null, 100, 100);
     }
+    FireAnimation test = new FireAnimation();
     
     public void drawOutlinedRectangle(Graphics2D rend, Color outline, Color fill, int x, int y, int width, int height) {
         rend.setColor(fill);
