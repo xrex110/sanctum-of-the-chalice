@@ -28,8 +28,10 @@ class GameEngine {
 	*/
 	//map, row, column; tile, trigger, entity
 	private GameObject[][][] levelMap;
-
+	private ArrayList<EnemyObject> enemyUpdateList;
 	private MoveHistory moveHist;
+
+	private EnemyObject theEnemy;
 
 	public GameEngine() {
 		/*
@@ -58,6 +60,12 @@ class GameEngine {
 		levelMap[1][signPos[0]][signPos[1]]=levelEnd;
 		levelMap[1][12][12] = new Sign(12*32, 12*32, help);
 
+		enemyUpdateList = new ArrayList<EnemyObject>();
+		
+		theEnemy = new EnemyObject(signPos[1] * 32, (signPos[0]) * 32);
+
+		levelMap[2][signPos[0]][signPos[1]] = theEnemy;
+		
 		moveHist = new MoveHistory(MAXHISTORY);
 
 		renderEngine = new RenderLoop();
@@ -191,6 +199,23 @@ class GameEngine {
 		
 		//System.out.println(moveHist);
 		pathAll(10);
+		
+		//attempt to move all relevant enemies to their desired locations
+		//System.out.println(theEnemy.getX()/32 + ", "+ theEnemy.getY()/32);
+		while (enemyUpdateList.size() > 0) {
+			//System.out.println("enemy");
+			EnemyObject en = enemyUpdateList.remove(0);
+			Pair<Integer,Integer> nextLoc = en.nextLoc();
+			if (nextLoc != null 
+					&& !levelMap[0][nextLoc.y][nextLoc.x].isSolid() 
+					&& levelMap[2][nextLoc.y][nextLoc.x] == null) {
+				levelMap[2][en.getY()/32][en.getX()/32] = null;
+				levelMap[2][nextLoc.y][nextLoc.x] = en;
+				en.setX(nextLoc.x * 32);
+				en.setY(nextLoc.y * 32);
+			}
+		}
+
 		//Clear currentInput at end of every slowTick
 		currentInput = "";
 		/*if (slowIts >= 30)
@@ -250,7 +275,7 @@ class GameEngine {
 
 
 		if(levelMap[0][yPos][xPos] != null) {
-			if (!levelMap[0][yPos][xPos].isSolid())
+			if (!levelMap[0][yPos][xPos].isSolid() && levelMap[2][yPos][xPos] == null)
 			{
 				int[] displace = {yPos - Player.player.getY()/32, xPos - Player.player.getX()/32};
 				levelMap[2][Player.player.getY()/32][Player.player.getX()/32] = null;
@@ -270,6 +295,7 @@ class GameEngine {
 
 	}
 
+	//TODO Make the maxDist parameter actually matter
 	public void pathAll(int maxDist) {
 		int height = levelMap[0].length;
 		int width = levelMap[0][0].length;
@@ -293,6 +319,13 @@ class GameEngine {
 		//Begin BFS
 		while (queue.size() > 0) {
 			current = queue.remove(0);
+			//TODO replace signs with enemies and do more stuff
+			if (levelMap[2][current[0]][current[1]] instanceof EnemyObject) {
+				((EnemyObject)levelMap[2][current[0]][current[1]]).setPath(extractPath(pathMap, current[0], current[1]));
+				enemyUpdateList.add((EnemyObject)levelMap[2][current[0]][current[1]]);
+				//System.out.println("Found");
+			}
+			
 			//look up
 			if (current[0] > 0 && pathMap[current[0]-1][current[1]][4] < 0) {
 				int[] next = {current[0] - 1, current[1], current[0], current[1], current[4]+1};
@@ -364,7 +397,7 @@ class GameEngine {
 		}
 		*/
 		//System.out.println(extractPath(pathMap, 12, 12));
-		System.out.println("done");
+		//System.out.println("done");
 	}
 
 	//Given a pathMap and a set of coordinates, this method extracts a series of locations that comprise a path towards the player spot
