@@ -55,7 +55,7 @@ class GameEngine {
         Player.player.setX(12*32);
         Player.player.setY(12*32);
         levelMap[2][12][12]=Player.player;
-        int numRooms = 3;
+        int numRooms = 8;
         //levelMap = new GameObject[mapSize][mapSize];
         //entityMap = new GameObject[mapSize][mapSize];
 
