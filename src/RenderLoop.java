@@ -56,8 +56,10 @@ public class RenderLoop extends Thread {
 			System.exit(1);
 		}
         if(in.isKeyPressed(KeyEvent.VK_P)) {
-            if(!menuView.equals((Menu)window.getWindowView()))
+            if(!menuView.equals((Menu)window.getWindowView())) {
                 menuView.focus((Menu)window.getWindowView());
+		GameEngine.setPause();
+	    }
         }
 		if(in.isKeyPressed(KeyEvent.VK_W)) {
 			//log("W was pressed on RE");

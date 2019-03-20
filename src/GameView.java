@@ -262,7 +262,7 @@ public class GameView extends Menu {
     public void invoke(String key) {
         //Please do nothing ty
         if(!isFocused) return; 
-        if(key.matches("[WASD]")) {
+        if(key.matches("[WASDQ]")) {
             playerStatusHud.setKey(key);
             GameEngine.updateInput(key);
             return;

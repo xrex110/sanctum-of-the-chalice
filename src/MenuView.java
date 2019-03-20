@@ -76,6 +76,7 @@ public class MenuView extends Menu {
                     //Start new game
                     System.out.println("Loading game!");
                     re.gm.focus(this);
+		            GameEngine.unPause();
                 } else if(selection == 1) {
                     //Settings
                     children.get(0).focus(this);

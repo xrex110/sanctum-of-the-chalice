@@ -28,7 +28,10 @@ public class MoveHistory {
 
 	public Pair<Integer,Integer> pop()
 	{
-		return history.remove(0);
+		if (history.size() > 0)
+			return history.remove(0);
+
+		return null;
 	}
 	
 	@Override
