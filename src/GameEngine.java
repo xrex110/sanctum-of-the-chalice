@@ -258,7 +258,7 @@ class GameEngine {
                             "\tNumber of Up Moves: " + tracker.getUpScore()));
             }
 
-            System.out.println("Slow tick: "+slowIts+"\n"+moveHist);
+            //System.out.println("Slow tick: "+slowIts+"\n"+moveHist);
             pathAll(10);
             while (enemyUpdateList.size() > 0) {
                 //System.out.println("enemy");
@@ -434,7 +434,9 @@ class GameEngine {
                 enemyUpdateList.add((EnemyObject)levelMap[2][current[0]][current[1]]);
                 //System.out.println("Found");
             }
-
+	    
+	    if (current[4] >= maxDist) { continue; }
+	    
             //look up
             if (current[0] > 0 && pathMap[current[0]-1][current[1]][4] < 0) {
                 int[] next = {current[0] - 1, current[1], current[0], current[1], current[4]+1};
