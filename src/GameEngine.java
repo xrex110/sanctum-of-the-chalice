@@ -21,7 +21,7 @@ class GameEngine {
     private float gameStart;
     private boolean running;
     private String backgroundMusic = "../res/Twisting.ogg";
-    private String enterSound = "../res/Mario.ogg";
+    //private String enterSound = "../res/Mario.ogg";
     private Sign levelEnd;
 
     //private Player player;
@@ -155,7 +155,7 @@ class GameEngine {
         //renderEngine.updateEntityMap(entityMap);
         renderEngine.start();		//Starts the renderengine thread!
 
-        soundEngine.play(enterSound, "enter");
+        //soundEngine.play(enterSound, "enter");
         soundEngine.playLoop(backgroundMusic, "background");
         GameEngine.unPause();
         gameLoop();
