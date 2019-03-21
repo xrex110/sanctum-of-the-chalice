@@ -61,17 +61,18 @@ public class PlayerStatusHUD {
     boolean hasFilledTimeFilter = false;
     public void draw(Graphics2D rend) {
         int n = 20;
+        int timeAlpha = 80;
 
         if(GameEngine.gameMode == GameEngine.MODE.REVERSION) {
             if(timeFilter.isEmpty() && !hasFilledTimeFilter){
                 for(int i = 0; i < n; ++i) {
-                    Color input = new Color(0,0,255,128/n * i);
+                    Color input = new Color(0,0,255,timeAlpha/n * i);
                     timeFilter.add(new Gradient(0,0,width,height,true,400,200,5,input));
                     timeFilter.add(new Gradient(0,0,width,height,false,400,200,5,input));
                 }
                 hasFilledTimeFilter = true;
             }else if(timeFilter.isEmpty()){ 
-                Color gradColor = new Color(0,0,255,128);
+                Color gradColor = new Color(0,0,255,timeAlpha);
 
                 Gradient revert = new Gradient(0,0,width,height,true,400,200,5,gradColor);
                 Gradient revertHoriz = new Gradient(0,0,width,height,false,400,200,5,gradColor);
@@ -81,7 +82,7 @@ public class PlayerStatusHUD {
         } 
         if(hasFilledTimeFilter && GameEngine.gameMode != GameEngine.MODE.REVERSION) {
             for(int i = 0; i < n; ++i) {
-                Color input = new Color(0,0,255,128-(128/n * i));
+                Color input = new Color(0,0,255,timeAlpha-(timeAlpha/n * i));
                 timeFilter.add(new Gradient(0,0,width,height,true,400,200,5,input));
                 timeFilter.add(new Gradient(0,0,width,height,false,400,200,5,input));
             }
