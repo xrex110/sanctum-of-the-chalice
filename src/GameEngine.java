@@ -107,6 +107,9 @@ class GameEngine {
         ArrayList<Coordinate> chestCoords = levelGen.getChestCoordinates(40, 15, 11, 3);
         for(Coordinate coord : chestCoords) {
             levelMap[1][coord.row][coord.col] = new Chest(coord.col, coord.row);
+	    
+	    levelMap[2][coord.row][coord.col] = new EnemyObject(coord.col, coord.row);
+
         }
 
         renderEngine = new RenderLoop();
