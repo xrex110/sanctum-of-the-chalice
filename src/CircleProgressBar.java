@@ -29,7 +29,7 @@ public class CircleProgressBar {
         this.isHollow = true;
         this.thickness = thickness;
         states = new Polygon[DEFAULT_GRANULARITY];
-        computePolygon(DEFAULT_GRANULARITY);
+        computePolygon(DEFAULT_GRANULARITY, 1);
 
     }
 
@@ -42,11 +42,11 @@ public class CircleProgressBar {
         this.height = height;
         this.isHollow = false;
         states = new Polygon[DEFAULT_GRANULARITY];
-        computePolygon(DEFAULT_GRANULARITY);
+        computePolygon(DEFAULT_GRANULARITY, 1);
 
     }
 
-    private void computePolygon(int GRANULARITY) {
+    private void computePolygon(int GRANULARITY, int direction) {
         if(stateMap.get(GRANULARITY) != null) {
             states = stateMap.get(GRANULARITY);
             return;
@@ -57,7 +57,7 @@ public class CircleProgressBar {
         int centerX = x + width / 2;
         int centerY = y + height / 2;
 
-        final double ARC_ANGLE = 2 * PI / GRANULARITY; //In radians
+        final double ARC_ANGLE = direction*2 * PI / GRANULARITY; //In radians
         int semiMajorAxis = width / 2;
         int semiMinorAxis = height / 2;
 
@@ -104,13 +104,14 @@ public class CircleProgressBar {
     public void draw(Graphics2D rend) {
         rend.setColor(fill);
         int currentGranularity = DEFAULT_GRANULARITY;
-        
+        int direction = 1;
         if(GameEngine.gameMode == GameEngine.MODE.REVERSION) {
             currentGranularity /= 2;
+            direction = -1;
         }
         
         //Set which animation rate to render
-        computePolygon(currentGranularity);
+        computePolygon(currentGranularity, direction);
 
         Polygon currentFrame = states[frame % currentGranularity];
         rend.fillPolygon(currentFrame);
