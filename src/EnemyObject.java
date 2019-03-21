@@ -6,8 +6,20 @@ public class EnemyObject extends GameObject {
     SpriteLoader sp = new SpriteLoader();
     ArrayList<Pair<Integer,Integer>> path;
     FireAnimation animation = new FireAnimation();
+    int awakenRange = 3;
+    int aggroRange = 6;
+
+    enum STATE { 
+	SLEEP,
+	AWAKE,
+	AGGRO
+    }
+
+    public STATE state;
+
     public EnemyObject(int x, int y){
         super(x,y, false);
+	state = STATE.SLEEP;
         path = new ArrayList<Pair<Integer,Integer>>();
 
     }
@@ -25,8 +37,23 @@ public class EnemyObject extends GameObject {
     }
 
     public Pair<Integer,Integer> nextLoc() {
-	if (path.size() > 0) {
-    	    return path.get(0);
+	if (state == STATE.SLEEP) {
+		if (path.size() > 0 && path.size() <= awakenRange) {
+			state = STATE.AWAKE;
+		}
+	}
+	if (state == STATE.AWAKE) {
+		if (path.size() > 0 && path.size() <= aggroRange) {
+			state = STATE.AGGRO;
+		}
+	}
+	if (state == STATE.AGGRO) {
+		if (path.size() > 0 && path.size() <= aggroRange) {
+    	    		return path.get(0);
+		}
+		else {
+			state = STATE.AWAKE;
+		}
 	}
 	return null;
     }
