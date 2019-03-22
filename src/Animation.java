@@ -41,7 +41,7 @@ public abstract class Animation {
     public int getFrameCount()  { return frameCount; }
     public int getCurrentFrame(){ return currentFrame; }
     
-    public void setCurrentFrame(int a){ currentFrame = a; } 
+    public void setCurrentFrame(int a){ currentFrame = a % MAX_FRAME; } 
 
     /* FOR THE LOVE OF GOD THIS ONLY GETS THE FRAME IMAGE
      * GET UPDATE DOES THE SAME THING BUT INCREMENTS A FRAME COUNTER
