@@ -262,7 +262,7 @@ class GameEngine {
             }
 
             //System.out.println("Slow tick: "+slowIts+"\n"+moveHist);
-            //pathAll(10);
+            pathAll(10);
             while (enemyUpdateList.size() > 0) {
                 //System.out.println("enemy");
                 EnemyObject en = enemyUpdateList.remove(0);
