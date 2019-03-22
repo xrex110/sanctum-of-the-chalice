@@ -1,0 +1,22 @@
+[
+{
+	"name":"Chaos Orb",
+	"weight":12,
+	"maxDurability":10
+},
+{
+	"name":"Chromatic Orb",
+	"weight":2,
+	"maxDurability":20
+},
+{
+	"name":"Divine Orb",
+	"weight":35,
+	"maxDurability":10
+},
+{
+	"name":"Exalted Orb",
+	"weight":12,
+	"maxDurability":75
+}
+]
