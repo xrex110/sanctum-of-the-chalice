@@ -160,7 +160,7 @@ class GameEngine {
 
         //soundEngine.play(enterSound, "enter");
         soundEngine.playLoop(backgroundMusic, "background");
-        GameEngine.unPause();
+        //GameEngine.unPause();
         gameLoop();
     }
 
