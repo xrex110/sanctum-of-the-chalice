@@ -2,7 +2,10 @@ import java.awt.image.BufferedImage;
 public abstract class Animation {
     
     public enum AnimationState {
-        DEFAULT;
+        DEFAULT,
+        SLEEP,
+        AWAKE,
+        AGGRO;
     }
 
     public SpriteLoader sprites;

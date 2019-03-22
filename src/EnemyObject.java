@@ -19,7 +19,8 @@ public class EnemyObject extends GameObject {
 
     public EnemyObject(int x, int y){
         super(x,y, false);
-	state = STATE.SLEEP;
+	    state = STATE.SLEEP;
+        animation.setState(Animation.AnimationState.SLEEP);
         path = new ArrayList<Pair<Integer,Integer>>();
 
     }
@@ -40,6 +41,7 @@ public class EnemyObject extends GameObject {
 	if (state == STATE.SLEEP) {
 		if (path.size() > 0 && path.size() <= awakenRange) {
 			state = STATE.AWAKE;
+            animation.setState(Animation.AnimationState.AWAKE);
 		}
 	}
 	if (state == STATE.AWAKE) {

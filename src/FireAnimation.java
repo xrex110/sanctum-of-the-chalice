@@ -9,9 +9,9 @@ public class FireAnimation extends Animation {
         int f = (getFrameCount() / 2)%MAX_FRAME;
         
         if(f == 47 || f == 55 || f == 63) f += 1; 
-
-        BufferedImage sprite = sprites.getSprite(getName(), f%MAX_FRAME, 100, 100);
-        return sprite;
+        if(getState() != Animation.AnimationState.SLEEP)
+            return sprites.getSprite(getName(), f%MAX_FRAME, 100, 100);
+        return sprites.getSprite(getName(), 47, 100, 100);
     }
 
 }
