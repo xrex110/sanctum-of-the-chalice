@@ -8,7 +8,8 @@ public abstract class Animation {
         AGGRO;
     }
 
-    public SpriteLoader sprites;
+    //Stores all animation sprites in the whole memory bank
+    public static SpriteLoader sprites = new SpriteLoader();
 
     private String name;
     private int xSize, ySize;
@@ -20,7 +21,6 @@ public abstract class Animation {
 
     public Animation(String sheetPath, int xSize, int ySize) {
 
-        sprites = new SpriteLoader();
         MAX_FRAME = sprites.cacheSheet(sheetPath, xSize, ySize);
         
         this.name = sheetPath;
