@@ -50,11 +50,11 @@ public class GameView extends Menu {
     boolean debugIsActive = true;
     boolean hudIsActive = true;
     boolean entityDebugGrid = false;
-    
+    boolean mapScreenshot = false; 
     private boolean takeScreenshot= false;
     //Handles the rendering of time until next tick
 	public GameView() {
-        super(0,0,null);
+        super(800,800,null);
 		//this.setIgnoreRepaint(true);
 		loader = new SpriteLoader();
 		sheetPath = "test_tile.png";
@@ -85,15 +85,20 @@ public class GameView extends Menu {
         Graphics2D rend = (Graphics2D) g;
         BufferedImage screenshot = null;
         if(takeScreenshot) {
-            screenshot = new BufferedImage(800, 800, BufferedImage.TYPE_INT_ARGB);
+            int w = getWidth();
+            int h = getWidth();
+            if(mapScreenshot) {
+                w = GameEngine.mapSize * RenderLoop.tileSizeX;
+                h = GameEngine.mapSize * RenderLoop.tileSizeY; 
+            }
+            screenshot = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
             rend = (Graphics2D)screenshot.getGraphics();
             rend.setColor(Color.black);
-            rend.fillRect(0,0,800,800);
+            if(!mapScreenshot)
+                rend.fillRect(0,0,getWidth(),getHeight());
         }
 		
         positionCamera(rend);
-		int xTiles = 25;	/* Number of tiles window can accomodate in x axis */
-		int yTiles = 25;	/* Number of tiles window can accomodate in y axis */
         
         if(frameCount % (int)(GameEngine.SLOWRATE / RenderLoop.SLEEP_TIME) == 0)
             playerStatusHud.setKey("");
@@ -154,6 +159,8 @@ public class GameView extends Menu {
             g.drawImage(screenshot,0,0,null);
             takeScreenshot = false;
             SaveHandler.saveScreenshot(screenshot);
+            if(mapScreenshot) hudIsActive = true;
+            mapScreenshot = false;
         }
         rend.dispose();
         g.dispose();
@@ -305,7 +312,7 @@ public class GameView extends Menu {
         int transY = centerTileY - playerYCopy;
         
         at.translate(transX, transY);
-
+        if(!mapScreenshot)
         rend.setTransform(at); 
     }
 
@@ -339,6 +346,9 @@ public class GameView extends Menu {
             case "L":
                 playerStatusHud.stamina += 25;
                 break;
+            case "MAP_SCREENSHOT":
+                mapScreenshot = true;
+                hudIsActive = false;
             case "SCREENSHOT":
                 takeScreenshot = true;
                 break;

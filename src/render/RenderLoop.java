@@ -112,13 +112,14 @@ public class RenderLoop extends Thread {
             ((Menu)window.getWindowView()).invoke("Q");
         }else if(in.isKeyPressed(KeyEvent.VK_F1)) {
             ((Menu)window.getWindowView()).invoke("TOGGLE_HUD");
-        }else if(in.isKeyPressed(KeyEvent.VK_F2)) {
-            ((Menu)window.getWindowView()).invoke("SCREENSHOT");
         }else if(in.isKeyPressed(KeyEvent.VK_F3)) {
             if(in.isKeyPressed(KeyEvent.VK_E))
                 ((Menu)window.getWindowView()).invoke("TOGGLE_OBJ");
-
+            else if(in.isKeyPressed(KeyEvent.VK_F2))
+                ((Menu)window.getWindowView()).invoke("MAP_SCREENSHOT");
             else ((Menu)window.getWindowView()).invoke("TOGGLE_DEBUG");
+        }else if(in.isKeyPressed(KeyEvent.VK_F2)) {
+            ((Menu)window.getWindowView()).invoke("SCREENSHOT");
         }
 
 
