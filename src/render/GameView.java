@@ -321,9 +321,10 @@ public class GameView extends Menu {
 
     public static void setInterpRate(int x) {
         interpRate = x;
+        Sanctum.settings.interpRate = x;
     }
     public static int getInterpRate() {
-        return interpRate;
+        return Sanctum.settings.interpRate;
     }
     public void invoke(String key) {
         //Please do nothing ty

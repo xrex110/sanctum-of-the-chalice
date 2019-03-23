@@ -52,7 +52,7 @@ public class GameEngine {
     private EnemyObject theEnemy;
 
     public static Timer playtime = new Timer();
-    public static int mapSize = 200;
+    public static int mapSize = 100;
 
     public GameEngine() {
         /*

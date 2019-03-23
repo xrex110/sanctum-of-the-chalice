@@ -7,6 +7,11 @@ import java.text.SimpleDateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
+import game.*;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 
 public class SaveHandler {
 
@@ -32,6 +37,53 @@ public class SaveHandler {
                     }
                 }
         }).start();
+        new Settings();
+    }
+    public static Settings loadSettings() {
+        try {
+        File directory = new File(BIN_PATH + "data");
+        if(!directory.exists())
+            directory.mkdir();
+        String fileName = "settings.save";
+        
+        FileInputStream fis = new FileInputStream(directory.getPath() + "/" + fileName);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        
+        Settings settings = (Settings) ois.readObject();
+
+        ois.close();
+        fis.close();
+        
+        System.out.println("Successfully loaded settings");
+        System.out.println(settings);
+        return settings;
+
+        } catch(Exception e) {
+            System.out.println("Failed to load settings, initializing default values");
+            return new Settings();
+        } 
+    }
+    public static void saveSettings(Settings target) {
+        try {
+            System.out.println(target);
+            File directory = new File(BIN_PATH + "data");
+            if(!directory.exists())
+                directory.mkdir();
+            String fileName = "settings.save";
+            
+            FileOutputStream os = new FileOutputStream(directory.getPath() + "/" + fileName, false);
+            ObjectOutputStream oos = new ObjectOutputStream(os);
+            
+            oos.writeObject(target);
+            oos.flush();
+            oos.close();
+            os.close();
+            System.out.println("Successfully saved settings.");
+
+        } catch(Exception e) {
+            System.out.println("Unable to save settings.");
+        }
+        
     }
 
 }

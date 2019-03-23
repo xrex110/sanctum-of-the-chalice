@@ -13,7 +13,18 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 public class SettingsView extends Menu{
+    
+    static {
+        if(Sanctum.settings == null) {
+            System.out.println("Settings view is loading settings...");
+            Sanctum.settings = SaveHandler.loadSettings();
 
+            GameView.setInterpRate(Sanctum.settings.interpRate);
+			if(Sanctum.settings.soundOn)
+                SoundEngine.setVolume(Sanctum.settings.volume);
+            
+        }
+    } 
 	
     public SettingsView(int width, int height, Menu parent) {
         super(width, height, parent);
@@ -24,16 +35,16 @@ public class SettingsView extends Menu{
         int BUTTON_HEIGHT = 50;
         int leftX = (getWidth()/2 - BUTTON_WIDTH) / 2;
         int rightX = getWidth() - BUTTON_WIDTH - leftX;
-
+        //if(Sanctum.settings == null) Sanctum.settings = new Settings();
         String[] leftText = new String[] {
             "Difficulty: Normal",
-                "Sound: On",
-                "Interp Rate: 30",
+                "Sound: " + Sanctum.settings.soundOn,
+                "Interp Rate: " + Sanctum.settings.interpRate,
                 "Player Sprite: Wizard.png",
                 "Back"
         };
         String[] rightText = new String[] {
-            "Volume: 50",
+            "Volume: " + Sanctum.settings.volume,
         };
         Color selectedColor = new Color(0xbb0a1e);
         Color outline = Color.white;
@@ -56,7 +67,6 @@ public class SettingsView extends Menu{
 
     }
     //TODO: remove me and make a volume call
-    int volume = 50;
     int VOLUME_INCREMENT = 5;
     public void invoke(String key) {
         if(!sanitizeInputTime(key)) return;
@@ -81,13 +91,13 @@ public class SettingsView extends Menu{
                     selected.text = "Interp Rate: " + GameView.getInterpRate();
                 } else if(selection == 5) {
                     //TODO: Refactor to alter a volume var
-                    if(volume - VOLUME_INCREMENT >= 0) {
-                        volume -= VOLUME_INCREMENT;
-                        selected.text = "Volume: " + volume;
+                    if(Sanctum.settings.volume - VOLUME_INCREMENT >= 0) {
+                        Sanctum.settings.volume -= VOLUME_INCREMENT;
+                        selected.text = "Volume: " + Sanctum.settings.volume;
 						// start 50
 						// volume / 50 
 						// increase 10 -> 10 times louder.
-						SoundEngine.setVolume(volume);
+						SoundEngine.setVolume(Sanctum.settings.volume);
                     }
                 }
 
@@ -101,26 +111,26 @@ public class SettingsView extends Menu{
                     selected.text = "Interp Rate: " + GameView.getInterpRate();
                 } else if(selection == 5) {
                     //TODO: Refactor to alter a volume var
-                    if(volume + VOLUME_INCREMENT <= 100) {
-                        volume += VOLUME_INCREMENT;
-                        selected.text = "Volume: " + volume;
-						SoundEngine.setVolume(volume);
+                    if(Sanctum.settings.volume + VOLUME_INCREMENT <= 100) {
+                        Sanctum.settings.volume += VOLUME_INCREMENT;
+                        selected.text = "Volume: " + Sanctum.settings.volume;
+						SoundEngine.setVolume(Sanctum.settings.volume);
                     }
                 }
                 break;
             case "Enter":
                 System.out.println(selection);
                 switch(selection) {
-                    case 0:
-                        
-                        if(selected.text.equals("Difficulty: Normal"))
-                            selected.text =     "Difficulty: Hard";
-                        else if(selected.text.equals("Difficulty: Hard"))
-                            selected.text =     "Difficulty: Easy";
-                        else if(selected.text.equals("Difficulty: Easy"))
-                            selected.text =     "Difficulty: Normal";
+                    case 0:                        
                         break; 
                     case 1:
+                        Sanctum.settings.soundOn = !Sanctum.settings.soundOn;
+                        selected.text = "Sound: " + Sanctum.settings.soundOn;
+                        if(Sanctum.settings.soundOn) {
+						    SoundEngine.setVolume(Sanctum.settings.volume);
+                        } else {
+						    SoundEngine.setVolume(0);
+                        }
                         break;
                     case 2:
                         
