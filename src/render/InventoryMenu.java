@@ -160,7 +160,7 @@ public class InventoryMenu extends Menu {
                 selectButton(selection); 
 
                 break;
-            case "I":
+            case "INVENTORY":
                 parent.focus(this);
                 GameEngine.unPause();
                 break;
