@@ -1,14 +1,8 @@
 package object;
-import main.*;
-
-
-
-import render.*;
-import game.*;
-import sound.*;
-
-
-public class CoordinateManager {
+import render.RenderLoop;
+import java.io.Serializable;
+import game.Coordinate;
+public class CoordinateManager implements Serializable {
 
     private Coordinate pos;
 

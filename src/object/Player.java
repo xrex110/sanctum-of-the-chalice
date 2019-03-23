@@ -1,18 +1,15 @@
 package object;
-import main.*;
 
 
 import java.awt.Graphics2D;
-import render.*;
-import game.*;
-import sound.*;
+import render.SpriteLoader;
 
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Player extends GameObject {
 
-    SpriteLoader sp = new SpriteLoader();
+    transient SpriteLoader sp = new SpriteLoader();
     public static Player player = new Player(0,0);
     public static int TILE_SIZE_X = 32, TILE_SIZE_Y = 32;
 

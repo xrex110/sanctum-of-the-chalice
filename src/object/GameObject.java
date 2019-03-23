@@ -1,14 +1,13 @@
 package object;
-import main.*;
 
-
-import java.awt.Graphics2D;
-import render.*;
 import game.*;
-import sound.*;
+import object.CoordinateManager;
+import render.RenderLoop;
+import java.awt.Graphics2D;
+import java.awt.Color;
+import java.io.Serializable;
 
-
-public abstract class GameObject {
+public abstract class GameObject implements Serializable{
     private CoordinateManager cm;
 	private boolean solid;
     
@@ -21,6 +20,10 @@ public abstract class GameObject {
     public int getY() { return cm.getY(); }
     public void setX(int x) { cm.setX(x); }
     public void setY(int y) { cm.setY(y); }
+    public void drawDebug(Graphics2D rend) {
+        rend.setColor(Color.magenta);
+        rend.drawRect(getX(), getY(), RenderLoop.tileSizeX, RenderLoop.tileSizeY);
+    }
     public abstract void draw(Graphics2D rend);
 	public boolean isSolid() {
 		return solid;

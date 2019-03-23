@@ -1,14 +1,9 @@
 package game;
-import main.*;
-
-import render.*;
-import sound.*;
-import object.*;
-
 
 import java.util.Random;
+import java.io.Serializable;
 
-public class Coordinate {
+public class Coordinate implements Serializable{
 	public int row, col;
 	private static Random rand = new Random();
 
