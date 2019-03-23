@@ -52,17 +52,17 @@ public class GameEngine {
     private EnemyObject theEnemy;
 
     public static Timer playtime = new Timer();
+    public static int mapSize = 200;
 
     public GameEngine() {
         /*
            levelMap = new GameObject[30][30];
            entityMap = new GameObject[30][30];
            */
-        int mapSize = 20;
         levelMap = new GameObject[3][mapSize][mapSize];
 
         //entityMap[12][12] = Player.player;
-        int numRooms = 1;
+        int numRooms = 20;
         //levelMap = new GameObject[mapSize][mapSize];
         //entityMap = new GameObject[mapSize][mapSize];
 

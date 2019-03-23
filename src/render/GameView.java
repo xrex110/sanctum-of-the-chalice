@@ -156,10 +156,13 @@ public class GameView extends Menu {
             drawHud(rend);
 
         if(takeScreenshot) {
-            g.drawImage(screenshot,0,0,null);
             takeScreenshot = false;
             SaveHandler.saveScreenshot(screenshot);
-            if(mapScreenshot) hudIsActive = true;
+            if(mapScreenshot) {
+                hudIsActive = true;
+            } else {
+                g.drawImage(screenshot,0,0,null);
+            }
             mapScreenshot = false;
         }
         rend.dispose();
@@ -351,6 +354,7 @@ public class GameView extends Menu {
                 hudIsActive = false;
             case "SCREENSHOT":
                 takeScreenshot = true;
+
                 break;
             case "TOGGLE_DEBUG":
                 debugIsActive = !debugIsActive;
