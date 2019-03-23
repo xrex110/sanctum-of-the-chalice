@@ -10,6 +10,10 @@ public class Timer implements Serializable{
     public Timer() {
         
     }
+    
+    public Timer(boolean activity) {
+        active = activity;
+    }
 
     public void start() {
         active = true;
@@ -18,7 +22,7 @@ public class Timer implements Serializable{
 
     public void stop() {
         active = false;
-        nanoSeconds +=  System.nanoTime() - lastNanoTime;
+        nanoseconds +=  System.nanoTime() - lastNanoTime;
     }
 
     public void reset() {
@@ -28,7 +32,7 @@ public class Timer implements Serializable{
 
     public void stop(long forcedTime) {
         active = false;
-        nanoSeconds += forcedTime - lastNanoTime;
+        nanoseconds += forcedTime - lastNanoTime;
     }
 
     public long getNano() {
@@ -37,9 +41,10 @@ public class Timer implements Serializable{
         }
         return nanoseconds;
     }
-
+    
     public int getMillis() {
         return (int)(getNano() / 1e6);
     }
-
+    
+    public boolean isActive() { return active; }
 }

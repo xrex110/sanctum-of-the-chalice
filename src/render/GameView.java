@@ -23,13 +23,10 @@ public class GameView extends Menu {
 	private FontLoader fl;
 	private String sheetPath;
 	Random rand;					/* util.Random object for benchmarking */
-	int redraw = 1;
 
     int frameCount = 0;             /* Tracks number of frames since last check */
-    double timeSinceFPSUpdate = 0;  /* Tracks last time of FPS calculation in MS */
-    double updateDelta = 16;        /* Difference in MS between FPS calculations */
-    double fps = 0;                 /* Number of frames per second */
-    
+    int fps = 0;                 /* Number of frames per second */
+    private Timer fpsTimer = new Timer(); 
 	//BufferedImage wizard;
 	private GameObject[][][] map;	
 	//private GameObject[][] emap;
@@ -185,6 +182,7 @@ public class GameView extends Menu {
 		    drawFPS(rend);
             drawPos(rend);
             drawMem(rend);
+            drawPlaytime(rend);
         }
 
         if(signSelected != null) {
@@ -248,14 +246,22 @@ public class GameView extends Menu {
         fpsText.drawOutlineText(rend, ramString, 25, 100);
     }
 	
+    public void drawPlaytime(Graphics2D rend) {
+        float playtime = GameEngine.playtime.getMillis() / 1000f;
+        String playstr = "Playtime: " + playtime;
+        fpsText.drawOutlineText(rend, playstr, 25, 125);
+    }
+
     private void updateFPS() {
+        if(!fpsTimer.isActive())
+            fpsTimer.start();
         frameCount++;
 
-        double currentTime = System.nanoTime() / 1e8;
-        if(currentTime - timeSinceFPSUpdate >= updateDelta) {
-            fps = frameCount * 10 / updateDelta;
+        int updateDelta = 1000;
+        if(fpsTimer.getMillis() > updateDelta) {
+            fps = frameCount;
             frameCount = 0;
-            timeSinceFPSUpdate = System.nanoTime() / 1e8;
+            fpsTimer.reset();
         }
 
 

@@ -51,6 +51,8 @@ public class GameEngine {
 
     private EnemyObject theEnemy;
 
+    public static Timer playtime = new Timer();
+
     public GameEngine() {
         /*
            levelMap = new GameObject[30][30];
@@ -60,9 +62,6 @@ public class GameEngine {
         levelMap = new GameObject[3][mapSize][mapSize];
 
         //entityMap[12][12] = Player.player;
-        Player.player.setX(12);
-        Player.player.setY(12);
-        levelMap[2][12][12]=Player.player;
         int numRooms = 1;
         //levelMap = new GameObject[mapSize][mapSize];
         //entityMap = new GameObject[mapSize][mapSize];
@@ -407,12 +406,14 @@ public class GameEngine {
         if (gameMode != MODE.PAUSE) {
             prevMode = gameMode;
             gameMode = MODE.PAUSE;
+            playtime.stop();
             return true;
         }
         return false;
     }
 
     public static void unPause() {
+        playtime.start();
         gameMode = prevMode;
     }
     //TODO Make the maxDist parameter actually matter
