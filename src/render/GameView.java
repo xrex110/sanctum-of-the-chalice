@@ -50,6 +50,11 @@ public class GameView extends Menu {
     
     private InventoryMenu inventoryMenu;
     
+    boolean debugIsActive = true;
+    boolean hudIsActive = true;
+    boolean entityDebugGrid = false;
+    
+    private boolean takeScreenshot= false;
     //Handles the rendering of time until next tick
 	public GameView() {
         super(0,0,null);
@@ -74,14 +79,21 @@ public class GameView extends Menu {
         inventoryMenu = new InventoryMenu(800,800,this);
 		this.setBackground(Color.BLACK);
 	}
-    
+
 	@Override
 	public void paint(Graphics g) {
         updateFPS();
         //TODO: Ask shu why we need super.paint(g) for GV specifically
 		super.paint(g);		//Clears screen before every paint
-        
-		Graphics2D rend = (Graphics2D) g;
+        Graphics2D rend = (Graphics2D) g;
+        BufferedImage screenshot = null;
+        if(takeScreenshot) {
+            screenshot = new BufferedImage(800, 800, BufferedImage.TYPE_INT_ARGB);
+            rend = (Graphics2D)screenshot.getGraphics();
+            rend.setColor(Color.black);
+            rend.fillRect(0,0,800,800);
+        }
+		
         positionCamera(rend);
 		int xTiles = 25;	/* Number of tiles window can accomodate in x axis */
 		int yTiles = 25;	/* Number of tiles window can accomodate in y axis */
@@ -109,7 +121,7 @@ public class GameView extends Menu {
             signSelected = null;
 			for(int i = 0; i < map[1].length; i++) {
 				for(int j = 0; j < map[1][i].length; j++) {
-					if(map[1][i][j] instanceof Sign) {
+                    if(map[1][i][j] instanceof Sign) {
 						Sign sign = (Sign) map[1][i][j];
 						//System.out.println("RENDEREING SIGN: " + sign.getText());
 						sign.draw(rend);
@@ -128,12 +140,26 @@ public class GameView extends Menu {
 		if(map[2].length != 1) {
 			for(int i = 0; i < map[2].length; i++) {
 				for(int j = 0; j < map[2][i].length; j++) {
-					if(map[2][i][j] != null && map[2][i][j] != Player.player) map[2][i][j].draw(rend);	
+					if(map[2][i][j] != null && map[2][i][j] != Player.player) {
+                        if(entityDebugGrid)
+                            map[2][i][j].drawDebug(rend);
+                        map[2][i][j].draw(rend);		
+                    }
 				}
 			}
 		}
         Player.player.draw(rend, playerXCopy, playerYCopy);
-        drawHud(rend);
+        
+        if(hudIsActive)
+            drawHud(rend);
+
+        if(takeScreenshot) {
+            g.drawImage(screenshot,0,0,null);
+            takeScreenshot = false;
+            SaveHandler.saveScreenshot(screenshot);
+        }
+        rend.dispose();
+        g.dispose();
 	}
 
 	public void setMap(GameObject[][][] map) {
@@ -154,10 +180,12 @@ public class GameView extends Menu {
 		//testText.drawOutlineText(rend, "Outlined", 50, 250);
         drawFog(rend);
         playerStatusHud.draw(rend);
-		drawFPS(rend);
-        drawPos(rend);
-        drawMem(rend);
-        
+
+        if(debugIsActive) {
+		    drawFPS(rend);
+            drawPos(rend);
+            drawMem(rend);
+        }
 
         if(signSelected != null) {
                 drawSign(rend, signSelected);
@@ -284,18 +312,18 @@ public class GameView extends Menu {
     public void invoke(String key) {
         //Please do nothing ty
         if(!isFocused) return; 
-        if(key.matches("[WASDQ]")) {
+        if(key.matches("^[WASDQ]$")) {
             playerStatusHud.setKey(key);
             GameEngine.updateInput(key);
             return;
         }
-        if(!sanitizeInputTime(key)) return;
+        if(!sanitizeInputTime(500,key)) return;
         /* Debug options for now */ 
         switch(key) {
             case "O":
                 playerStatusHud.reduceHP(25);
                 break;
-            case "I":
+            case "INVENTORY":
                 inventoryMenu.focus(this);
                 GameEngine.setPause();
                 break;
@@ -305,9 +333,17 @@ public class GameView extends Menu {
             case "L":
                 playerStatusHud.stamina += 25;
                 break;
-
+            case "SCREENSHOT":
+                takeScreenshot = true;
+                break;
+            case "TOGGLE_DEBUG":
+                debugIsActive = !debugIsActive;
+                break;
+            case "TOGGLE_OBJ":
+                entityDebugGrid = !entityDebugGrid;
+                break;
+            case "TOGGLE_HUD":
+                hudIsActive = !hudIsActive;
         }
-        
-
     }
 }

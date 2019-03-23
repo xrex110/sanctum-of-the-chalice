@@ -1,10 +1,4 @@
 package render;
-import main.*;
-
-import game.*;
-import sound.*;
-import object.*;
-
 
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;

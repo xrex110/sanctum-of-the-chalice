@@ -101,7 +101,7 @@ public class RenderLoop extends Thread {
             ((Menu)window.getWindowView()).invoke("O");
         }
         else if(in.isKeyPressed(KeyEvent.VK_I)) {
-            ((Menu)window.getWindowView()).invoke("I");
+            ((Menu)window.getWindowView()).invoke("INVENTORY");
         }
         else if(in.isKeyPressed(KeyEvent.VK_K)) {
             ((Menu)window.getWindowView()).invoke("K");
@@ -110,7 +110,18 @@ public class RenderLoop extends Thread {
             ((Menu)window.getWindowView()).invoke("L");
         }else if(in.isKeyPressed(KeyEvent.VK_Q)) {
             ((Menu)window.getWindowView()).invoke("Q");
+        }else if(in.isKeyPressed(KeyEvent.VK_F1)) {
+            ((Menu)window.getWindowView()).invoke("TOGGLE_HUD");
+        }else if(in.isKeyPressed(KeyEvent.VK_F2)) {
+            ((Menu)window.getWindowView()).invoke("SCREENSHOT");
+        }else if(in.isKeyPressed(KeyEvent.VK_F3)) {
+            if(in.isKeyPressed(KeyEvent.VK_E))
+                ((Menu)window.getWindowView()).invoke("TOGGLE_OBJ");
+
+            else ((Menu)window.getWindowView()).invoke("TOGGLE_DEBUG");
         }
+
+
 
 		else ((Menu)window.getWindowView()).invoke("");
 		
