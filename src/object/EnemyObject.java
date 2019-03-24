@@ -68,6 +68,13 @@ public class EnemyObject extends GameObject {
 	return null;
     }
 
+    public int getCurrRange() {
+	if (state == STATE.SLEEP) {
+		return awakenRange;
+	}
+	return aggroRange;
+    }
+
     public boolean interact(int currentX, int currentY) {
         return currentX == getX() && currentY == getY();
     }

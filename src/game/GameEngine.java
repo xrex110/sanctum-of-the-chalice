@@ -550,7 +550,10 @@ public class GameEngine {
 		if (levelMap[0][next[0]][next[1]] != null && 
 			!levelMap[0][next[0]][next[1]].isSolid()) {
 		    if (levelMap[2][next[0]][next[1]] instanceof EnemyObject) {
-			((EnemyObject)levelMap[2][next[0]][next[1]]).setPath(extractPath(pathMap, next[0], next[1]));
+			    EnemyObject en = ((EnemyObject)levelMap[2][next[0]][next[1]]);
+			    if (pathMap[next[0]][next[1]][4] < en.getCurrRange()) {
+			    	en.setPath(extractPath(pathMap, next[0], next[1]));
+			    }
 		    }    
 		    else {
 			queue.add(next);
@@ -569,7 +572,10 @@ public class GameEngine {
 		if (levelMap[0][next[0]][next[1]] != null && 
 			!levelMap[0][next[0]][next[1]].isSolid()) {
 		    if (levelMap[2][next[0]][next[1]] instanceof EnemyObject) {
-			((EnemyObject)levelMap[2][next[0]][next[1]]).setPath(extractPath(pathMap, next[0], next[1]));
+			EnemyObject en = ((EnemyObject)levelMap[2][next[0]][next[1]]);
+			    if (pathMap[next[0]][next[1]][4] < en.getCurrRange()) {
+			    	en.setPath(extractPath(pathMap, next[0], next[1]));
+			}
 		    }    
 		    else {
 			queue.add(next);
@@ -588,7 +594,10 @@ public class GameEngine {
 		if (levelMap[0][next[0]][next[1]] != null && 
 			!levelMap[0][next[0]][next[1]].isSolid()) {
 		    if (levelMap[2][next[0]][next[1]] instanceof EnemyObject) {
-			((EnemyObject)levelMap[2][next[0]][next[1]]).setPath(extractPath(pathMap, next[0], next[1]));
+			EnemyObject en = ((EnemyObject)levelMap[2][next[0]][next[1]]);
+			    if (pathMap[next[0]][next[1]][4] < en.getCurrRange()) {
+			    	en.setPath(extractPath(pathMap, next[0], next[1]));
+			}
 		    }    
 		    else {
 			queue.add(next);
@@ -607,7 +616,10 @@ public class GameEngine {
 		if (levelMap[0][next[0]][next[1]] != null && 
 			!levelMap[0][next[0]][next[1]].isSolid()) {
 		    if (levelMap[2][next[0]][next[1]] instanceof EnemyObject) {
-			((EnemyObject)levelMap[2][next[0]][next[1]]).setPath(extractPath(pathMap, next[0], next[1]));
+			EnemyObject en = ((EnemyObject)levelMap[2][next[0]][next[1]]);
+			    if (pathMap[next[0]][next[1]][4] < en.getCurrRange()) {
+			    	en.setPath(extractPath(pathMap, next[0], next[1]));
+			}
 		    }    
 		    else {
 			queue.add(next);
