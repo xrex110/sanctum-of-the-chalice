@@ -16,7 +16,7 @@ public class Settings implements Serializable {
         difficulty = Difficulty.MEDIUM;
         volume = 50;
         soundOn = false;
-        interpRate = 10;
+        interpRate = 5;
     }
 
     @Override
