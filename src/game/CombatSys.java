@@ -21,7 +21,7 @@ public class CombatSys {
 
 		//case of the different type object -> player vs enemy
 		// 3/29 -> update the Player.java & EnemyObject.java 
-		//	 add Stat stat = new Stat() with their types.
+		//	       add Stat stat = new Stat() with their types.
 		if(atk.stat.type != def.stat.type){
 				int atkDamage = atk.stat.toDamage;
 				def.stat.getDamage(atkDamage);
@@ -39,7 +39,7 @@ public class CombatSys {
 				}				
 
 		}else{
-		
+			//Enemy are not attack Enemy type object.
 		}
 
 

@@ -5,7 +5,7 @@ import render.*;
 import sound.*;
 import object.*;
 
-
+import java.util.Random;
 
 
 public class Stat {
@@ -31,6 +31,8 @@ public class Stat {
 
 	private boolean alive;
 	private int objectType;
+	Random rand = new Random();
+
 	public Stat(){
 		
 		this.objectLv = 1;
@@ -57,14 +59,14 @@ public class Stat {
 			this.alive    = true;
 			this.objectType = 0;//Player
 		}else{
-			this.objectLv = 1;
+			this.objectLv = rand.nextInt(3)+1;//1~3 lv
 			this.str      = 1;
 			this.dex      = 1;
 			this.wis      = 1;
 			this.con      = 1;
 			this.currentHp = 20;
 			this.maxHp    = 20;
-			this.exp      = 4;
+			this.exp      = rand.nextInt((15-5)+1)+5;
 			this.alive    = true;
 			this.objectType = 1; // Creature;
 		}
@@ -162,6 +164,8 @@ public class Stat {
 		setDex(1);
 		setWis(1);
 		setCon(1);
+		objectLv+=1;
+		currentHp = maxHp; // update their current hp to max
 	}
 
 	/*
