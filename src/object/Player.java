@@ -1,6 +1,6 @@
 package object;
 
-
+import game.*;
 import java.awt.Graphics2D;
 import render.SpriteLoader;
 
@@ -12,7 +12,7 @@ public class Player extends GameObject {
     transient SpriteLoader sp = new SpriteLoader();
     public static Player player = new Player(0,0);
     public static int TILE_SIZE_X = 32, TILE_SIZE_Y = 32;
-	Stat stat = new Stat(0);
+	public Stat stat = new Stat(0);
 
     public Player(int x, int y) {
         super(x,y, true);

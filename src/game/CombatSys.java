@@ -23,6 +23,7 @@ public class CombatSys {
 		// 3/29 -> update the Player.java & EnemyObject.java 
 		//	       add Stat stat = new Stat() with their types.
 		if(atk.stat.type != def.stat.type){
+
 				int atkDamage = atk.stat.toDamage;
 				def.stat.getDamage(atkDamage);
 				
