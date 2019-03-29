@@ -506,11 +506,6 @@ public class GameEngine {
 			}
 	    }
 
-
-
-
-
-
 	}
 	//Secondary pass
 	for (int i = 0; i < pathMap.length; i++) {
@@ -626,11 +621,6 @@ public class GameEngine {
 		    }
 		}
 	    }
-
-
-
-
-
 
 	}
 

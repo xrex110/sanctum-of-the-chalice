@@ -110,6 +110,9 @@ public class Stat {
 	public int getCon(){
 		return con;
 	}
+	public int getType(){
+		return objectType;
+	}
 
 	/*
 	*	About the Damage related functions

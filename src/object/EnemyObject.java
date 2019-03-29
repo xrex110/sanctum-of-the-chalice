@@ -17,6 +17,9 @@ public class EnemyObject extends GameObject {
     int awakenRange = 3;
     int aggroRange = 6;
 
+	//stat
+	Stat stat = new Stat(1); // enemy type;
+
     enum STATE { 
 	SLEEP,
 	AWAKE,
