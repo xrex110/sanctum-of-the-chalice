@@ -8,8 +8,12 @@ import game.*;
 import sound.*;
 
 
-public class Chest extends GameObject {
+public class Chest extends GameObject implements Interactable {
 	SpriteLoader spLoader = new SpriteLoader();
+
+	public boolean interact() {
+		return false;
+	}
 
 	public Chest(int x, int y) {
 		super(x, y, false);

@@ -73,6 +73,12 @@ public class GameEngine {
 	//false for random radially generated levels
 	levelGen = new Generator(mapSize, numRooms, true);
 	generateMap();
+	
+	for (int i = 0; i < levelMap[1].length; i++) {
+	    for (int j = 0; j < levelMap[1][i].length; j++) {
+		levelMap[1][i][j] = new TriggerList(j, i);
+	    }
+	}
 
 	int[] playPos = levelGen.getSpawnPos();
 	Player.player.setX((playPos[1] + 3));
@@ -102,8 +108,15 @@ public class GameEngine {
 
 	moveHist = new MoveHistory(MAXHISTORY);
 	levelEnd = new Sign(signPositions[1].col, signPositions[1].row, "Insert end stats here");
-	levelMap[1][signPositions[1].row][signPositions[1].col] = levelEnd;
-	levelMap[1][signPositions[0].row][signPositions[0].col] = new Sign(signPositions[0].col, signPositions[0].row, help);
+	TriggerList signTrig = (TriggerList)levelMap[1][signPositions[1].row][signPositions[1].col];
+	signTrig.rendered = levelEnd;
+	signTrig.triggers.add(levelEnd);
+	Sign intro = new Sign(signPositions[0].col, signPositions[0].row, help);
+	signTrig = (TriggerList)levelMap[1][signPositions[0].row][signPositions[0].col];
+	signTrig.rendered = intro; 
+	signTrig.triggers.add(intro);
+
+
 
 	//Populate chests!
 	//First arg is the chance to spawn a chest per non spawn room of the level
@@ -113,7 +126,10 @@ public class GameEngine {
 	//last one is for max number of chests allowed per room
 	ArrayList<Coordinate> chestCoords = levelGen.getChestCoordinates(40, 15, 11, 3);
 	for(Coordinate coord : chestCoords) {
-	    levelMap[1][coord.row][coord.col] = new Chest(coord.col, coord.row);
+	    Chest ch = new Chest(coord.col, coord.row);
+	    TriggerList tr = (TriggerList)levelMap[1][coord.row][coord.col];
+	    tr.rendered = ch;
+	    tr.triggers.add(ch);
 
 	    levelMap[2][coord.row][coord.col] = new EnemyObject(coord.col, coord.row);
 
@@ -130,6 +146,7 @@ public class GameEngine {
 	currSlowRate = SLOWRATE;
 	currentInput = "";
     }
+
 
     public RenderLoop getRenderEngine() {
 	return renderEngine;

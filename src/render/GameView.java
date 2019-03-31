@@ -123,14 +123,15 @@ public class GameView extends Menu {
             signSelected = null;
 			for(int i = 0; i < map[1].length; i++) {
 				for(int j = 0; j < map[1][i].length; j++) {
-                    if(map[1][i][j] instanceof Sign) {
-						Sign sign = (Sign) map[1][i][j];
+					TriggerList loc = (TriggerList)map[1][i][j];
+                    if(loc.rendered instanceof Sign) {
+						Sign sign = (Sign) loc.rendered;
 						//System.out.println("RENDEREING SIGN: " + sign.getText());
 						sign.draw(rend);
 						if(sign.interact(playerXCopy, playerYCopy)) signSelected = sign; 
 					}
-					else if(map[1][i][j] instanceof Chest) {
-						Chest chest = (Chest) map[1][i][j];
+					else if(loc.rendered instanceof Chest) {
+						Chest chest = (Chest) loc.rendered;
 						chest.draw(rend);
 					}
 				}
