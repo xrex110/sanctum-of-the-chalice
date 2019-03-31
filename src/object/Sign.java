@@ -9,7 +9,7 @@ import sound.*;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-public class Sign extends GameObject {
+public class Sign extends GameObject implements Interactable{
     SpriteLoader sp = new SpriteLoader();
     private String text;
     public Sign(int x, int y, String text){
