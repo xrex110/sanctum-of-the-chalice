@@ -198,7 +198,7 @@ public class GameView extends Menu {
 
         if(GameEngine.signSelected != null) {
                 drawSign(rend, GameEngine.signSelected);
-                GameEngine.signSelected = null;
+                //GameEngine.signSelected = null;
         }
 
 		rend.setTransform(oldAt);

@@ -264,6 +264,7 @@ public class GameEngine {
 
 		//System.out.print(" 1");
 		slowIts++;
+		signSelected = null;
 		//Update player and stuff
 		if (currentInput.equals("Q") && moveHist.history.size() > 0) {
 			setState(MODE.REVERSION);
