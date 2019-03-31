@@ -1,6 +1,6 @@
 package object;
 
 public interface Interactable {
-	public abstract boolean interact();
+	public abstract boolean interact(GameObject target);
 
 }

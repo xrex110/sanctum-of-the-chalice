@@ -37,4 +37,12 @@ public class Sign extends GameObject implements Interactable{
     public boolean interact() {
         return Player.player.getX() == getX() && Player.player.getY() == getY();
     }
+
+    public boolean interact(GameObject target) {
+	if (target instanceof Player) {
+	    GameEngine.signSelected = this;
+	    return true;
+	}
+	return false;
+    }
 }

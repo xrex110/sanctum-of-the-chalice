@@ -11,7 +11,7 @@ import sound.*;
 public class Chest extends GameObject implements Interactable {
 	SpriteLoader spLoader = new SpriteLoader();
 
-	public boolean interact() {
+	public boolean interact(GameObject target) {
 		return false;
 	}
 
