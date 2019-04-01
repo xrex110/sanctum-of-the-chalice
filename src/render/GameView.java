@@ -155,7 +155,7 @@ public class GameView extends Menu {
         if(hudIsActive)
             drawHud(rend);
 
-        if(takeScreenshot) {
+        if(takeScreenshot && screenshot != null) {
             takeScreenshot = false;
             SaveHandler.saveScreenshot(screenshot);
             if(mapScreenshot) {
