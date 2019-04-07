@@ -63,6 +63,18 @@ public class Corridor {
 		sidesConnected = new boolean[] {false, false};
 	}
 
+	//Same as translate in Room.java
+	//Note offsetY = rowOffset, offsetX = colOffset
+	public void translate(int offsetX, int offsetY) {
+		bounds.x += offsetX;
+		bounds.y += offsetY;
+		row += offsetY;
+		col += offsetX;
+
+		for(MapCoordinate pt : firstWall) pt.translate(offsetY, offsetX);
+		for(MapCoordinate pt : secondWall) pt.translate(offsetY, offsetX);
+	}
+
 	public ArrayList<MapCoordinate> getFirstWall() {
 		return firstWall;
 	}

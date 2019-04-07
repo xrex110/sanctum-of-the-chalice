@@ -34,12 +34,12 @@ public class Generator {
 	boolean linear;
 	int mapLevel;*/
 
-	int mapSize = 50;
+	//int mapSize = 50;
 
 	public Generator() {
 		rng = new RandomNumberGenerator();
-		map = new int[mapSize][mapSize];
-		mapArea = new Rectangle(0, 0, mapSize, mapSize);
+		//map = new int[mapSize][mapSize];
+		//mapArea = new Rectangle(0, 0, mapSize, mapSize);
 		rectanglesInLevel = new ArrayList<>();
 		roomsInLevel = new ArrayList<>();
 		corridorsInLevel = new ArrayList<>();
@@ -54,15 +54,15 @@ public class Generator {
 
 	public void generateDungeon() {
 		//First we generate a spawn room
-		generateSpawn(10, 8, 12);
+		generateSpawn(50, 8, 12);
 		
 		//A segment is described as an attempt to generate a corridor and room
 		//TODO: Better definition for Segment? Something with more versitality
 		generateSegment(selectRandomValidRoom());
 
+		adjustMapSize();
 		updateMap();
 		printMap();
-		adjustMapSize();
 	}
 
 	//This function used to current values of minX, minY, maxX, and maxY to
@@ -70,29 +70,36 @@ public class Generator {
 	//with the bestfit size
 	private void adjustMapSize() {
 		log(String.format("minX = %d, minY = %d\nmaxX = %d, maxY = %d\n(Note this is x,y. Note row, col\n", minX, minY, maxX, maxY));
-		mapWidth = maxX - minX;
-		mapHeight = maxY - minY;
+		//+1 for the 0 indexing stuff
+		mapWidth = maxX - minX + 1;
+		mapHeight = maxY - minY + 1;
+
+		map = new int[mapHeight][mapWidth];
+		//We negate minX and minY and then translate every element by them
+		//This so the the topleftmost point is always flush against the edge of the map,
+		//at 0,0
+		//For Room and corridor, its translate(offsetX, offsetY);
 		log(String.format("mapWidth = %d, mapHeight = %d\n", mapWidth, mapHeight));
+		for(Room rm : roomsInLevel) rm.translate(-minX, -minY);	
+		for(Corridor cor: corridorsInLevel) cor.translate(-minX, -minY);
+		//For MapCoordinate, its translate(rowOffset, colOffset);
+		for(MapCoordinate mc : corridorTiles) mc.translate(-minY, -minX);
+
 	}
 
 	/*
 	 *	PURPOSE: Generate a spawn room within sqrOffset bounds and minSize/maxSize
-	 *	PARAMETERS:		sqrOffset: Room will be generated within a box the size of mapSize - 2sqrOffset
+	 *	PARAMETERS:		maxOffset: Room will be generated between (0, 0) and (maxOffset, maxOffset);
 	 *					minSize: minimum side size of spawn room
 	 *					maxSize: maximum side size of spawn room
 	 */
-	private void generateSpawn(int sqrOffset, int minSize, int maxSize) {
+	private void generateSpawn(int maxOffset, int minSize, int maxSize) {
 		//We first get a width and height
 		int width = rng.getRandomWithinBounds(minSize, maxSize);
 		int height = rng.getRandomWithinBounds(minSize, maxSize);
 
 		//Since the room can only be within the box that is the centermost of size mapSize- 2sqrOffset
-		int rMin = sqrOffset;
-		int rMax = mapSize - sqrOffset - height;
-		int cMin = sqrOffset;
-		int cMax = mapSize - sqrOffset - width;
-
-		MapCoordinate roomOrigin = rng.getRandomCoordinateWithinBounds(rMin, rMax, cMin, cMax);
+		MapCoordinate roomOrigin = rng.getRandomCoordinateWithinBounds(0, maxOffset, 0, maxOffset);
 		spawnRoom = new Room(roomOrigin, width, height);
 		roomsInLevel.add(spawnRoom);
 		addToCollisionList(spawnRoom.bounds);

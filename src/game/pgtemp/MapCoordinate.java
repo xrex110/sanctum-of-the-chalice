@@ -11,6 +11,11 @@ public class MapCoordinate {
 		this.col = col;
 	}
 
+	public void translate(int rowOffset, int colOffset) {
+		row += rowOffset;
+		col += colOffset;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if(o == this) return true;

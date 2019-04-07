@@ -56,6 +56,22 @@ public class Room {
 		bottomWall.trimToSize();
 	}
 
+	//This function accepts a x and y offset, and then translate ALL the
+	//coordinate associated with this object according to the offset
+	public void translate(int offsetX, int offsetY) {
+		bounds.x += offsetX;
+		bounds.y += offsetY;
+		row += offsetY;
+		col += offsetX;
+
+		for(MapCoordinate pt : leftWall) pt.translate(offsetY, offsetX);
+		for(MapCoordinate pt : rightWall) pt.translate(offsetY, offsetX);
+		for(MapCoordinate pt : topWall) pt.translate(offsetY, offsetX);
+		for(MapCoordinate pt : bottomWall) pt.translate(offsetY, offsetX);
+		for(MapCoordinate pt : corners) pt.translate(offsetY, offsetX);
+
+	}
+
 	public ArrayList<MapCoordinate> getDirectionWall(Direction dir) {
 		switch(dir) {
 			case LEFT: return leftWall;
