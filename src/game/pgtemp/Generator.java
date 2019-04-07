@@ -60,6 +60,7 @@ public class Generator {
 
 	public void generateDungeon() {
 		//First we generate a spawn room
+		long startTime = System.currentTimeMillis();
 		generateSpawn(50, 8, 12);
 
 		//A segment is described as an attempt to generate a corridor and room
@@ -76,7 +77,17 @@ public class Generator {
 
 		adjustMapSize();
 		updateMap();
+		long endTime = System.currentTimeMillis();
+
+		//Print map!
 		printMap();
+
+		termColorRed();
+		System.out.println("=========================");
+		System.out.println("Time taken to generate level (not counting printing)\n\t\t" + (endTime - startTime) + "ms");
+		System.out.println("=========================");
+		termClearColor();
+		
 	}
 
 	//This function used to current values of minX, minY, maxX, and maxY to
@@ -134,6 +145,8 @@ public class Generator {
 			boolean sideFound = false;
 
 			while(!sideFound) {
+				//If the room has all sides connected, move on with your life,
+				//let parent function decide what to do
 				if(startRoom.isAllConnected()) return genSuccess;
 				dir = Direction.values()[rng.getRandomNumber(3)];	//Random dir
 				if(!startRoom.isSideConnected(dir)) sideFound = true;
@@ -363,7 +376,11 @@ public class Generator {
 		System.out.println("=====Printing World=====");
 		for(int i = 0; i < map.length; i++) {
 			for(int j = 0; j < map[1].length; j++) {
+				if(map[i][j] == 1) termColorGreen();
+				else if(map[i][j] == 2) termColorRed();
+				else termColorBlack();
 				System.out.print(map[i][j] + " ");
+				termClearColor();
 			}
 			System.out.println();
 		}
@@ -375,4 +392,19 @@ public class Generator {
 		System.out.println(str);
 	}
 
+	private void termColorRed() {
+		System.out.print("\033[31m");
+	}	
+
+	private void termColorGreen() {
+		System.out.print("\033[32m");
+	}	
+
+	private void termColorBlack() {
+		System.out.print("\033[30m");
+	}	
+
+	private void termClearColor() {
+		System.out.print("\033[0m");
+	}	
 }
