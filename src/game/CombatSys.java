@@ -3,7 +3,7 @@ import main.*;
 
 import object.*;
 import sound.*;
-
+import java.util.*;
 public class CombatSys {
 	/*
 	*	Combat Rule
@@ -17,32 +17,51 @@ public class CombatSys {
 	*				 - update each object's current hp based on the damage.
 	*/
 
-	public void combat(Object atk, Object def){
+	public static void combatPlayer(Player atk, EnemyObject def){
 
-		//case of the different type object -> player vs enemy
-		// 3/29 -> update the Player.java & EnemyObject.java 
-		//	       add Stat stat = new Stat() with their types.
-		if(atk.stat.type != def.stat.type){
+		//case of the different type object -> player attack enemy
+		if(atk.stat.getType() != def.stat.getType() ){
 
-				int atkDamage = atk.stat.toDamage;
+				int atkDamage = 0;
+				atkDamage = atk.stat.toDamage();
 				def.stat.getDamage(atkDamage);
-				
+				System.out.println("Attack!");
+				System.out.println("Enemy get "+ atkDamage + " Damage");
 				if(def.stat.checkAlive()==false){
-					//check the object die or not.
-					if(def.stat.getType()==0){
-						//exit or show game over
-					}else{
+					//check the object die or not.		
+					
+					if(def.stat.getType()==1){
+						System.out.println("Enemy Die");
 						//enemy die.
 						//give exp to the user.
-						atk.stat.getExp(def.stat.giveExp());
+						int exp = def.stat.giveExp();
+						atk.stat.getExp(exp);
+						System.out.println("Player get "+exp+ " exp");
 						//destroy the enemy object.-> ??
 					}
 				}				
-
-		}else{
-			//Enemy are not attack Enemy type object.
+				System.out.println("Enemy Health: " + def.stat.getHP());
+				System.out.println("\n\n Player Stat: ");
+				System.out.println("Level: "+atk.stat.getLv());
+				System.out.println("STR: "+atk.stat.getStr());
+				System.out.println("DEX: "+atk.stat.getDex());
+				System.out.println("Wis: "+atk.stat.getWis());
+				System.out.println("Con: "+atk.stat.getCon()+"\n");				
 		}
+	}
 
-
+	public static void combatEnemy(EnemyObject atk, Player def){
+		if(atk.stat.getType() != def.stat.getType()){
+			int atkDamage = 0;
+			atkDamage = atk.stat.toDamage();
+			def.stat.getDamage(atkDamage);
+			System.out.println("Enemy Attack!");
+			System.out.println("Player get: "+ atkDamage+ " Damage");
+			if(def.stat.checkAlive() == false){
+				//check player is die or not.
+				System.out.println("Player die!\n ");
+				//game over!
+			}
+		}
 	}
 }

@@ -29,6 +29,10 @@ public class GameEngine {
     private float gameStart;
     private boolean running;
     private String backgroundMusic = "../res/Twisting.ogg";
+	// footstep sound.
+	private String footStepSound = "../res/FootStep.ogg";
+	// fight sound.
+	private String atkSound2 = "../res/attackSound2.ogg";
     //private String enterSound = "../res/Mario.ogg";
     private Sign levelEnd;
 
@@ -166,7 +170,7 @@ public class GameEngine {
 	renderEngine.start();		//Starts the renderengine thread!
 
 	//soundEngine.play(enterSound, "enter");
-	soundEngine.playLoop(backgroundMusic, "background");
+	//soundEngine.playLoop(backgroundMusic, "background");
 	//GameEngine.unPause();
 	gameLoop();
     }
@@ -260,7 +264,7 @@ public class GameEngine {
 		//TODO: Handle revert collision checks
 		levelMap[2][Player.player.getY()][Player.player.getX()] = Player.player;
 	    }
-	    updatePlayer();
+	    updatePlayer(); // check
 
 	    if (!levelEnd.interact()); {
 		levelEnd.setText(("Congratulations! Tutorial Complete\n" +
@@ -332,21 +336,25 @@ public class GameEngine {
 	{
 	    //Player.player.moveUp();
 	    yPos--;
+		soundEngine.play(footStepSound, "footstep");
 	}
 	else if (currentInput.equals("A"))
 	{
 	    //Player.player.moveLeft();
 	    xPos--;
+		
 	}
 	else if (currentInput.equals("S"))
 	{
 	    //Player.player.moveDown();
 	    yPos++;
+		
 	}
 	else if (currentInput.equals("D"))
 	{
 	    //Player.player.moveRight();
 	    xPos++;
+		
 	}
 
 
@@ -363,9 +371,18 @@ public class GameEngine {
 		Player.player.setX(xPos);
 		Player.player.setY(yPos);
 		//System.out.println(xPos + " " + yPos);
-
+		
 		levelMap[2][yPos][xPos] = Player.player;
-	    }
+	    }else if(levelMap[2][yPos][xPos] != null){
+			if(levelMap[2][yPos][xPos] instanceof EnemyObject){
+				//Combat system with collision detection.
+				//when user attack, then play the sound effect.
+				soundEngine.play(atkSound2, "attack2");
+				//soundEngine.play(footStepSound, "footstep");
+				CombatSys.combatPlayer(Player.player,((EnemyObject)levelMap[2][yPos][xPos]));
+			}
+
+		}
 	}
 
 	moveHist.push(Player.player.getX() , Player.player.getY());

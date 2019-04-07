@@ -115,6 +115,12 @@ public class Stat {
 	public int getType(){
 		return objectType;
 	}
+	public int getHP(){
+		return currentHp;	
+	}	
+	public int getLv(){
+		return objectLv;
+	}
 
 	/*
 	*	About the Damage related functions
@@ -133,6 +139,7 @@ public class Stat {
 		currentHp -= dmg;
 		if(currentHp <= 0){
 			alive = false;
+			currentHp=0;
 			
 		}
 	}

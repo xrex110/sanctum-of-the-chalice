@@ -1,4 +1,4 @@
-package object;
+\package object;
 import main.*;
 
 
@@ -18,7 +18,7 @@ public class EnemyObject extends GameObject {
     int aggroRange = 6;
 
 	//stat
-	Stat stat = new Stat(1); // enemy type;
+	public Stat stat = new Stat(1); // enemy type;
 
     enum STATE { 
 	SLEEP,
