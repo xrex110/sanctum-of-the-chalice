@@ -25,8 +25,9 @@ public class Generator {
 	private ArrayList<Corridor> corridorsInLevel;
 	private ArrayList<MapCoordinate> corridorTiles;
 	private ArrayList<MapCoordinate> occupiedTiles;
-	private Room spawnRoom;
+	private Room spawnRoom;		//spawn gets special designation
 
+	private int numRooms;
 	//Map generation fields
 	/*int maxNumRooms;
 	int minRoomSize;
@@ -36,7 +37,7 @@ public class Generator {
 
 	//int mapSize = 50;
 
-	public Generator() {
+	public Generator(int numRooms) {
 		rng = new RandomNumberGenerator();
 		//map = new int[mapSize][mapSize];
 		//mapArea = new Rectangle(0, 0, mapSize, mapSize);
@@ -50,6 +51,8 @@ public class Generator {
 		//like the size of our array exceeding IntMax or Min 
 		minX = minY = Integer.MAX_VALUE;
 		maxX = maxY = Integer.MIN_VALUE;
+
+		this.numRooms = numRooms;
 	}
 
 	public void generateDungeon() {
@@ -58,7 +61,8 @@ public class Generator {
 		
 		//A segment is described as an attempt to generate a corridor and room
 		//TODO: Better definition for Segment? Something with more versitality
-		generateSegment(selectRandomValidRoom());
+		int numberOfRoomsGenerated = 1;
+		while(numberOfRoomsGenerated++ != numRooms) generateSegment(selectRandomValidRoom());
 
 		adjustMapSize();
 		updateMap();
@@ -73,6 +77,9 @@ public class Generator {
 		//+1 for the 0 indexing stuff
 		mapWidth = maxX - minX + 1;
 		mapHeight = maxY - minY + 1;
+
+		//May come of use later, in here in case
+		mapArea = new Rectangle(0, 0, mapWidth, mapHeight);
 
 		map = new int[mapHeight][mapWidth];
 		//We negate minX and minY and then translate every element by them
@@ -185,7 +192,7 @@ public class Generator {
 	private MapCoordinate generateCorridor(Heading heading) {
 		//Randomly generate some length and breadth parameters
 		int length = rng.getRandomWithinBounds(4, 7); //4 to 7 long
-		int breadth = 3;	//Keeping this 3 for now, TODO: randomize
+		int breadth = 3;	//Keeping this 3 for now
 		int oRow = 0, oCol = 0;
 		//retVal returns the coordinate at the end of the corridor, from where
 		//we will start generating the next object. 
