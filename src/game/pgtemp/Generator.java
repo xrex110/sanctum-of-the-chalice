@@ -1,7 +1,7 @@
 /*package game;
-import main.*;
-import render.*;
-import object.*;*/
+  import main.*;
+  import render.*;
+  import object.*;*/
 //Uncomment above when required
 
 import java.util.Random;
@@ -10,9 +10,12 @@ import java.awt.Rectangle;
 
 public class Generator {
 	private int[][] map;
-	private RandomNumberGenerator rng;
 
+	/////////////////////////////////////////////
+	private RandomNumberGenerator rng;
 	private Rectangle mapArea;
+	private MapCoordinate cursor;
+	/////////////////////////////////////////////
 
 	//These variables try to keep track of the topleftmost corner
 	//and the bottomrightmost corner of the rooms generated in the
@@ -30,10 +33,10 @@ public class Generator {
 	private int numRooms;
 	//Map generation fields
 	/*int maxNumRooms;
-	int minRoomSize;
-	int maxRoomSize;
-	boolean linear;
-	int mapLevel;*/
+	  int minRoomSize;
+	  int maxRoomSize;
+	  boolean linear;
+	  int mapLevel;*/
 
 	//int mapSize = 50;
 
@@ -58,11 +61,18 @@ public class Generator {
 	public void generateDungeon() {
 		//First we generate a spawn room
 		generateSpawn(50, 8, 12);
-		
+
 		//A segment is described as an attempt to generate a corridor and room
 		//TODO: Better definition for Segment? Something with more versitality
 		int numberOfRoomsGenerated = 1;
-		while(numberOfRoomsGenerated++ != numRooms) generateSegment(selectRandomValidRoom());
+		while(numberOfRoomsGenerated != numRooms) {
+			boolean genResult = generateSegment(selectRandomValidRoom());
+			//If its a fail, just continue on
+			//If its a success, go on to the next
+			if(!genResult) continue;
+			log("Segment " + numberOfRoomsGenerated + " generated successfully");
+			numberOfRoomsGenerated++;
+		}
 
 		adjustMapSize();
 		updateMap();
@@ -115,88 +125,115 @@ public class Generator {
 
 	//A segment is classified as a corridor along with a Room
 	//TODO: make it so that a segment can just be a corridor + dead end based on some chance
-	private void generateSegment(Room startRoom) {
+	private boolean generateSegment(Room startRoom) {
 		//We select a random, unconnected side of the room
-		boolean sideFound = false;
-		Direction dir = null;
-		while(!sideFound) {
-			dir = Direction.values()[rng.getRandomNumber(3)];	//Random dir
-			if(!startRoom.isSideConnected(dir)) sideFound = true;
+		boolean genSuccess = false;
+
+		while(!genSuccess) {
+			Direction dir = null;
+			boolean sideFound = false;
+
+			while(!sideFound) {
+				if(startRoom.isAllConnected()) return genSuccess;
+				dir = Direction.values()[rng.getRandomNumber(3)];	//Random dir
+				if(!startRoom.isSideConnected(dir)) sideFound = true;
+			}
+			//dir is the heading
+			//Now we get the index on the wall we want to start at
+			ArrayList<MapCoordinate> wall = startRoom.getDirectionWall(dir);
+			int indexPick = rng.getRandomNumber(wall.size() - 1);
+			MapCoordinate start = wall.get(indexPick);
+
+			//Now we have the coordinate start and the direction dir, from a wall of startRoom
+			//Now we start generating a corridor here
+			Corridor newCorridor = generateCorridor(new Heading(start, dir));
+
+			//Now we check whether this collides with somethimg
+			if(checkForCollision(newCorridor.bounds)) {
+				startRoom.setSideConnected(dir);
+				continue;
+			}
+
+			//Then we generate a room
+			//TODO: have a dice-roll chance for dead ends?
+			int minSize = 4;
+			int maxSize = 10;
+			Room newRoom = generateRoom(dir, minSize, maxSize);
+
+			//Now we check the new room generated for any collisions
+			if(checkForCollision(newRoom.bounds)) {
+				startRoom.setSideConnected(dir);
+				continue;
+			}
+
+			//Set the side of the startRoom to connected
+			startRoom.setSideConnected(dir);
+			//Remove the point where the corridor starts from startRoom
+			wall.remove(start);
+			//Add that same point to the corridorTiles list
+			corridorTiles.add(start);
+			//Add the cursor tile(where the newRoom opens) to the corridorTiles
+			corridorTiles.add(cursor);
+
+			//Add newCorridor to the relevant lists
+			corridorsInLevel.add(newCorridor);
+			addToCollisionList(newCorridor.bounds);
+
+			//Do newRoom settings
+			newRoom.setSideConnected(dir);
+			addToCollisionList(newRoom.bounds);	//Log the bounds of this room into the overlap arr
+			newRoom.getDirectionWall(dir).remove(cursor);
+			roomsInLevel.add(newRoom);
+
+			//Generation successful!
+			genSuccess = true;
 		}
-		//dir is the heading
-		//Now we get the index on the wall we want to start at
-		ArrayList<MapCoordinate> wall = startRoom.getDirectionWall(dir);
-		int indexPick = rng.getRandomNumber(wall.size() - 1);
-		MapCoordinate start = wall.get(indexPick);
-
-		//Now we have the coordinate start and the direction dir, from a wall of startRoom
-		//Now we start generating a corridor here
-		MapCoordinate endOfCorridor = generateCorridor(new Heading(start, dir));
-		//Now that we've generated this room, we want to remove the block 
-		//that was at coordinate start from the room's wall arrlists
-		//We will add this block coord to another list for potential future usage
-		wall.remove(start);
-		corridorTiles.add(start);
-		//Setting this side as connected
-		startRoom.setSideConnected(dir);
-
-		//Then we generate a room
-		//TODO: have a dice-roll chance for dead ends?
-		int minSize = 4;
-		int maxSize = 10;
-		generateRoom(endOfCorridor, dir, minSize, maxSize);
+		return genSuccess;
 	}
 
-	private void generateRoom(MapCoordinate start, Direction dir, int minSize, int maxSize) {
+	private Room generateRoom(Direction dir, int minSize, int maxSize) {
 		int width = rng.getRandomWithinBounds(minSize, maxSize);
 		int height = rng.getRandomWithinBounds(minSize, maxSize);
 		int row = 0, col = 0;
 		int offset = 0;
 		//TODO: Overlap checking
 		//We generate new rooms by getting a random offset from coordinate start
+		//Cursor is a global variable in this class that contains the coordinate that
+		//this room must be generated from. Cursor is updated by generateCorridor.
 		if(dir == Direction.UP) {
 			offset = rng.getRandomWithinBounds(1, width - 2);
-			row = start.row - height + 1;
-			col = start.col - offset;
+			row = cursor.row - height + 1;
+			col = cursor.col - offset;
 		}
 		else if(dir == Direction.DOWN) {
 			offset = rng.getRandomWithinBounds(1, width - 2);
-			row = start.row;
-			col = start.col - offset;
+			row = cursor.row;
+			col = cursor.col - offset;
 		}
 		else if(dir == Direction.RIGHT) {
 			offset = rng.getRandomWithinBounds(1, height - 2);
-			row = start.row - offset;
-			col = start.col;
+			row = cursor.row - offset;
+			col = cursor.col;
 		}
 		else if(dir == Direction.LEFT) {
 			offset = rng.getRandomWithinBounds(1, height - 2);
-			row = start.row - offset;
-			col = start.col - width + 1;
+			row = cursor.row - offset;
+			col = cursor.col - width + 1;
 		}
 
 		log("Generated room at " + new MapCoordinate(row, col) + "with width = " + width + ", height = " + height);
 		Room newRoom = new Room(new MapCoordinate(row, col), width, height);
 		//We do the required settings on this room
-		newRoom.setSideConnected(dir);
-		newRoom.getDirectionWall(dir).remove(start);
-		corridorTiles.add(start);
-
-		addToCollisionList(newRoom.bounds);	//Log the bounds of this room into the overlap arr
-
-		//And add it to the list of rooms
-		roomsInLevel.add(newRoom);
-		return;
+		return newRoom;
 	}
 
-	private MapCoordinate generateCorridor(Heading heading) {
+	private Corridor generateCorridor(Heading heading) {
 		//Randomly generate some length and breadth parameters
 		int length = rng.getRandomWithinBounds(4, 7); //4 to 7 long
 		int breadth = 3;	//Keeping this 3 for now
 		int oRow = 0, oCol = 0;
-		//retVal returns the coordinate at the end of the corridor, from where
+		//cursor hold the coordinate at the end of the corridor, from where
 		//we will start generating the next object. 
-		MapCoordinate retVal = null;
 		String dirVal = "";
 
 		//TODO: overlap detection
@@ -205,41 +242,47 @@ public class Generator {
 			MapCoordinate start = new MapCoordinate(heading.position.row - 1, heading.position.col);
 			oRow = start.row - length + 1;
 			oCol = start.col - 1;
-			retVal = new MapCoordinate(start.row - length, start.col);
+			cursor = new MapCoordinate(start.row - length, start.col);
 		}
 		else if(heading.direction == Direction.DOWN) {
 			dirVal = "DOWN";
 			MapCoordinate start = new MapCoordinate(heading.position.row + 1, heading.position.col);
 			oRow = start.row;
 			oCol = start.col - 1;
-			retVal = new MapCoordinate(start.row + length, start.col);
+			cursor = new MapCoordinate(start.row + length, start.col);
 		}
 		else if(heading.direction == Direction.RIGHT) {
 			dirVal = "RIGHT";
 			MapCoordinate start = new MapCoordinate(heading.position.row, heading.position.col + 1);
 			oRow = start.row - 1;
 			oCol = start.col;
-			retVal = new MapCoordinate(start.row, start.col + length);
+			cursor = new MapCoordinate(start.row, start.col + length);
 		}
 		else if(heading.direction == Direction.LEFT) {
 			dirVal = "LEFT";
 			MapCoordinate start = new MapCoordinate(heading.position.row, heading.position.col - 1);
 			oRow = start.row - 1;
 			oCol = heading.position.col - length;	// + 1
-			retVal = new MapCoordinate(start.row, start.col - length);
+			cursor = new MapCoordinate(start.row, start.col - length);
 		}
 
 		Corridor newCor = new Corridor(new MapCoordinate(oRow, oCol), heading.direction, breadth, length);
 		log("Corridor generated with origin " + new MapCoordinate(oRow, oCol) + " Length: " + length + " and breadth " + breadth + ", in direction " + dirVal);
 
-		//Now we add gen to the list of corridors, and then we return the Coordinate at the end
-		//of the corridor
-		corridorsInLevel.add(newCor);
+		//cursor is the coordinate at the end of the corridor, just outside it.
+		log("The cursor for this corridor is at " + cursor);
+		return newCor;
+	}
 
-		addToCollisionList(newCor.bounds);
-		//retVal is the coordinate at the end of the corridor, just outside it.
-		log("The RetVal for this coordinate is at " + retVal);
-		return retVal;
+	public boolean checkForCollision(Rectangle rect) {
+		boolean result = false;
+		for(Rectangle rect2 : rectanglesInLevel) {
+			if(rect2.intersects(rect)) {
+				result = true;
+				break;
+			}
+		}
+		return result;
 	}
 
 	//This function returns a random valid room
@@ -331,5 +374,5 @@ public class Generator {
 		//Can be changed later to write to a ProcGen log file perhaps
 		System.out.println(str);
 	}
-	
+
 }
