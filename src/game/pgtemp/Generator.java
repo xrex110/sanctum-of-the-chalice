@@ -14,6 +14,12 @@ public class Generator {
 
 	private Rectangle mapArea;
 
+	//These variables try to keep track of the topleftmost corner
+	//and the bottomrightmost corner of the rooms generated in the
+	//java.awt abstract coordinate space
+	private int minX, minY, maxX, maxY;
+	private int mapWidth, mapHeight;
+
 	private ArrayList<Rectangle> rectanglesInLevel;
 	private ArrayList<Room> roomsInLevel;
 	private ArrayList<Corridor> corridorsInLevel;
@@ -39,16 +45,34 @@ public class Generator {
 		corridorsInLevel = new ArrayList<>();
 		occupiedTiles = new ArrayList<>();
 		corridorTiles = new ArrayList<>();
+
+		//We set these to min max value, since we don't really expect something dramatic
+		//like the size of our array exceeding IntMax or Min 
+		minX = minY = Integer.MAX_VALUE;
+		maxX = maxY = Integer.MIN_VALUE;
 	}
 
 	public void generateDungeon() {
 		//First we generate a spawn room
 		generateSpawn(10, 8, 12);
 		
+		//A segment is described as an attempt to generate a corridor and room
+		//TODO: Better definition for Segment? Something with more versitality
 		generateSegment(selectRandomValidRoom());
 
 		updateMap();
 		printMap();
+		adjustMapSize();
+	}
+
+	//This function used to current values of minX, minY, maxX, and maxY to
+	//determine the bestfit size for the map, and loads the variables mapWidth and mapHeight
+	//with the bestfit size
+	private void adjustMapSize() {
+		log(String.format("minX = %d, minY = %d\nmaxX = %d, maxY = %d\n(Note this is x,y. Note row, col\n", minX, minY, maxX, maxY));
+		mapWidth = maxX - minX;
+		mapHeight = maxY - minY;
+		log(String.format("mapWidth = %d, mapHeight = %d\n", mapWidth, mapHeight));
 	}
 
 	/*
@@ -71,7 +95,7 @@ public class Generator {
 		MapCoordinate roomOrigin = rng.getRandomCoordinateWithinBounds(rMin, rMax, cMin, cMax);
 		spawnRoom = new Room(roomOrigin, width, height);
 		roomsInLevel.add(spawnRoom);
-		rectanglesInLevel.add(spawnRoom.bounds);
+		addToCollisionList(spawnRoom.bounds);
 		log("Spawn room generated at " + roomOrigin + ", with dimensions: (" + width + ", " + height + ")");
 	}
 
@@ -132,18 +156,19 @@ public class Generator {
 			col = start.col;
 		}
 		else if(dir == Direction.LEFT) {
-			offset = rng.getRandomWithinBounds(1, width - 2);
+			offset = rng.getRandomWithinBounds(1, height - 2);
 			row = start.row - offset;
 			col = start.col - width + 1;
 		}
 
+		log("Generated room at " + new MapCoordinate(row, col) + "with width = " + width + ", height = " + height);
 		Room newRoom = new Room(new MapCoordinate(row, col), width, height);
 		//We do the required settings on this room
 		newRoom.setSideConnected(dir);
 		newRoom.getDirectionWall(dir).remove(start);
 		corridorTiles.add(start);
 
-		rectanglesInLevel(newRoom.bounds);	//Log the bounds of this room into the overlap arr
+		addToCollisionList(newRoom.bounds);	//Log the bounds of this room into the overlap arr
 
 		//And add it to the list of rooms
 		roomsInLevel.add(newRoom);
@@ -190,14 +215,14 @@ public class Generator {
 			retVal = new MapCoordinate(start.row, start.col - length);
 		}
 
-		Corridor gen = new Corridor(new MapCoordinate(oRow, oCol), heading.direction, breadth, length);
+		Corridor newCor = new Corridor(new MapCoordinate(oRow, oCol), heading.direction, breadth, length);
 		log("Corridor generated with origin " + new MapCoordinate(oRow, oCol) + " Length: " + length + " and breadth " + breadth + ", in direction " + dirVal);
 
 		//Now we add gen to the list of corridors, and then we return the Coordinate at the end
 		//of the corridor
-		corridorsInLevel.add(gen);
+		corridorsInLevel.add(newCor);
 
-		rectanglesInLevel(gen.bounds);
+		addToCollisionList(newCor.bounds);
 		//retVal is the coordinate at the end of the corridor, just outside it.
 		log("The RetVal for this coordinate is at " + retVal);
 		return retVal;
@@ -216,6 +241,20 @@ public class Generator {
 			if(!selectedRoom.isAllConnected()) found = true;
 		}
 		return selectedRoom;
+	}
+
+	//This function adds the bounds of whatever's passed in into the
+	//rectanglesInLevel list. Furthermore, it keeps track of the upperleftmost
+	//and bottomrightmost coordinate on the abstract space constructed by the 
+	//aforementioned list
+	private void addToCollisionList(Rectangle rect) {
+		if(rect.x < minX) minX = rect.x;
+		if(rect.y < minY) minY = rect.y;
+		//Adding -1s here to account for 0 indexed arrays in Java
+		if(rect.x + rect.width - 1 > maxX) maxX = rect.x + rect.width - 1;
+		if(rect.y + rect.height - 1 > maxY) maxY = rect.y + rect.height - 1;
+
+		rectanglesInLevel.add(rect);
 	}
 
 	//This function updates the map[][] object with all the rooms that have been
