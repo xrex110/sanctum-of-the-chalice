@@ -1,9 +1,9 @@
 public class Heading {
-	public MapCoordinate pos;
-	public Direction dir;
+	public MapCoordinate position;
+	public Direction direction;
 
 	public Heading(MapCoordinate pos, Direction dir) {
-		this.pos = pos;
-		this.dir = dir;
+		this.position = pos;
+		this.direction = dir;
 	}
 }

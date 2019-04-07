@@ -29,6 +29,6 @@ public class RandomNumberGenerator {
 	//Returns MapCoordinate with random row and col within a range
 	//Range: row -> [rMin, rMax], col -> [cMin, cMax]
 	public MapCoordinate getRandomCoordinateWithinBounds(int rMin, int rMax, int cMin, int cMax) {
-		return new MapCoordinate(getRandomWithinBounds(rMin, rMax), getRandomWithinBounds(cMin, cMax);
+		return new MapCoordinate(getRandomWithinBounds(rMin, rMax), getRandomWithinBounds(cMin, cMax));
 	}
 }
