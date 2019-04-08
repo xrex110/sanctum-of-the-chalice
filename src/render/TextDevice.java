@@ -93,7 +93,12 @@ public class TextDevice {
         rend.setFont(old);
         return res;
     }
-
+    public Color getOutlineColor() {
+        return outlineColor;
+    }
+    public Color getInnerColor() {
+        return innerColor;
+    }
   public void setColors(Color ic, Color oc) {
 		innerColor = ic;
 		outlineColor = oc;
