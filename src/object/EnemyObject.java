@@ -1,6 +1,6 @@
 package object;
 import main.*;
-
+import java.io.Serializable;
 
 import java.awt.Graphics2D;
 import render.*;
@@ -10,7 +10,7 @@ import sound.*;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.*;
-public class EnemyObject extends GameObject {
+public class EnemyObject extends GameObject implements Serializable {
     SpriteLoader sp = new SpriteLoader();
     ArrayList<Pair<Integer,Integer>> path;
     FireAnimation animation = new FireAnimation();
