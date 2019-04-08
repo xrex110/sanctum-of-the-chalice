@@ -8,7 +8,7 @@ import game.*;
 import sound.*;
 
 
-public class Chest extends GameObject implements Interactable {
+public class Chest extends Item implements Interactable {
 	SpriteLoader spLoader = new SpriteLoader();
 
 	public boolean interact(GameObject target) {
@@ -16,7 +16,7 @@ public class Chest extends GameObject implements Interactable {
 	}
 
 	public Chest(int x, int y) {
-		super(x, y, false);
+		super(x, y);
 	}
 	public void draw(Graphics2D rend) {
 		rend.drawImage(spLoader.getSprite("chest.png", 0, 32, 32), null, getX(), getY()); 

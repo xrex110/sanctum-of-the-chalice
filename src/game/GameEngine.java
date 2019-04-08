@@ -82,8 +82,10 @@ public class GameEngine {
 		}
 
 		int[] playPos = levelGen.getSpawnPos();
-		Player.player.setX((playPos[1] + 3));
-		Player.player.setY((playPos[0] + 3));
+		Player.player.moveTo(playPos[1]+3, playPos[0]+3);
+
+		//Player.player.setX((playPos[1] + 3));
+		//Player.player.setY((playPos[0] + 3));
 
 		//getSignCoordinates generates randomized coordinates for 2 signs,
 		//one at spawn, and one at the end of the map, and returns them in a Coordinate array
@@ -147,7 +149,7 @@ public class GameEngine {
 		currSlowRate = SLOWRATE;
 		currentInput = "";
 	}
-	
+
 
 	public RenderLoop getRenderEngine() {
 		return renderEngine;
@@ -298,9 +300,15 @@ public class GameEngine {
 						&& GameEngine.levelMap[2][nextLoc.y][nextLoc.x] == null) {
 					GameEngine.levelMap[2][en.getY()][en.getX()] = null;
 					GameEngine.levelMap[2][nextLoc.y][nextLoc.x] = en;
-					en.setX(nextLoc.x);
-					en.setY(nextLoc.y);
+					en.moveTo(nextLoc.x, nextLoc.y);
+				
+					//en.setX(nextLoc.x);
+					//en.setY(nextLoc.y);
 						}
+				TriggerList trig = (TriggerList)GameEngine.levelMap[1][en.getY()][en.getX()];
+				for (int i = 0; i < trig.triggers.size(); i++) {
+					trig.triggers.get(i).interact(en);
+				}	
 			}
 
 		}
@@ -379,8 +387,9 @@ public class GameEngine {
 				GameEngine.levelMap[2][Player.player.getY()][Player.player.getX()] = null;
 
 				tracker.notify(displace, ScoreTracker.MOVEEVENT);
-				Player.player.setX(xPos);
-				Player.player.setY(yPos);
+				Player.player.moveTo(xPos, yPos);
+				//Player.player.setX(xPos);
+				//Player.player.setY(yPos);
 				//System.out.println(xPos + " " + yPos);
 
 				GameEngine.levelMap[2][yPos][xPos] = Player.player;
@@ -388,7 +397,7 @@ public class GameEngine {
 		}
 
 		//handle triggers
-		TriggerList trig = (TriggerList)GameEngine.levelMap[1][yPos][xPos];
+		TriggerList trig = (TriggerList)GameEngine.levelMap[1][Player.player.getY()][Player.player.getX()];
 		for (int i = 0; i < trig.triggers.size(); i++) {
 			trig.triggers.get(i).interact(Player.player);
 		}
@@ -402,18 +411,19 @@ public class GameEngine {
 	public void revert() {
 		currSlowRate = SLOWRATE / 2;
 		Pair<Integer, Integer> prevPos = moveHist.pop();
-			if (prevPos != null) {
-				//do stuff
-				if(prevMode == MODE.GAME)
-					GameEngine.levelMap[2][Player.player.getY()][Player.player.getX()] = null;
-				Player.player.setX(prevPos.x);
-				Player.player.setY(prevPos.y);
+		if (prevPos != null) {
+			//do stuff
+			if(prevMode == MODE.GAME)
+				GameEngine.levelMap[2][Player.player.getY()][Player.player.getX()] = null;
+			Player.player.moveTo(prevPos.x, prevPos.y);
+			//Player.player.setX(prevPos.x);
+			//Player.player.setY(prevPos.y);
 
-				//levelMap[2][prevPos.y][prevPos.x] = Player.player;
+			//levelMap[2][prevPos.y][prevPos.x] = Player.player;
 
 
-				return;
-			}
+			return;
+		}
 
 		setState(MODE.GAME);
 		currSlowRate = SLOWRATE;
