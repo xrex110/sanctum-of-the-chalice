@@ -30,7 +30,7 @@ public class GameEngine {
     private boolean running;
     private String backgroundMusic = "../res/Twisting.ogg";
 	// footstep sound.
-	private String footStepSound = "../res/FootStep.ogg";
+	private String footStep = "../res/footStep2.ogg";
 	// fight sound.
 	private String atkSound2 = "../res/attackSound2.ogg";
     //private String enterSound = "../res/Mario.ogg";
@@ -166,11 +166,12 @@ public class GameEngine {
 	running = true;
 	gameStart = System.nanoTime() / MILLITONANO;
 	renderEngine.updateMap(levelMap);
+
 	//renderEngine.updateEntityMap(entityMap);
 	renderEngine.start();		//Starts the renderengine thread!
-
+	//soundEngine.play(footStepSound, "Step");
 	//soundEngine.play(enterSound, "enter");
-	//soundEngine.playLoop(backgroundMusic, "background");
+	soundEngine.playLoop(backgroundMusic, "background");
 	//GameEngine.unPause();
 	gameLoop();
     }
@@ -336,7 +337,8 @@ public class GameEngine {
 	{
 	    //Player.player.moveUp();
 	    yPos--;
-		soundEngine.play(footStepSound, "footstep");
+		
+		//soundEngine.play(footStepSound, "footstep");
 	}
 	else if (currentInput.equals("A"))
 	{
@@ -364,6 +366,9 @@ public class GameEngine {
 	if(levelMap[0][yPos][xPos] != null) {
 	    if (!levelMap[0][yPos][xPos].isSolid() && levelMap[2][yPos][xPos] == null)
 	    {
+		//play footstep sound effects here.
+		//soundEngine.play(atkSound2, "attack2");
+		soundEngine.play(footStep, "footStep2");
 		int[] displace = {yPos - Player.player.getY(), xPos - Player.player.getX()};
 		levelMap[2][Player.player.getY()][Player.player.getX()] = null;
 
@@ -371,14 +376,16 @@ public class GameEngine {
 		Player.player.setX(xPos);
 		Player.player.setY(yPos);
 		//System.out.println(xPos + " " + yPos);
-		
+		//soundEngine.play(footStep, "footStepSound");
+		//soundEngine.play(footStep, "footStep2");
 		levelMap[2][yPos][xPos] = Player.player;
 	    }else if(levelMap[2][yPos][xPos] != null){
 			if(levelMap[2][yPos][xPos] instanceof EnemyObject){
 				//Combat system with collision detection.
 				//when user attack, then play the sound effect.
 				soundEngine.play(atkSound2, "attack2");
-				//soundEngine.play(footStepSound, "footstep");
+				//soundEngine.play(footStep, "footStep2");
+				
 				CombatSys.combatPlayer(Player.player,((EnemyObject)levelMap[2][yPos][xPos]));
 			}
 

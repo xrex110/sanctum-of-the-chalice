@@ -35,7 +35,7 @@ public class SoundEngine{
 	public void testFile(String fileName, SoundRequest requestInstance){
 		
 		try{
-			//System.out.println("Start: "+ fileName+" !!!");
+			
 			File file = new File(fileName);
 			AudioFileFormat aff = AudioSystem.getAudioFileFormat(file);
 			//System.out.println("The Audio Type is : " + aff.getType()); 
@@ -85,6 +85,7 @@ public class SoundEngine{
 	}
 	private void rawplay(AudioFormat targetFormat, AudioInputStream din, SoundRequest requestInstance) throws IOException, LineUnavailableException
 	{
+		//byte[] data = new byte[4096];
 		byte[] data = new byte[4096];
 		SourceDataLine line = getLine(targetFormat);	
 		
@@ -130,8 +131,9 @@ public class SoundEngine{
 		requests.add(requestInstance);
 		Thread soundInstance = new Thread() {
 			public void run() {
-				testFile(fName, requestInstance);
 
+				testFile(fName, requestInstance);
+				System.out.println("Start: "+ fName+" !!!");
 				requests.remove(requestInstance);
 			}
 		};

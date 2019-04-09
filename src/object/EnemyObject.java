@@ -1,4 +1,4 @@
-\package object;
+package object;
 import main.*;
 
 
@@ -10,6 +10,7 @@ import sound.*;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.*;
+
 public class EnemyObject extends GameObject {
     SpriteLoader sp = new SpriteLoader();
     ArrayList<Pair<Integer,Integer>> path;
