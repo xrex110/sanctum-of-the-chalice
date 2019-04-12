@@ -15,7 +15,6 @@ public class RenderLoop extends Thread {
 	InputHandler in;	/* Static InputHandler object */
 	GameView gm;
     MenuView menuView;   /* Static MenuView object */
-    KeybindMenu keybindMenu;
     public static final long SLEEP_TIME = 16;
 	//private static int frame = 1;	/* Used for theoretical FPS calculation */
 	//static long startTime = System.nanoTime();	/* Used for theoretical FPS calculation. Uncomment when needed*/
@@ -30,7 +29,6 @@ public class RenderLoop extends Thread {
 		in = new InputHandler();
 		gm = new GameView();
         menuView = new MenuView(width, height);
-        keybindMenu = new KeybindMenu(width, height);
         menuView.setInputHandler(in);
 		window = new Window("Sanctum of the Chalice", menuView, width, height);
 	}
@@ -74,7 +72,19 @@ public class RenderLoop extends Thread {
 		        GameEngine.setPause();
 	        }
         }
-		if(in.isKeyPressed(settings.UP)) {
+        if(in.isKeyPressed(KeyEvent.VK_ENTER)) {
+            current.invoke("Enter");
+        }
+        else if(current instanceof KeybindMenu) {
+            for(int i = 0; i < 255; ++i) {
+                String tester = ""+ (char)i;
+                if(in.isKeyPressed(i) && tester.matches("[A-Z0-9]")) {
+                    current.invoke(tester);
+                    break;
+                }
+            }
+        }
+		else if(in.isKeyPressed(settings.UP)) {
 			//log("W was pressed on RE");
 			//Player.player.moveUp();
             current.invoke("W");
@@ -97,9 +107,6 @@ public class RenderLoop extends Thread {
 			//Player.player.moveRight();
             current.invoke("D");
         }
-        else if(in.isKeyPressed(KeyEvent.VK_ENTER)) {
-            current.invoke("Enter");
-        }
         else if(in.isKeyPressed(settings.INVENTORY)) {
             current.invoke("INVENTORY");
         }
@@ -115,14 +122,6 @@ public class RenderLoop extends Thread {
             else current.invoke("TOGGLE_DEBUG");
         }else if(in.isKeyPressed(KeyEvent.VK_F2)) {
             current.invoke("SCREENSHOT");
-        }else if(current.equals(keybindMenu)) {
-            for(int i = 0; i < 255; ++i) {
-                String tester = (char)i;
-                if(in.isKeyPressed(i) && tester.matches("[a-z]")) {
-                    current.invoke((char)i);
-                    break;
-                }
-            }
         }
 		else current.invoke("");
 		

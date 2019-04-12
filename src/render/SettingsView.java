@@ -25,7 +25,8 @@ public class SettingsView extends Menu{
             
         }
     } 
-	
+	public KeybindMenu keybindMenu;
+    
     public SettingsView(int width, int height, Menu parent) {
         super(width, height, parent);
         this.setOpaque(true);
@@ -40,7 +41,7 @@ public class SettingsView extends Menu{
             "Difficulty: Normal",
                 "Sound: " + Sanctum.settings.soundOn,
                 "Interp Rate: " + Sanctum.settings.interpRate,
-                "Player Sprite: Wizard.png",
+                "Key Bindings",
                 "Back"
         };
         String[] rightText = new String[] {
@@ -64,6 +65,8 @@ public class SettingsView extends Menu{
         }
 
         selectButton(0);
+        
+        keybindMenu = new KeybindMenu(width, height, this);
 
     }
     //TODO: remove me and make a volume call
@@ -136,6 +139,7 @@ public class SettingsView extends Menu{
                         
                         break;
                     case 3:
+                        keybindMenu.focus(this);
                         break;
                     case 4:
                         parent.focus(this);
