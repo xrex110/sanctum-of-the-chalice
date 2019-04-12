@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public abstract class Item extends GameObject implements Interactable{
 	SpriteLoader sp = new SpriteLoader();
-	private String text;
+	//private String text;
 	ArrayList<Pair<Integer,Integer>> passiveLocs;
 
 	public Item(int x, int y){

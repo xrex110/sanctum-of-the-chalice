@@ -124,7 +124,10 @@ public class GameView extends Menu {
 			for(int i = 0; i < map[1].length; i++) {
 				for(int j = 0; j < map[1][i].length; j++) {
 					TriggerList loc = (TriggerList)map[1][i][j];
-                    if(loc.rendered instanceof Sign) {
+					for (int k = 0; k < loc.rendered.size(); k++) {
+						loc.rendered.get(k).draw(rend);
+					}
+                    /*if(loc.rendered.get(0) instanceof Sign) {
 						Sign sign = (Sign) loc.rendered;
 						//System.out.println("RENDEREING SIGN: " + sign.getText());
 						sign.draw(rend);
@@ -133,7 +136,7 @@ public class GameView extends Menu {
 					else if(loc.rendered instanceof Chest) {
 						Chest chest = (Chest) loc.rendered;
 						chest.draw(rend);
-					}
+					}*/
 				}
 			}
  		}

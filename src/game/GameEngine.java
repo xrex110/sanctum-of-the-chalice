@@ -112,11 +112,11 @@ public class GameEngine {
 		moveHist = new MoveHistory(MAXHISTORY);
 		levelEnd = new Sign(signPositions[1].col, signPositions[1].row, "Insert end stats here");
 		TriggerList signTrig = (TriggerList)levelMap[1][signPositions[1].row][signPositions[1].col];
-		signTrig.rendered = levelEnd;
+		signTrig.rendered.add(levelEnd);
 		signTrig.triggers.add(levelEnd);
 		Sign intro = new Sign(signPositions[0].col, signPositions[0].row, help);
 		signTrig = (TriggerList)levelMap[1][signPositions[0].row][signPositions[0].col];
-		signTrig.rendered = intro; 
+		signTrig.rendered.add(intro); 
 		signTrig.triggers.add(intro);
 
 
@@ -131,7 +131,7 @@ public class GameEngine {
 		for(Coordinate coord : chestCoords) {
 			Chest ch = new Chest(coord.col, coord.row);
 			TriggerList tr = (TriggerList)GameEngine.levelMap[1][coord.row][coord.col];
-			tr.rendered = ch;
+			tr.rendered.add(ch);
 			tr.triggers.add(ch);
 
 			GameEngine.levelMap[2][coord.row][coord.col] = new EnemyObject(coord.col, coord.row);
