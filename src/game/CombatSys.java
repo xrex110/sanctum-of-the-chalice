@@ -32,6 +32,7 @@ public class CombatSys {
 					
 					if(def.stat.getType()==1){
 						System.out.println("Enemy Die");
+						//def.remove(0);
 						//enemy die.
 						//give exp to the user.
 						int exp = def.stat.giveExp();
@@ -42,6 +43,7 @@ public class CombatSys {
 				}				
 				System.out.println("Enemy Health: " + def.stat.getHP());
 				System.out.println("\n\n Player Stat: ");
+				System.out.println("\nPlayer HP: "+atk.stat.getHP());
 				System.out.println("Level: "+atk.stat.getLv());
 				System.out.println("STR: "+atk.stat.getStr());
 				System.out.println("DEX: "+atk.stat.getDex());
@@ -51,6 +53,7 @@ public class CombatSys {
 	}
 
 	public static void combatEnemy(EnemyObject atk, Player def){
+
 		if(atk.stat.getType() != def.stat.getType()){
 			int atkDamage = 0;
 			atkDamage = atk.stat.toDamage();
@@ -61,6 +64,8 @@ public class CombatSys {
 				//check player is die or not.
 				System.out.println("Player die!\n ");
 				//game over!
+				
+				//TODO: game over page or restart?
 			}
 		}
 	}

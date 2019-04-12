@@ -282,10 +282,17 @@ public class GameEngine {
 		if (nextLoc != null 
 			&& !levelMap[0][nextLoc.y][nextLoc.x].isSolid() 
 			&& levelMap[2][nextLoc.y][nextLoc.x] == null) {
+			//Combat enemy
+			//CombatSys.combatEnemy(((EnemyObject)levelMap[2][en.get][xPos]),Player.player);
+			
 		    levelMap[2][en.getY()][en.getX()] = null;
 		    levelMap[2][nextLoc.y][nextLoc.x] = en;
 		    en.setX(nextLoc.x);
 		    en.setY(nextLoc.y);
+			}else if(nextLoc!= null 
+			          &&levelMap[2][nextLoc.y][nextLoc.x] ==Player.player){
+				CombatSys.combatEnemy(en,Player.player);
+
 			}
 	    }
 
