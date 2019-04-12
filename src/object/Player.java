@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 public class Player extends GameObject {
 
-    transient SpriteLoader sp = new SpriteLoader();
+    SpriteLoader sp = new SpriteLoader();
     public static Player player = new Player(0,0);
     public static int TILE_SIZE_X = 32, TILE_SIZE_Y = 32;
 

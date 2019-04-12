@@ -7,8 +7,9 @@ import object.*;
 
 
 import java.util.*;
+import java.io.Serializable;
 
-public class MoveHistory {
+public class MoveHistory implements Serializable {
 	public ArrayList<Pair<Integer,Integer>> history;
 	public int maxSize;
 

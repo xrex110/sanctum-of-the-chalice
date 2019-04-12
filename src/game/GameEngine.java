@@ -37,7 +37,7 @@ public class GameEngine {
     private static String currentInput;
     private RenderLoop renderEngine;
     private SoundEngine soundEngine;
-    private ScoreTracker tracker;
+    public ScoreTracker tracker;
 
     private Generator levelGen;
     /*
@@ -45,9 +45,9 @@ public class GameEngine {
        private GameObject[][] entityMap;
        */
     //map, row, column; tile, trigger, entity
-    private GameObject[][][] levelMap;
+    public GameObject[][][] levelMap;
     private ArrayList<EnemyObject> enemyUpdateList;
-    private MoveHistory moveHist;
+    public MoveHistory moveHist;
 
     private EnemyObject theEnemy;
 

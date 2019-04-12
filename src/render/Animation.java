@@ -7,7 +7,8 @@ import object.*;
 
 
 import java.awt.image.BufferedImage;
-public abstract class Animation {
+import java.io.Serializable;
+public abstract class Animation implements Serializable{
     
     public enum AnimationState {
         DEFAULT,

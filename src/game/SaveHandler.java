@@ -8,10 +8,12 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import game.*;
+import object.*;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import static main.Sanctum.ge;
 
 public class SaveHandler {
 
@@ -84,6 +86,61 @@ public class SaveHandler {
             System.out.println("Unable to save settings.");
         }
         
+    }
+
+    public static void saveGame() {
+        try {
+            File directory = new File(BIN_PATH + "data");
+        
+            if(!directory.exists())
+                directory.mkdir();
+
+            String fileName = "playthrough.save";
+
+            FileOutputStream os = new FileOutputStream(directory.getPath() + "/" + fileName, false);
+            ObjectOutputStream oos = new ObjectOutputStream(os);
+
+            oos.writeObject(ge.tracker);
+
+            oos.writeObject(Player.player);
+            oos.writeObject(ge.levelMap);
+
+            oos.writeObject(ge.playtime);
+        
+            oos.writeObject(ge.moveHist);
+        
+            oos.flush();
+            oos.close();
+            os.close();
+            System.out.println("Successfully saved game");
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void loadGame() {
+        try {
+        File directory = new File(BIN_PATH + "data");
+        if(!directory.exists())
+            directory.mkdir();
+        String fileName = "playthrough.save";
+        
+        FileInputStream fis = new FileInputStream(directory.getPath() + "/" + fileName);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        
+        ge.tracker = (ScoreTracker) ois.readObject();
+        Player.player = (Player) ois.readObject();
+        ge.levelMap = (GameObject[][][]) ois.readObject();
+        ge.playtime = (Timer) ois.readObject();
+        ge.moveHist = (MoveHistory) ois.readObject();
+        ge.getRenderEngine().gm.setMap(ge.levelMap);     
+
+        ois.close();
+        fis.close();
+        
+        System.out.println("Successfully loaded save game");
+        } catch(Exception e) {
+            e.printStackTrace();
+        } 
     }
 
 }

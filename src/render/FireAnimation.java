@@ -7,7 +7,9 @@ import object.*;
 
 
 import java.awt.image.BufferedImage;
-public class FireAnimation extends Animation {
+import java.io.Serializable;
+
+public class FireAnimation extends Animation implements Serializable {
     
     public FireAnimation() {
         super("11_fire_spritesheet.png",100,100);

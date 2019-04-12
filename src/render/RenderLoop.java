@@ -13,7 +13,7 @@ public class RenderLoop extends Thread {
 
 	Window window;	/* Static window object */
 	InputHandler in;	/* Static InputHandler object */
-	GameView gm;
+	public GameView gm;
     MenuView menuView;   /* Static MenuView object */
     public static final long SLEEP_TIME = 16;
 	//private static int frame = 1;	/* Used for theoretical FPS calculation */

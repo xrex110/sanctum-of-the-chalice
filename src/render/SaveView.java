@@ -37,10 +37,12 @@ public class SaveView extends Menu {
         case "Enter":
             if(selection == 0) {
                 //Call a save pls
+                game.SaveHandler.saveGame();
                 savedNotification.start();
                 loadNotification.stop();
             }else if(selection == 1) {
                 //Call a load pls
+                game.SaveHandler.loadGame();
                 savedNotification.stop();
                 loadNotification.start();
             }else if(selection == 2) {

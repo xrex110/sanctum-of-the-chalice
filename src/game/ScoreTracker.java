@@ -7,8 +7,9 @@ import object.*;
 
 
 import java.util.*;
+import java.io.Serializable;
 
-public class ScoreTracker 
+public class ScoreTracker implements Serializable 
 {
 	public static final int MOVEEVENT = 0;
 	
