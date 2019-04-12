@@ -18,6 +18,9 @@ public class EnemyObject extends GameObject implements Interactable {
     int aggroRange = 6;
         ArrayList<Pair<Integer,Integer>> passiveLocs;
 
+	//stat
+	public Stat stat = new Stat(1); // enemy type;
+
     enum STATE { 
 	SLEEP,
 	AWAKE,
