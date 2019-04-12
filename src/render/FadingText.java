@@ -63,4 +63,9 @@ public class FadingText {
         timer.reset();
         timer.start();
     }
+
+    public void stop() {
+        timer.stop();
+        timer.reset();
+    }
 }
