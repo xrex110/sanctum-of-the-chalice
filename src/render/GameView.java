@@ -43,7 +43,7 @@ public class GameView extends Menu {
     private List<Pair<Integer, Integer>> cameraInterp; 
     
     private static int interpRate = 5;
-    private Sign signSelected = null;
+    //private Sign signSelected = null;
     
     private InventoryMenu inventoryMenu;
     
@@ -120,19 +120,23 @@ public class GameView extends Menu {
 		}
         
 		if(map[1].length != 1) {
-            signSelected = null;
+            //signSelected = null;
 			for(int i = 0; i < map[1].length; i++) {
 				for(int j = 0; j < map[1][i].length; j++) {
-                    if(map[1][i][j] instanceof Sign) {
-						Sign sign = (Sign) map[1][i][j];
+					TriggerList loc = (TriggerList)map[1][i][j];
+					for (int k = 0; k < loc.rendered.size(); k++) {
+						loc.rendered.get(k).draw(rend);
+					}
+                    /*if(loc.rendered.get(0) instanceof Sign) {
+						Sign sign = (Sign) loc.rendered;
 						//System.out.println("RENDEREING SIGN: " + sign.getText());
 						sign.draw(rend);
-						if(sign.interact(playerXCopy, playerYCopy)) signSelected = sign; 
+						//if(sign.interact(playerXCopy, playerYCopy)) signSelected = sign; 
 					}
-					else if(map[1][i][j] instanceof Chest) {
-						Chest chest = (Chest) map[1][i][j];
+					else if(loc.rendered instanceof Chest) {
+						Chest chest = (Chest) loc.rendered;
 						chest.draw(rend);
-					}
+					}*/
 				}
 			}
  		}
@@ -195,10 +199,10 @@ public class GameView extends Menu {
             drawPlaytime(rend);
         }
 
-        if(signSelected != null) {
-                drawSign(rend, signSelected);
-                signSelected = null;
-        }
+        /*if(GameEngine.signSelected != null) {
+                drawSign(rend, GameEngine.signSelected);
+                //GameEngine.signSelected = null;
+        }*/
 
 		rend.setTransform(oldAt);
 

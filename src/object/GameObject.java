@@ -15,7 +15,13 @@ public abstract class GameObject implements Serializable{
         cm = new CoordinateManager(x,y);
 		this.solid = solid;
     }
-    
+	
+
+    public void moveTo(int x, int y) {
+	    setX(x);
+	    setY(y);
+    }
+
     public int getX() { return cm.getX(); }
     public int getY() { return cm.getY(); }
     public void setX(int x) { cm.setX(x); }

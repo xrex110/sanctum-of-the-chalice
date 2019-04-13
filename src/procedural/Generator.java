@@ -115,6 +115,16 @@ public class Generator {
 		adjustMapSize();
 		updateMap();
 		updateObjectMap();
+
+		//Init the trigger level
+		for(int i = 0; i < mapHeight; i++) {
+			for(int j = 0; j < mapWidth; j++) {
+				objectMap[1][i][j] = new TriggerList(j, i);
+			}
+		}
+
+		GameEngine.levelMap = objectMap;
+
 		spawnChests();
 		long endTime = System.currentTimeMillis();
 
@@ -360,7 +370,9 @@ public class Generator {
 			if(occupiedTiles.contains(coor)) continue;
 			occupiedTiles.add(coor);
 			//Add it to the 2nd layer of objectmap
-			objectMap[1][coor.row][coor.col] = new Chest(coor.col, coor.row);
+			TriggerList trig = (TriggerList) objectMap[1][coor.row][coor.col];
+			trig.rendered.add(new Chest(coor.col, coor.row));
+			objectMap[2][coor.row][coor.col] = new EnemyObject(coor.col, coor.row);
 			success = true;
 		}
 	}

@@ -93,10 +93,10 @@ public class InventoryMenu extends Menu {
 
         int textY = equipmentY + vertGap;
         String[] statText = new String[] {
-            "Strength: " + Player.player.getStr(),
-            "Dexterity: " + Player.player.getDex(),
-            "Consitution: " + Player.player.getCon(),
-            "Intellect: " + Player.player.getInt(),
+            "Strength: " + Player.player.stat.getStr(),
+            "Dexterity: " + Player.player.stat.getDex(),
+            "Consitution: " + Player.player.stat.getCon(),
+            "Intellect: " + Player.player.stat.getWis(),
             "Defense: " + Player.player.getDef(),
         };
         for(String s : statText) {

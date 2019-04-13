@@ -30,18 +30,18 @@ public class GameEngine {
 	private float gameStart;
 	private boolean running;
 	private String backgroundMusic = "../res/Twisting.ogg";
-	//private String enterSound = "../res/Mario.ogg";
-	private Sign levelEnd;
-
-	//private Player player;
-
+	// footstep sound.
+	private String footStep = "../res/footStep2.ogg";
+	// fight sound.
+	private String atkSound2 = "../res/attackSound2.ogg";
 	private static String currentInput;
 	private RenderLoop renderEngine;
 	private SoundEngine soundEngine;
 	private ScoreTracker tracker;
 
 	private Generator levelGen;
-	private GameObject[][][] levelMap;
+	public static GameObject[][][] levelMap;
+
 	private ArrayList<EnemyObject> enemyUpdateList;
 	private MoveHistory moveHist;
 
@@ -70,7 +70,7 @@ public class GameEngine {
 		levelGen = new Generator(testLevel);
 		LevelData curLevel = levelGen.generateDungeon();
 
-		this.levelMap = curLevel.levelMap;
+		GameEngine.levelMap = curLevel.levelMap;
 		this.mapWidth = curLevel.mapWidth;
 		this.mapHeight = curLevel.mapHeight;
 
@@ -96,13 +96,14 @@ public class GameEngine {
 		return renderEngine;
 	}
 
+
 	public void startLoop() {
 		fastIts = 0;
 		slowIts = 0;
 		slowCount = 0;
 		running = true;
 		gameStart = System.nanoTime() / MILLITONANO;
-		renderEngine.updateMap(levelMap);
+		renderEngine.updateMap(GameEngine.levelMap);
 		//renderEngine.updateEntityMap(entityMap);
 		renderEngine.start();		//Starts the renderengine thread!
 
@@ -187,6 +188,7 @@ public class GameEngine {
 
 		//System.out.print(" 1");
 		slowIts++;
+		//signSelected = null;
 		//Update player and stuff
 		if (currentInput.equals("Q") && moveHist.history.size() > 0) {
 			setState(MODE.REVERSION);
@@ -199,9 +201,10 @@ public class GameEngine {
 		if (gameMode == MODE.GAME) {
 			if(prevMode == MODE.REVERSION) {
 				//TODO: Handle revert collision checks
-				levelMap[2][Player.player.getY()][Player.player.getX()] = Player.player;
+				GameEngine.levelMap[2][Player.player.getY()][Player.player.getX()] = Player.player;
 			}
 			updatePlayer();
+
 
 			/*if (!levelEnd.interact()); {
 				levelEnd.setText(("Congratulations! Tutorial Complete\n" +
@@ -216,13 +219,22 @@ public class GameEngine {
 				EnemyObject en = enemyUpdateList.remove(0);
 				Pair<Integer,Integer> nextLoc = en.nextLoc();
 				if (nextLoc != null 
-						&& !levelMap[0][nextLoc.y][nextLoc.x].isSolid() 
-						&& levelMap[2][nextLoc.y][nextLoc.x] == null) {
-					levelMap[2][en.getY()][en.getX()] = null;
-					levelMap[2][nextLoc.y][nextLoc.x] = en;
-					en.setX(nextLoc.x);
-					en.setY(nextLoc.y);
-						}
+						&& !GameEngine.levelMap[0][nextLoc.y][nextLoc.x].isSolid() 
+						&& GameEngine.levelMap[2][nextLoc.y][nextLoc.x] == null) {
+					GameEngine.levelMap[2][en.getY()][en.getX()] = null;
+					GameEngine.levelMap[2][nextLoc.y][nextLoc.x] = en;
+					en.moveTo(nextLoc.x, nextLoc.y);
+				
+					//en.setX(nextLoc.x);
+					//en.setY(nextLoc.y);
+				}else if(nextLoc!= null 
+			          &&levelMap[2][nextLoc.y][nextLoc.x] ==Player.player){
+					CombatSys.combatEnemy(en,Player.player);
+				}
+				TriggerList trig = (TriggerList)GameEngine.levelMap[1][en.getY()][en.getX()];
+				for (int i = 0; i < trig.triggers.size(); i++) {
+					trig.triggers.get(i).interact(en);
+				}	
 			}
 
 		}
@@ -290,23 +302,36 @@ public class GameEngine {
 			xPos++;
 		}
 
-
-		//System.out.println(xPos + " " + yPos);
-
-
-		if(levelMap[0][yPos][xPos] != null) {
-			if (!levelMap[0][yPos][xPos].isSolid() && levelMap[2][yPos][xPos] == null)
+		if(GameEngine.levelMap[0][yPos][xPos] != null) {
+			if (!GameEngine.levelMap[0][yPos][xPos].isSolid() && GameEngine.levelMap[2][yPos][xPos] == null)
 			{
 				int[] displace = {yPos - Player.player.getY(), xPos - Player.player.getX()};
-				levelMap[2][Player.player.getY()][Player.player.getX()] = null;
+				GameEngine.levelMap[2][Player.player.getY()][Player.player.getX()] = null;
 
 				tracker.notify(displace, ScoreTracker.MOVEEVENT);
-				Player.player.setX(xPos);
-				Player.player.setY(yPos);
+				Player.player.moveTo(xPos, yPos);
+				//Player.player.setX(xPos);
+				//Player.player.setY(yPos);
 				//System.out.println(xPos + " " + yPos);
-
-				levelMap[2][yPos][xPos] = Player.player;
+				GameEngine.levelMap[2][yPos][xPos] = Player.player;
 			}
+			else if(levelMap[2][yPos][xPos] != null){
+				if(levelMap[2][yPos][xPos] instanceof EnemyObject){
+					//Combat system with collision detection.
+					//when user attack, then play the sound effect.
+					soundEngine.play(atkSound2, "attack2");
+					//soundEngine.play(footStep, "footStep2");
+				
+					CombatSys.combatPlayer(Player.player,((EnemyObject)levelMap[2][yPos][xPos]));
+				}
+
+			}
+		}
+
+		//handle triggers
+		TriggerList trig = (TriggerList)GameEngine.levelMap[1][Player.player.getY()][Player.player.getX()];
+		for (int i = 0; i < trig.triggers.size(); i++) {
+			trig.triggers.get(i).interact(Player.player);
 		}
 
 		moveHist.push(Player.player.getX() , Player.player.getY());
@@ -318,14 +343,9 @@ public class GameEngine {
 		if (prevPos != null) {
 			//do stuff
 			if(prevMode == MODE.GAME)
-				levelMap[2][Player.player.getY()][Player.player.getX()] = null;
-			Player.player.setX(prevPos.x);
-			Player.player.setY(prevPos.y);
-
-			//levelMap[2][prevPos.y][prevPos.x] = Player.player;
-
-
-			return;
+				GameEngine.levelMap[2][Player.player.getY()][Player.player.getX()] = null;
+				Player.player.moveTo(prevPos.x, prevPos.y);
+				return;
 		}
 
 		setState(MODE.GAME);
@@ -356,8 +376,8 @@ public class GameEngine {
 	}
 	//TODO Make the maxDist parameter actually matter
 	public void pathAll(int maxDist) {
-		int height = levelMap[0].length;
-		int width = levelMap[0][0].length;
+		int height = GameEngine.levelMap[0].length;
+		int width = GameEngine.levelMap[0][0].length;
 		int[][][] pathMap = new int[height][width][5];
 		ArrayList<int[]> queue = new ArrayList<int[]>();
 		//initialize all distances to -1
@@ -380,8 +400,8 @@ public class GameEngine {
 			current = queue.remove(0);
 			//TODO replace signs with enemies and do more stuff
 			if (levelMap[2][current[0]][current[1]] instanceof EnemyObject) {
-				((EnemyObject)levelMap[2][current[0]][current[1]]).setPath(extractPath(pathMap, current[0], current[1]));
-				enemyUpdateList.add((EnemyObject)levelMap[2][current[0]][current[1]]);
+				((EnemyObject)GameEngine.levelMap[2][current[0]][current[1]]).setPath(extractPath(pathMap, current[0], current[1]));
+				enemyUpdateList.add((EnemyObject)GameEngine.levelMap[2][current[0]][current[1]]);
 				//System.out.println("Found");
 			}
 
@@ -396,10 +416,10 @@ public class GameEngine {
 				pathMap[next[0]][next[1]][3] = next[3];
 				pathMap[next[0]][next[1]][4] = next[4];
 
-				if (levelMap[0][next[0]][next[1]] != null && 
-						!levelMap[0][next[0]][next[1]].isSolid()) {
+				if (GameEngine.levelMap[0][next[0]][next[1]] != null && 
+						!GameEngine.levelMap[0][next[0]][next[1]].isSolid()) {
 					queue.add(next);
-						}
+				}
 			}
 			//look left
 			if (current[1] > 0 && pathMap[current[0]][current[1]-1][4] < 0) {
@@ -410,10 +430,10 @@ public class GameEngine {
 				pathMap[next[0]][next[1]][3] = next[3];
 				pathMap[next[0]][next[1]][4] = next[4];
 
-				if (levelMap[0][next[0]][next[1]] != null && 
-						!levelMap[0][next[0]][next[1]].isSolid()) {
+				if (GameEngine.levelMap[0][next[0]][next[1]] != null && 
+						!GameEngine.levelMap[0][next[0]][next[1]].isSolid()) {
 					queue.add(next);
-						}
+				}
 			}
 			//look down
 			if (current[0] < pathMap.length-1 && pathMap[current[0]+1][current[1]][4] < 0) {
@@ -424,10 +444,10 @@ public class GameEngine {
 				pathMap[next[0]][next[1]][3] = next[3];
 				pathMap[next[0]][next[1]][4] = next[4];
 
-				if (levelMap[0][next[0]][next[1]] != null && 
-						!levelMap[0][next[0]][next[1]].isSolid()) {
+				if (GameEngine.levelMap[0][next[0]][next[1]] != null && 
+						!GameEngine.levelMap[0][next[0]][next[1]].isSolid()) {
 					queue.add(next);
-						}
+				}
 			}
 			//look right
 			if (current[0] < pathMap[0].length-1 && pathMap[current[0]][current[1]+1][4] < 0) {
@@ -438,12 +458,12 @@ public class GameEngine {
 				pathMap[next[0]][next[1]][3] = next[3];
 				pathMap[next[0]][next[1]][4] = next[4];
 
-				if (levelMap[0][next[0]][next[1]] != null && 
-						!levelMap[0][next[0]][next[1]].isSolid()) {
+				if (GameEngine.levelMap[0][next[0]][next[1]] != null && 
+						!GameEngine.levelMap[0][next[0]][next[1]].isSolid()) {
 					queue.add(next);
-						}
+				}
 			}
-		}
+	    }
 		//Secondary pass
 		for (int i = 0; i < pathMap.length; i++) {
 			for (int j = 0; j < pathMap[i].length; j++) {
@@ -479,10 +499,10 @@ public class GameEngine {
 				pathMap[next[0]][next[1]][3] = next[3];
 				pathMap[next[0]][next[1]][4] = next[4];
 
-				if (levelMap[0][next[0]][next[1]] != null && 
-						!levelMap[0][next[0]][next[1]].isSolid()) {
-					if (levelMap[2][next[0]][next[1]] instanceof EnemyObject) {
-						EnemyObject en = ((EnemyObject)levelMap[2][next[0]][next[1]]);
+				if (GameEngine.levelMap[0][next[0]][next[1]] != null && 
+						!GameEngine.levelMap[0][next[0]][next[1]].isSolid()) {
+					if (GameEngine.levelMap[2][next[0]][next[1]] instanceof EnemyObject) {
+						EnemyObject en = ((EnemyObject)GameEngine.levelMap[2][next[0]][next[1]]);
 						if (pathMap[next[0]][next[1]][4] < en.getCurrRange()) {
 							en.setPath(extractPath(pathMap, next[0], next[1]));
 						}
@@ -490,7 +510,7 @@ public class GameEngine {
 					else {
 						queue.add(next);
 					}
-						}
+				}
 			}
 			//look left
 			if (current[1] > 0 && pathMap[current[0]][current[1]-1][4] < 0) {
@@ -501,10 +521,10 @@ public class GameEngine {
 				pathMap[next[0]][next[1]][3] = next[3];
 				pathMap[next[0]][next[1]][4] = next[4];
 
-				if (levelMap[0][next[0]][next[1]] != null && 
-						!levelMap[0][next[0]][next[1]].isSolid()) {
-					if (levelMap[2][next[0]][next[1]] instanceof EnemyObject) {
-						EnemyObject en = ((EnemyObject)levelMap[2][next[0]][next[1]]);
+				if (GameEngine.levelMap[0][next[0]][next[1]] != null && 
+						!GameEngine.levelMap[0][next[0]][next[1]].isSolid()) {
+					if (GameEngine.levelMap[2][next[0]][next[1]] instanceof EnemyObject) {
+						EnemyObject en = ((EnemyObject)GameEngine.levelMap[2][next[0]][next[1]]);
 						if (pathMap[next[0]][next[1]][4] < en.getCurrRange()) {
 							en.setPath(extractPath(pathMap, next[0], next[1]));
 						}
@@ -512,7 +532,7 @@ public class GameEngine {
 					else {
 						queue.add(next);
 					}
-						}
+				}
 			}
 			//look down
 			if (current[0] < pathMap.length-1 && pathMap[current[0]+1][current[1]][4] < 0) {
@@ -523,10 +543,10 @@ public class GameEngine {
 				pathMap[next[0]][next[1]][3] = next[3];
 				pathMap[next[0]][next[1]][4] = next[4];
 
-				if (levelMap[0][next[0]][next[1]] != null && 
-						!levelMap[0][next[0]][next[1]].isSolid()) {
-					if (levelMap[2][next[0]][next[1]] instanceof EnemyObject) {
-						EnemyObject en = ((EnemyObject)levelMap[2][next[0]][next[1]]);
+				if (GameEngine.levelMap[0][next[0]][next[1]] != null && 
+						!GameEngine.levelMap[0][next[0]][next[1]].isSolid()) {
+					if (GameEngine.levelMap[2][next[0]][next[1]] instanceof EnemyObject) {
+						EnemyObject en = ((EnemyObject)GameEngine.levelMap[2][next[0]][next[1]]);
 						if (pathMap[next[0]][next[1]][4] < en.getCurrRange()) {
 							en.setPath(extractPath(pathMap, next[0], next[1]));
 						}
@@ -534,7 +554,7 @@ public class GameEngine {
 					else {
 						queue.add(next);
 					}
-						}
+				}
 			}
 			//look right
 			if (current[0] < pathMap[0].length-1 && pathMap[current[0]][current[1]+1][4] < 0) {
@@ -545,10 +565,10 @@ public class GameEngine {
 				pathMap[next[0]][next[1]][3] = next[3];
 				pathMap[next[0]][next[1]][4] = next[4];
 
-				if (levelMap[0][next[0]][next[1]] != null && 
-						!levelMap[0][next[0]][next[1]].isSolid()) {
-					if (levelMap[2][next[0]][next[1]] instanceof EnemyObject) {
-						EnemyObject en = ((EnemyObject)levelMap[2][next[0]][next[1]]);
+				if (GameEngine.levelMap[0][next[0]][next[1]] != null && 
+						!GameEngine.levelMap[0][next[0]][next[1]].isSolid()) {
+					if (GameEngine.levelMap[2][next[0]][next[1]] instanceof EnemyObject) {
+						EnemyObject en = ((EnemyObject)GameEngine.levelMap[2][next[0]][next[1]]);
 						if (pathMap[next[0]][next[1]][4] < en.getCurrRange()) {
 							en.setPath(extractPath(pathMap, next[0], next[1]));
 						}
@@ -558,10 +578,9 @@ public class GameEngine {
 					}
 				}
 			}
-
 		}
-
 	}
+
 
 	//Given a pathMap and a set of coordinates, this method extracts a series of locations that comprise a path towards the player spot
 	//If the size of the returned arraylist is 0, then either there is no valid path or the given coordinates are equal to those of the player
