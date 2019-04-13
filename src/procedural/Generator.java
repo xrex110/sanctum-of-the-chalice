@@ -123,8 +123,8 @@ public class Generator {
 		thisLevel.levelMap = objectMap;
 		thisLevel.mapWidth = this.mapWidth;
 		thisLevel.mapHeight = this.mapHeight;
-		//Spawning player in at the top leftmost block of the room for now
-		thisLevel.playerSpawnPosition = new Coordinate(spawnRoom.row + 1, spawnRoom.col + 1);
+
+		thisLevel.playerSpawnPosition = rng.getRandomCoordinateWithinBounds(spawnRoom.row + 2, spawnRoom.row + spawnRoom.bounds.height - 2, spawnRoom.col + 2, spawnRoom.col + spawnRoom.bounds.width - 2);
 
 		return thisLevel;
 	}
