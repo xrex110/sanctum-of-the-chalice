@@ -11,7 +11,7 @@ import java.util.*;
 
 public class GameEngine {
 	public final float FASTRATE = 31.25f;
-	public static final float SLOWRATE = 500f;
+	public static final float SLOWRATE = 100f;
 	private final float MILLITONANO = 1_000_000;
 	private final int MAXHISTORY = 30;
 	public float currSlowRate;
@@ -56,8 +56,7 @@ public class GameEngine {
 
 		LevelMap testLevel = new LevelMap();
 		testLevel.numRooms = 25;
-		testLevel.linear = false;
-		testLevel.chestSpawnChance = 700;
+		testLevel.linear = true;
 		testLevel.minRoomSize = 7;
 		testLevel.maxRoomSize = 11;
 		testLevel.minSpawnSize = 6;
