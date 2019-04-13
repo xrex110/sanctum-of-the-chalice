@@ -10,7 +10,7 @@ import java.util.*;
 
 public class GameEngine {
 	public final float FASTRATE = 31.25f;
-	public static final float SLOWRATE = 500f;
+	public static final float SLOWRATE = 100f;
 	private final float MILLITONANO = 1_000_000;
 	private final int MAXHISTORY = 30;
 	public float currSlowRate;
