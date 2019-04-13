@@ -22,15 +22,15 @@ public class RandomNumberGenerator {
 		return rand.nextInt((max - min) + 1) + min;
 	}
 
-	//Returns MapCoordinate with random row and col within a range
+	//Returns Coordinate with random row and col within a range
 	//Range: row -> [0, rLimit], col -> [0, cLimit]
-	public MapCoordinate getRandomCoordinate(int rLimit, int cLimit) {
-		return new MapCoordinate(getRandomNumber(rLimit), getRandomNumber(cLimit));
+	public Coordinate getRandomCoordinate(int rLimit, int cLimit) {
+		return new Coordinate(getRandomNumber(rLimit), getRandomNumber(cLimit));
 	}
 
-	//Returns MapCoordinate with random row and col within a range
+	//Returns Coordinate with random row and col within a range
 	//Range: row -> [rMin, rMax], col -> [cMin, cMax]
-	public MapCoordinate getRandomCoordinateWithinBounds(int rMin, int rMax, int cMin, int cMax) {
-		return new MapCoordinate(getRandomWithinBounds(rMin, rMax), getRandomWithinBounds(cMin, cMax));
+	public Coordinate getRandomCoordinateWithinBounds(int rMin, int rMax, int cMin, int cMax) {
+		return new Coordinate(getRandomWithinBounds(rMin, rMax), getRandomWithinBounds(cMin, cMax));
 	}
 }

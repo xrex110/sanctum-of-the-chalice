@@ -1,17 +1,22 @@
 package procedural;
 
+import game.*;
+import object.*;
+
 import java.util.Random;
 import java.util.ArrayList;
 import java.awt.Rectangle;
 
 public class Generator {
-	private int[][] map;
-
 	/////////////////////////////////////////////
+	private int[][] map;
+	private GameObject[][][] objectMap;
 	private RandomNumberGenerator rng;
 	private Rectangle mapArea;
-	private MapCoordinate cursor;
+	private Coordinate cursor;
 	/////////////////////////////////////////////
+
+	private final int STANDARD_MAX_OFFSET = 50;
 
 	//These variables try to keep track of the topleftmost corner
 	//and the bottomrightmost corner of the rooms generated in the
@@ -22,10 +27,11 @@ public class Generator {
 	private ArrayList<Rectangle> rectanglesInLevel;
 	private ArrayList<Room> roomsInLevel;
 	private ArrayList<Corridor> corridorsInLevel;
-	private ArrayList<MapCoordinate> corridorTiles;
-	private ArrayList<MapCoordinate> occupiedTiles;
+	private ArrayList<Coordinate> corridorTiles;
+	private ArrayList<Coordinate> occupiedTiles;
 	private Room spawnRoom;		//spawn gets special designation
 
+	//Generation parameters
 	private int numRooms;
 	private int minRoomSize;
 	private int maxRoomSize;
@@ -33,8 +39,12 @@ public class Generator {
 	private int minSpawnSize;
 	private int maxSpawnSize;
 
+	//Population parameters
+	private String tileSpriteSheet;
+	private int wallTileCode;
+	private int floorTileCode;
 
-	public Generator(Map mapDetails) {
+	public Generator(LevelMap mapDetails) {
 		rng = new RandomNumberGenerator();
 		//map = new int[mapSize][mapSize];
 		//mapArea = new Rectangle(0, 0, mapSize, mapSize);
@@ -50,34 +60,53 @@ public class Generator {
 		maxX = maxY = Integer.MIN_VALUE;
 
 		this.numRooms = mapDetails.numRooms;
+		this.linear = mapDetails.linear;
+		this.minRoomSize = mapDetails.minRoomSize;
+		this.maxRoomSize = mapDetails.maxRoomSize;
+		this.minSpawnSize = mapDetails.minSpawnSize;
+		this.maxSpawnSize = mapDetails.maxSpawnSize;
+
+		this.tileSpriteSheet = mapDetails.tileSpriteSheet;
+		this.wallTileCode = mapDetails.wallTileCode;
+		this.floorTileCode = mapDetails.floorTileCode;
 	}
 
-	public void generateDungeon() {
+	public LevelData generateDungeon() {
 		//First we generate a spawn room
 		long startTime = System.currentTimeMillis();
-		generateSpawn(50, 8, 12);
+		generateSpawn(STANDARD_MAX_OFFSET, minSpawnSize, maxSpawnSize);
 
 		//A segment is described as an attempt to generate a corridor and room
 		//TODO: Better definition for Segment? Something with more versitality
 		int numberOfRoomsGenerated = 1;
-		if(mapDetails.linear) {
+
+		//If Linear generation is picked
+		if(linear) {
 			int count = 0;
 			while(numberOfRoomsGenerated != numRooms) {
 				boolean genResult = generateSegment(roomsInLevel.get(count));
+				if(!genResult) continue;
+				log("Segment " + numberOfRoomsGenerated + " generated successfully");
+				numberOfRoomsGenerated++;
+				count++;
 			}
 		}
 
-		while(numberOfRoomsGenerated != numRooms) {
-			boolean genResult = generateSegment(selectRandomValidRoom());
-			//If its a fail, just continue on
-			//If its a success, go on to the next
-			if(!genResult) continue;
-			log("Segment " + numberOfRoomsGenerated + " generated successfully");
-			numberOfRoomsGenerated++;
+		//If non-linear(radial) generation is picked
+		else {
+			while(numberOfRoomsGenerated != numRooms) {
+				boolean genResult = generateSegment(selectRandomValidRoom());
+				//If its a fail, just continue on
+				//If its a success, go on to the next
+				if(!genResult) continue;
+				log("Segment " + numberOfRoomsGenerated + " generated successfully");
+				numberOfRoomsGenerated++;
+			}
 		}
 
 		adjustMapSize();
 		updateMap();
+		updateObjectMap();
 		long endTime = System.currentTimeMillis();
 
 		//Print map!
@@ -88,7 +117,16 @@ public class Generator {
 		System.out.println("Time taken to generate level (not counting printing)\n\t\t" + (endTime - startTime) + "ms");
 		System.out.println("=========================");
 		termClearColor();
-		
+
+		//Now we create the LevelData object to send back to GE
+		LevelData thisLevel = new LevelData();
+		thisLevel.levelMap = objectMap;
+		thisLevel.mapWidth = this.mapWidth;
+		thisLevel.mapHeight = this.mapHeight;
+		//Spawning player in at the top leftmost block of the room for now
+		thisLevel.playerSpawnPosition = new Coordinate(spawnRoom.row + 1, spawnRoom.col + 1);
+
+		return thisLevel;
 	}
 
 	//This function used to current values of minX, minY, maxX, and maxY to
@@ -104,6 +142,7 @@ public class Generator {
 		mapArea = new Rectangle(0, 0, mapWidth, mapHeight);
 
 		map = new int[mapHeight][mapWidth];
+		objectMap = new GameObject[3][mapHeight][mapWidth];	//3 layers/dimensions
 		//We negate minX and minY and then translate every element by them
 		//This so the the topleftmost point is always flush against the edge of the map,
 		//at 0,0
@@ -111,8 +150,8 @@ public class Generator {
 		log(String.format("mapWidth = %d, mapHeight = %d\n", mapWidth, mapHeight));
 		for(Room rm : roomsInLevel) rm.translate(-minX, -minY);	
 		for(Corridor cor: corridorsInLevel) cor.translate(-minX, -minY);
-		//For MapCoordinate, its translate(rowOffset, colOffset);
-		for(MapCoordinate mc : corridorTiles) mc.translate(-minY, -minX);
+		//For Coordinate, its translate(rowOffset, colOffset);
+		for(Coordinate mc : corridorTiles) mc.translate(-minY, -minX);
 
 	}
 
@@ -128,7 +167,7 @@ public class Generator {
 		int height = rng.getRandomWithinBounds(minSize, maxSize);
 
 		//Since the room can only be within the box that is the centermost of size mapSize- 2sqrOffset
-		MapCoordinate roomOrigin = rng.getRandomCoordinateWithinBounds(0, maxOffset, 0, maxOffset);
+		Coordinate roomOrigin = rng.getRandomCoordinateWithinBounds(0, maxOffset, 0, maxOffset);
 		spawnRoom = new Room(roomOrigin, width, height);
 		roomsInLevel.add(spawnRoom);
 		addToCollisionList(spawnRoom.bounds);
@@ -154,9 +193,9 @@ public class Generator {
 			}
 			//dir is the heading
 			//Now we get the index on the wall we want to start at
-			ArrayList<MapCoordinate> wall = startRoom.getDirectionWall(dir);
+			ArrayList<Coordinate> wall = startRoom.getDirectionWall(dir);
 			int indexPick = rng.getRandomNumber(wall.size() - 1);
-			MapCoordinate start = wall.get(indexPick);
+			Coordinate start = wall.get(indexPick);
 
 			//Now we have the coordinate start and the direction dir, from a wall of startRoom
 			//Now we start generating a corridor here
@@ -170,9 +209,7 @@ public class Generator {
 
 			//Then we generate a room
 			//TODO: have a dice-roll chance for dead ends?
-			int minSize = 4;
-			int maxSize = 10;
-			Room newRoom = generateRoom(dir, minSize, maxSize);
+			Room newRoom = generateRoom(dir, minRoomSize, maxRoomSize);
 
 			//Now we check the new room generated for any collisions
 			if(checkForCollision(newRoom.bounds)) {
@@ -235,8 +272,8 @@ public class Generator {
 			col = cursor.col - width + 1;
 		}
 
-		log("Generated room at " + new MapCoordinate(row, col) + "with width = " + width + ", height = " + height);
-		Room newRoom = new Room(new MapCoordinate(row, col), width, height);
+		log("Generated room at " + new Coordinate(row, col) + "with width = " + width + ", height = " + height);
+		Room newRoom = new Room(new Coordinate(row, col), width, height);
 		//We do the required settings on this room
 		return newRoom;
 	}
@@ -253,35 +290,35 @@ public class Generator {
 		//TODO: overlap detection
 		if(heading.direction == Direction.UP) {
 			dirVal = "UP";
-			MapCoordinate start = new MapCoordinate(heading.position.row - 1, heading.position.col);
+			Coordinate start = new Coordinate(heading.position.row - 1, heading.position.col);
 			oRow = start.row - length + 1;
 			oCol = start.col - 1;
-			cursor = new MapCoordinate(start.row - length, start.col);
+			cursor = new Coordinate(start.row - length, start.col);
 		}
 		else if(heading.direction == Direction.DOWN) {
 			dirVal = "DOWN";
-			MapCoordinate start = new MapCoordinate(heading.position.row + 1, heading.position.col);
+			Coordinate start = new Coordinate(heading.position.row + 1, heading.position.col);
 			oRow = start.row;
 			oCol = start.col - 1;
-			cursor = new MapCoordinate(start.row + length, start.col);
+			cursor = new Coordinate(start.row + length, start.col);
 		}
 		else if(heading.direction == Direction.RIGHT) {
 			dirVal = "RIGHT";
-			MapCoordinate start = new MapCoordinate(heading.position.row, heading.position.col + 1);
+			Coordinate start = new Coordinate(heading.position.row, heading.position.col + 1);
 			oRow = start.row - 1;
 			oCol = start.col;
-			cursor = new MapCoordinate(start.row, start.col + length);
+			cursor = new Coordinate(start.row, start.col + length);
 		}
 		else if(heading.direction == Direction.LEFT) {
 			dirVal = "LEFT";
-			MapCoordinate start = new MapCoordinate(heading.position.row, heading.position.col - 1);
+			Coordinate start = new Coordinate(heading.position.row, heading.position.col - 1);
 			oRow = start.row - 1;
 			oCol = heading.position.col - length;	// + 1
-			cursor = new MapCoordinate(start.row, start.col - length);
+			cursor = new Coordinate(start.row, start.col - length);
 		}
 
-		Corridor newCor = new Corridor(new MapCoordinate(oRow, oCol), heading.direction, breadth, length);
-		log("Corridor generated with origin " + new MapCoordinate(oRow, oCol) + " Length: " + length + " and breadth " + breadth + ", in direction " + dirVal);
+		Corridor newCor = new Corridor(new Coordinate(oRow, oCol), heading.direction, breadth, length);
+		log("Corridor generated with origin " + new Coordinate(oRow, oCol) + " Length: " + length + " and breadth " + breadth + ", in direction " + dirVal);
 
 		//cursor is the coordinate at the end of the corridor, just outside it.
 		log("The cursor for this corridor is at " + cursor);
@@ -333,12 +370,22 @@ public class Generator {
 	private void updateMap() {
 		for(Room room: roomsInLevel) drawRoom(room);
 		for(Corridor cor : corridorsInLevel) drawCorridor(cor);
-		for(MapCoordinate coord: corridorTiles) map[coord.row][coord.col] = 1;
+		for(Coordinate coord: corridorTiles) map[coord.row][coord.col] = 1;
+	}
+
+	private void updateObjectMap() {
+		for(int i = 0; i < mapHeight; i++) {
+			for(int j = 0; j < mapWidth; j++) {
+				if(map[i][j] == 2) objectMap[0][i][j] =	new Tile(j, i, tileSpriteSheet, wallTileCode, true); 	
+				else if(map[i][j] == 1) objectMap[0][i][j] = new Tile(j, i, tileSpriteSheet, floorTileCode, false);
+				else objectMap[0][i][j] = null;
+			}
+		}
 	}
 
 	private void drawCorridor(Corridor cor) {
-		for(MapCoordinate pt : cor.getFirstWall()) map[pt.row][pt.col] = 2;	
-		for(MapCoordinate pt : cor.getSecondWall()) map[pt.row][pt.col] = 2;	
+		for(Coordinate pt : cor.getFirstWall()) map[pt.row][pt.col] = 2;	
+		for(Coordinate pt : cor.getSecondWall()) map[pt.row][pt.col] = 2;	
 
 		if(cor.direction == Direction.UP || cor.direction == Direction.DOWN) {
 			for(int i = cor.row; i < cor.row + cor.bounds.height; i++) {
@@ -358,12 +405,12 @@ public class Generator {
 
 	private void drawRoom(Room rm) {
 		//Write out the walls of the room
-		for(MapCoordinate pt : rm.getDirectionWall(Direction.LEFT)) map[pt.row][pt.col] = 2;
-		for(MapCoordinate pt : rm.getDirectionWall(Direction.RIGHT)) map[pt.row][pt.col] = 2;
-		for(MapCoordinate pt : rm.getDirectionWall(Direction.UP)) map[pt.row][pt.col] = 2;
-		for(MapCoordinate pt : rm.getDirectionWall(Direction.DOWN)) map[pt.row][pt.col] = 2;
-		for(MapCoordinate pt : rm.getCorners()) map[pt.row][pt.col] = 2;
-		//for(MapCoordinate pt : corners) map[pt.row][pt.col] = 2;
+		for(Coordinate pt : rm.getDirectionWall(Direction.LEFT)) map[pt.row][pt.col] = 2;
+		for(Coordinate pt : rm.getDirectionWall(Direction.RIGHT)) map[pt.row][pt.col] = 2;
+		for(Coordinate pt : rm.getDirectionWall(Direction.UP)) map[pt.row][pt.col] = 2;
+		for(Coordinate pt : rm.getDirectionWall(Direction.DOWN)) map[pt.row][pt.col] = 2;
+		for(Coordinate pt : rm.getCorners()) map[pt.row][pt.col] = 2;
+		//for(Coordinate pt : corners) map[pt.row][pt.col] = 2;
 
 		//Fill out the inside of a room
 		for(int i = rm.row + 1; i < rm.row + rm.bounds.height - 1; i++) {
@@ -377,11 +424,11 @@ public class Generator {
 		System.out.println("=====Printing World=====");
 		for(int i = 0; i < map.length; i++) {
 			for(int j = 0; j < map[1].length; j++) {
-				if(map[i][j] == 1) termColorGreen();
-				else if(map[i][j] == 2) termColorRed();
-				else termColorBlack();
+				//if(map[i][j] == 1) termColorGreen();
+				//else if(map[i][j] == 2) termColorRed();
+				//else termColorBlack();
 				System.out.print(map[i][j] + " ");
-				termClearColor();
+				//termClearColor();
 			}
 			System.out.println();
 		}

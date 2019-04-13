@@ -1,7 +1,7 @@
 package object;
 import render.RenderLoop;
 import java.io.Serializable;
-import game.Coordinate;
+import procedural.Coordinate;
 public class CoordinateManager implements Serializable {
 
     private Coordinate pos;

@@ -25,12 +25,12 @@ public class Corridor {
 	public int breadth, length;
 
 	//Right and left are based off of heading.dir
-	private ArrayList<MapCoordinate> firstWall;
-	private ArrayList<MapCoordinate> secondWall;
+	private ArrayList<Coordinate> firstWall;
+	private ArrayList<Coordinate> secondWall;
 
 	private boolean[] sidesConnected;	//{firstWall, secondWall}
 
-	public Corridor(MapCoordinate origin, Direction dir, int breadth, int length) {
+	public Corridor(Coordinate origin, Direction dir, int breadth, int length) {
 		this.row = origin.row;
 		this.col = origin.col;
 		this.breadth = breadth;
@@ -50,14 +50,14 @@ public class Corridor {
 
 		if(direction == Direction.UP || direction == Direction.DOWN) {
 			for(int i = row; i < row + length; i++) {
-				firstWall.add(new MapCoordinate(i, col));
-				secondWall.add(new MapCoordinate(i, col + breadth - 1));
+				firstWall.add(new Coordinate(i, col));
+				secondWall.add(new Coordinate(i, col + breadth - 1));
 			}
 		}
 		else {
 			for(int i = col; i < col + length; i++) {
-				firstWall.add(new MapCoordinate(row, i));
-				secondWall.add(new MapCoordinate(row + breadth - 1, i));
+				firstWall.add(new Coordinate(row, i));
+				secondWall.add(new Coordinate(row + breadth - 1, i));
 			}
 		}
 		firstWall.trimToSize();
@@ -73,15 +73,15 @@ public class Corridor {
 		row += offsetY;
 		col += offsetX;
 
-		for(MapCoordinate pt : firstWall) pt.translate(offsetY, offsetX);
-		for(MapCoordinate pt : secondWall) pt.translate(offsetY, offsetX);
+		for(Coordinate pt : firstWall) pt.translate(offsetY, offsetX);
+		for(Coordinate pt : secondWall) pt.translate(offsetY, offsetX);
 	}
 
-	public ArrayList<MapCoordinate> getFirstWall() {
+	public ArrayList<Coordinate> getFirstWall() {
 		return firstWall;
 	}
 
-	public ArrayList<MapCoordinate> getSecondWall() {
+	public ArrayList<Coordinate> getSecondWall() {
 		return secondWall;
 	}
 

@@ -1,9 +1,9 @@
 package procedural;
 
-public class MapCoordinate {
+public class Coordinate {
 	public int row, col;
 	
-	public MapCoordinate(int row, int col) {
+	public Coordinate(int row, int col) {
 		this.row = row;
 		this.col = col;
 	}
@@ -21,8 +21,8 @@ public class MapCoordinate {
 	@Override
 	public boolean equals(Object o) {
 		if(o == this) return true;
-		if(!(o instanceof MapCoordinate)) return false;
-		MapCoordinate a = (MapCoordinate) o;
+		if(!(o instanceof Coordinate)) return false;
+		Coordinate a = (Coordinate) o;
 		return (this.row == a.row && this.col == a.col);
 	}
 

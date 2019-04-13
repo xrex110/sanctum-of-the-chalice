@@ -9,15 +9,15 @@ public class Room {
 	//IMPORTANT: x and y of the top left corner, not row and col
 	public int row, col;
 	
-	private ArrayList<MapCoordinate> leftWall;
-	private ArrayList<MapCoordinate> rightWall;
-	private ArrayList<MapCoordinate> topWall;
-	private ArrayList<MapCoordinate> bottomWall;
-	private ArrayList<MapCoordinate> corners;
+	private ArrayList<Coordinate> leftWall;
+	private ArrayList<Coordinate> rightWall;
+	private ArrayList<Coordinate> topWall;
+	private ArrayList<Coordinate> bottomWall;
+	private ArrayList<Coordinate> corners;
 
 	private boolean[] sidesConnected; //left right top bot
 
-	public Room(MapCoordinate origin, int width, int height) {
+	public Room(Coordinate origin, int width, int height) {
 		row = origin.row;
 		col = origin.col;
 		bounds = new Rectangle(origin.col, origin.row, width, height);
@@ -30,26 +30,26 @@ public class Room {
 		corners = new ArrayList<>();
 
 		//Populate corners
-		corners.add(new MapCoordinate(row, col));
-		corners.add(new MapCoordinate(row, col + bounds.width - 1));
-		corners.add(new MapCoordinate(row + bounds.height - 1, col + bounds.width - 1));
-		corners.add(new MapCoordinate(row + bounds.height - 1, col));
+		corners.add(new Coordinate(row, col));
+		corners.add(new Coordinate(row, col + bounds.width - 1));
+		corners.add(new Coordinate(row + bounds.height - 1, col + bounds.width - 1));
+		corners.add(new Coordinate(row + bounds.height - 1, col));
 
 		//Populating the Wall coordinate arraylists
 		for(int i = bounds.y + 1, count = 0; i < bounds.y + bounds.height - 1; i++, count++) {
 			//bounds.y + 1 ignores the corner blocks
-			leftWall.add(new MapCoordinate(i, bounds.x));
+			leftWall.add(new Coordinate(i, bounds.x));
 		}
 		for(int i = bounds.y + 1, count = 0; i < bounds.y + bounds.height - 1; i++, count++) {
 			int col = bounds.x + bounds.width - 1;
-			rightWall.add(new MapCoordinate(i, col));
+			rightWall.add(new Coordinate(i, col));
 		}
 		for(int i = bounds.x + 1, count = 0; i < bounds.x + bounds.width - 1; i++, count++) {
-			topWall.add(new MapCoordinate(bounds.y, i));
+			topWall.add(new Coordinate(bounds.y, i));
 		}
 		for(int i = bounds.x + 1, count = 0; i < bounds.x + bounds.width - 1; i++, count++) {
 			int row = bounds.y + bounds.height - 1;
-			bottomWall.add(new MapCoordinate(row, i));
+			bottomWall.add(new Coordinate(row, i));
 		}
 		
 		leftWall.trimToSize();
@@ -66,15 +66,15 @@ public class Room {
 		row += offsetY;
 		col += offsetX;
 
-		for(MapCoordinate pt : leftWall) pt.translate(offsetY, offsetX);
-		for(MapCoordinate pt : rightWall) pt.translate(offsetY, offsetX);
-		for(MapCoordinate pt : topWall) pt.translate(offsetY, offsetX);
-		for(MapCoordinate pt : bottomWall) pt.translate(offsetY, offsetX);
-		for(MapCoordinate pt : corners) pt.translate(offsetY, offsetX);
+		for(Coordinate pt : leftWall) pt.translate(offsetY, offsetX);
+		for(Coordinate pt : rightWall) pt.translate(offsetY, offsetX);
+		for(Coordinate pt : topWall) pt.translate(offsetY, offsetX);
+		for(Coordinate pt : bottomWall) pt.translate(offsetY, offsetX);
+		for(Coordinate pt : corners) pt.translate(offsetY, offsetX);
 
 	}
 
-	public ArrayList<MapCoordinate> getDirectionWall(Direction dir) {
+	public ArrayList<Coordinate> getDirectionWall(Direction dir) {
 		switch(dir) {
 			case LEFT: return leftWall;
 			case RIGHT: return rightWall;
@@ -84,7 +84,7 @@ public class Room {
 		return null;
 	}
 
-	public ArrayList<MapCoordinate> getCorners() {
+	public ArrayList<Coordinate> getCorners() {
 		return corners;
 	}
 

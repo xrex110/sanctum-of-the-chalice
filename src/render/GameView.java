@@ -88,8 +88,8 @@ public class GameView extends Menu {
             int w = getWidth();
             int h = getWidth();
             if(mapScreenshot) {
-                w = GameEngine.mapSize * RenderLoop.tileSizeX;
-                h = GameEngine.mapSize * RenderLoop.tileSizeY; 
+                w = GameEngine.mapWidth * RenderLoop.tileSizeX;
+                h = GameEngine.mapHeight * RenderLoop.tileSizeY; 
             }
             screenshot = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
             rend = (Graphics2D)screenshot.getGraphics();
