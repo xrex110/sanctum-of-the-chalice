@@ -112,8 +112,8 @@ public class InventoryMenu extends Menu {
         int textY = levelY + vertGap;
 
         String[] levelText = new String[] {
-            "Level: " + Player.player.getLevel(),
-            "XP: " + Player.player.getXP() + "/" + (Player.player.getXP()+Player.player.getXPDelta()),
+            "Level: " + Player.player.stat.getLv(),
+            "XP: " + Player.player.stat.getCurXP() + "/" + (Player.player.stat.getTotXP()),
             "Level Points: " + Player.player.getFreePoints(),
             "Gold: " + Player.player.getGold()
         };

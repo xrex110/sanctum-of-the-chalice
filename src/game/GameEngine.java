@@ -217,24 +217,30 @@ public class GameEngine {
 			while (enemyUpdateList.size() > 0) {
 				//System.out.println("enemy");
 				EnemyObject en = enemyUpdateList.remove(0);
-				Pair<Integer,Integer> nextLoc = en.nextLoc();
-				if (nextLoc != null 
-						&& !GameEngine.levelMap[0][nextLoc.y][nextLoc.x].isSolid() 
-						&& GameEngine.levelMap[2][nextLoc.y][nextLoc.x] == null) {
-					GameEngine.levelMap[2][en.getY()][en.getX()] = null;
-					GameEngine.levelMap[2][nextLoc.y][nextLoc.x] = en;
-					en.moveTo(nextLoc.x, nextLoc.y);
+				if (en.stat.checkAlive()) {
+					Pair<Integer,Integer> nextLoc = en.nextLoc();
+					if (nextLoc != null 
+							&& !GameEngine.levelMap[0][nextLoc.y][nextLoc.x].isSolid() 
+							&& GameEngine.levelMap[2][nextLoc.y][nextLoc.x] == null) {
+						GameEngine.levelMap[2][en.getY()][en.getX()] = null;
+						GameEngine.levelMap[2][nextLoc.y][nextLoc.x] = en;
+						en.moveTo(nextLoc.x, nextLoc.y);
 				
-					//en.setX(nextLoc.x);
-					//en.setY(nextLoc.y);
-				}else if(nextLoc!= null 
-			          &&levelMap[2][nextLoc.y][nextLoc.x] ==Player.player){
-					CombatSys.combatEnemy(en,Player.player);
+						//en.setX(nextLoc.x);
+						//en.setY(nextLoc.y);
+					}else if(nextLoc!= null 
+						  &&levelMap[2][nextLoc.y][nextLoc.x] ==Player.player){
+						CombatSys.combatEnemy(en,Player.player);
+					}
+					TriggerList trig = (TriggerList)GameEngine.levelMap[1][en.getY()][en.getX()];
+					for (int i = 0; i < trig.triggers.size(); i++) {
+						trig.triggers.get(i).interact(en);
+					}	
 				}
-				TriggerList trig = (TriggerList)GameEngine.levelMap[1][en.getY()][en.getX()];
-				for (int i = 0; i < trig.triggers.size(); i++) {
-					trig.triggers.get(i).interact(en);
-				}	
+				else {
+					GameEngine.levelMap[2][en.getY()][en.getX()] = null;
+					
+				}
 			}
 
 		}

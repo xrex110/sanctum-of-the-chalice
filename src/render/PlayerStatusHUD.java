@@ -12,9 +12,9 @@ import java.util.ArrayList;
 
 public class PlayerStatusHUD {
 
-    public int health = 75;
+    public int health = Player.player.stat.getHP();
     public int stamina = 25;
-    public final int HEALTH_MAX = 100;
+    public int HEALTH_MAX = Player.player.stat.getMaxHP();
     public final int STAMINA_MAX = 100;
     private String key = "";
     CircleProgressBar nextTick;
@@ -111,7 +111,8 @@ public class PlayerStatusHUD {
 
         String hp = health + "/" + HEALTH_MAX;
         String stam = stamina + "/" + STAMINA_MAX;
-
+		health = Player.player.stat.getHP();
+		HEALTH_MAX = Player.player.stat.getMaxHP();
         fillProgressBar(rend, barX, barY, barWidth, barHeight, health,
                 HEALTH_MAX,  Color.white, new Color(0xbb0a1e), Color.black);
         drawCenteredText(rend, hp, barX, barY, barWidth, barHeight);

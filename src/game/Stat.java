@@ -118,8 +118,21 @@ public class Stat {
 	public int getHP(){
 		return currentHp;	
 	}	
+	public int getMaxHP(){
+		return maxHp;
+	}
 	public int getLv(){
 		return objectLv;
+	}
+	public int getCurXP(){
+	
+		return exp;
+
+	}
+	public int getTotXP(){
+	
+		return objectLv*10;
+
 	}
 
 	/*
