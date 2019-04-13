@@ -1,3 +1,5 @@
+package procedural;
+
 public class MapCoordinate {
 	public int row, col;
 	

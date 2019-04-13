@@ -204,8 +204,8 @@ public class GameView extends Menu {
 
     }
     
-    Gradient fogVertical = new Gradient(0,0,800,800,true,400,0,2,Color.black);
-    Gradient fogHorizontal = new Gradient(0,0,800,800,false,400,0,2,Color.black);
+    Gradient fogVertical = new Gradient(0,0,800,800,true,400,0,5,Color.black);
+    Gradient fogHorizontal = new Gradient(0,0,800,800,false,400,0,5,Color.black);
 
     public void drawFog(Graphics2D rend) {
         float fogDensity = 1.5f;

@@ -1,8 +1,4 @@
-/*package game;
-  import main.*;
-  import render.*;
-  import object.*;*/
-//Uncomment above when required
+package procedural;
 
 import java.util.Random;
 import java.util.ArrayList;
@@ -31,16 +27,14 @@ public class Generator {
 	private Room spawnRoom;		//spawn gets special designation
 
 	private int numRooms;
-	//Map generation fields
-	/*int maxNumRooms;
-	  int minRoomSize;
-	  int maxRoomSize;
-	  boolean linear;
-	  int mapLevel;*/
+	private int minRoomSize;
+	private int maxRoomSize;
+	private boolean linear;
+	private int minSpawnSize;
+	private int maxSpawnSize;
 
-	//int mapSize = 50;
 
-	public Generator(int numRooms) {
+	public Generator(Map mapDetails) {
 		rng = new RandomNumberGenerator();
 		//map = new int[mapSize][mapSize];
 		//mapArea = new Rectangle(0, 0, mapSize, mapSize);
@@ -55,7 +49,7 @@ public class Generator {
 		minX = minY = Integer.MAX_VALUE;
 		maxX = maxY = Integer.MIN_VALUE;
 
-		this.numRooms = numRooms;
+		this.numRooms = mapDetails.numRooms;
 	}
 
 	public void generateDungeon() {
@@ -66,6 +60,13 @@ public class Generator {
 		//A segment is described as an attempt to generate a corridor and room
 		//TODO: Better definition for Segment? Something with more versitality
 		int numberOfRoomsGenerated = 1;
+		if(mapDetails.linear) {
+			int count = 0;
+			while(numberOfRoomsGenerated != numRooms) {
+				boolean genResult = generateSegment(roomsInLevel.get(count));
+			}
+		}
+
 		while(numberOfRoomsGenerated != numRooms) {
 			boolean genResult = generateSegment(selectRandomValidRoom());
 			//If its a fail, just continue on

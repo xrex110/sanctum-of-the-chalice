@@ -1,10 +1,4 @@
-package game;
-import main.*;
-
-import render.*;
-import sound.*;
-import object.*;
-
+package procedural;
 
 public enum Direction {
 	LEFT(0),

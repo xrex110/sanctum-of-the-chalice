@@ -4,6 +4,7 @@ import main.*;
 import render.*;
 import sound.*;
 import object.*;
+import procedural.*;
 
 
 import java.util.*;
@@ -16,9 +17,9 @@ public class GameEngine {
     public float currSlowRate;
 
     public enum MODE {
-	GAME,
-	PAUSE,
-	REVERSION
+		GAME,
+		PAUSE,
+		REVERSION
     }
     public static MODE gameMode;
     public static MODE prevMode;
@@ -40,11 +41,6 @@ public class GameEngine {
     private ScoreTracker tracker;
 
     private Generator levelGen;
-    /*
-       private GameObject[][] levelMap;
-       private GameObject[][] entityMap;
-       */
-    //map, row, column; tile, trigger, entity
     private GameObject[][][] levelMap;
     private ArrayList<EnemyObject> enemyUpdateList;
     private MoveHistory moveHist;
@@ -52,7 +48,6 @@ public class GameEngine {
     private EnemyObject theEnemy;
 
     public static Timer playtime = new Timer();
-    public static int mapSize = 100;
 
     public GameEngine() {
 	/*

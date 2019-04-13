@@ -1,3 +1,5 @@
+package procedural;
+
 import java.awt.Rectangle;
 import java.util.ArrayList;
 

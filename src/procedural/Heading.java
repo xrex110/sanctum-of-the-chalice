@@ -1,3 +1,5 @@
+package procedural;
+
 public class Heading {
 	public MapCoordinate position;
 	public Direction direction;
