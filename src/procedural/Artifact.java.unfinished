@@ -1,0 +1,16 @@
+package procedural;
+
+import game.*;
+import object.*;
+
+//Unfinished class, need to figure out typing stuff
+
+public class Artifact<T> {
+	public T type;
+	public double spawnChance;	//Per room
+	public double spawnPenalty;	//Penalty applied to chance for any of T more than one per room
+	
+	public T getNewObject(int x, int y) {
+		return new T(x, y);
+	}
+}

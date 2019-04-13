@@ -33,4 +33,12 @@ public class RandomNumberGenerator {
 	public Coordinate getRandomCoordinateWithinBounds(int rMin, int rMax, int cMin, int cMax) {
 		return new Coordinate(getRandomWithinBounds(rMin, rMax), getRandomWithinBounds(cMin, cMax));
 	}
+
+	//This function picks a random valid location inside Room rm and returns that coordinate
+	public Coordinate getRandomRoomTile(Room rm) {
+		int iRow = getRandomWithinBounds(rm.row + 2, rm.row + rm.bounds.height - 2);
+		int iCol = getRandomWithinBounds(rm.col + 2, rm.col + rm.bounds.width - 2);
+		Coordinate ret = new Coordinate(iRow, iCol);
+		return ret;
+	}
 }

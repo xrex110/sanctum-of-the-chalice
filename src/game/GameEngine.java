@@ -65,6 +65,8 @@ public class GameEngine {
 		testLevel.tileSpriteSheet = "test_tile.png";
 		testLevel.wallTileCode = 0;
 		testLevel.floorTileCode = 1;
+		testLevel.chestSpawnChance = 20.254896;
+		testLevel.chestSpawnPenalty = 8.45;
 
 		levelGen = new Generator(testLevel);
 		LevelData curLevel = levelGen.generateDungeon();

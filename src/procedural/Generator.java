@@ -44,6 +44,10 @@ public class Generator {
 	private int wallTileCode;
 	private int floorTileCode;
 
+	//Chest spawning parameters
+	private double chestSpawnChance;
+	private double chestSpawnPenalty;
+
 	public Generator(LevelMap mapDetails) {
 		rng = new RandomNumberGenerator();
 		//map = new int[mapSize][mapSize];
@@ -69,6 +73,10 @@ public class Generator {
 		this.tileSpriteSheet = mapDetails.tileSpriteSheet;
 		this.wallTileCode = mapDetails.wallTileCode;
 		this.floorTileCode = mapDetails.floorTileCode;
+
+		//For spawning
+		this.chestSpawnChance = mapDetails.chestSpawnChance;
+		this.chestSpawnPenalty = mapDetails.chestSpawnPenalty;
 	}
 
 	public LevelData generateDungeon() {
@@ -107,6 +115,7 @@ public class Generator {
 		adjustMapSize();
 		updateMap();
 		updateObjectMap();
+		spawnChests();
 		long endTime = System.currentTimeMillis();
 
 		//Print map!
@@ -323,6 +332,37 @@ public class Generator {
 		//cursor is the coordinate at the end of the corridor, just outside it.
 		log("The cursor for this corridor is at " + cursor);
 		return newCor;
+	}
+
+
+	//Spawn a bunch of chests in level
+	public void spawnChests() {
+		for(Room rm : roomsInLevel) {
+			boolean rolling = true;
+			int numberSpawned = 0;
+			while(rolling) {
+				double roll = Math.random() * 100;
+				if(roll < (chestSpawnChance - (numberSpawned * chestSpawnPenalty))) {
+					//Successful roll!
+					spawnArtifact(rm);
+					numberSpawned++;
+				}
+				else rolling = false;	//Roll failed :(
+			}
+		}
+	}
+
+	public void spawnArtifact(Room rm) {
+		boolean success = false;
+		while(!success) {
+			Coordinate coor = rng.getRandomRoomTile(rm);
+			//Check to see if this tile is "occupied" by another artifact
+			if(occupiedTiles.contains(coor)) continue;
+			occupiedTiles.add(coor);
+			//Add it to the 2nd layer of objectmap
+			objectMap[1][coor.row][coor.col] = new Chest(coor.col, coor.row);
+			success = true;
+		}
 	}
 
 	public boolean checkForCollision(Rectangle rect) {
