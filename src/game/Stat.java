@@ -59,14 +59,14 @@ public class Stat {
 			this.alive    = true;
 			this.objectType = 0;//Player
 		}else{
-			this.objectLv = rand.nextInt(3)+1;//1~3 lv
+			this.objectLv = 1;
 			this.str      = 1;
 			this.dex      = 1;
 			this.wis      = 1;
 			this.con      = 1;
 			this.currentHp = 20;
 			this.maxHp    = 20;
-			this.exp      = rand.nextInt((15-5)+1)+5;
+			this.exp      = 5;
 			this.alive    = true;
 			this.objectType = 1; // Creature;
 		}
@@ -176,7 +176,7 @@ public class Stat {
 		exp += newExp;
 		if(exp/10 == objectLv){
 			levelUp();
-			exp= exp%(objectLv*10);
+			exp =0;
 		}
 	}
 	public void levelUp(){

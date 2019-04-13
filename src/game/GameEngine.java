@@ -30,6 +30,8 @@ public class GameEngine {
 	private float gameStart;
 	private boolean running;
 	private String backgroundMusic = "../res/Twisting.ogg";
+	//Enemy attack flare sound
+	private String enemyAtkSound= "../res/EnemySound.ogg";
 	// footstep sound.
 	private String footStep = "../res/footStep2.ogg";
 	// fight sound.
@@ -230,7 +232,8 @@ public class GameEngine {
 						//en.setY(nextLoc.y);
 					}else if(nextLoc!= null 
 						  &&levelMap[2][nextLoc.y][nextLoc.x] ==Player.player){
-						CombatSys.combatEnemy(en,Player.player);
+						  soundEngine.play(enemyAtkSound, "enemyAtk");
+						  CombatSys.combatEnemy(en,Player.player);
 					}
 					TriggerList trig = (TriggerList)GameEngine.levelMap[1][en.getY()][en.getX()];
 					for (int i = 0; i < trig.triggers.size(); i++) {
