@@ -9,7 +9,6 @@ import object.*;
 import java.util.*;
 
 public class GameEngine {
-//<<<<<<< HEAD
 	public final float FASTRATE = 31.25f;
 	public static final float SLOWRATE = 500f;
 	private final float MILLITONANO = 1_000_000;
@@ -44,95 +43,6 @@ public class GameEngine {
 	private ScoreTracker tracker;
 
 	private Generator levelGen;
-/*=======
-    public final float FASTRATE = 31.25f;
-    public static final float SLOWRATE = 500f;
-    private final float MILLITONANO = 1_000_000;
-    private final int MAXHISTORY = 30;
-    public float currSlowRate;
-
-    public enum MODE {
-	GAME,
-	PAUSE,
-	REVERSION
-    }
-    public static MODE gameMode;
-    public static MODE prevMode;
-
-    private float slowCount;
-    private int fastIts;
-    private int slowIts;
-    private float gameStart;
-    private boolean running;
-    private String backgroundMusic = "../res/Twisting.ogg";
-	// footstep sound.
-	private String footStep = "../res/footStep2.ogg";
-	// fight sound.
-	private String atkSound2 = "../res/attackSound2.ogg";
-    //private String enterSound = "../res/Mario.ogg";
-    private Sign levelEnd;
-
-    //private Player player;
-
-    private static String currentInput;
-    private RenderLoop renderEngine;
-    private SoundEngine soundEngine;
-    private ScoreTracker tracker;
-
-    private Generator levelGen;
-    /*
-       private GameObject[][] levelMap;
-       private GameObject[][] entityMap;
-       */
-    //map, row, column; tile, trigger, entity
-  /*  private GameObject[][][] levelMap;
-    private ArrayList<EnemyObject> enemyUpdateList;
-    private MoveHistory moveHist;
-
-    private EnemyObject theEnemy;
-
-    public static Timer playtime = new Timer();
-    public static int mapSize = 100;
-
-    public GameEngine() {
-	/*
-	   levelMap = new GameObject[30][30];
-	   entityMap = new GameObject[30][30];
-	   */
-	/*levelMap = new GameObject[3][mapSize][mapSize];
-
-	//entityMap[12][12] = Player.player;
-	int numRooms = 20;
-	//levelMap = new GameObject[mapSize][mapSize];
-	//entityMap = new GameObject[mapSize][mapSize];
-
-	//entityMap[12][12] = Player.player;
-
-	//Recommended that mapSize be 10x number of Rooms
-	//last arg is for linearty. Set true for linear levels,
-	//false for random radially generated levels
-	levelGen = new Generator(mapSize, numRooms, true);
-	generateMap();
-
-	int[] playPos = levelGen.getSpawnPos();
-	Player.player.setX((playPos[1] + 3));
-	Player.player.setY((playPos[0] + 3));
-
-	//getSignCoordinates generates randomized coordinates for 2 signs,
-	//one at spawn, and one at the end of the map, and returns them in a Coordinate array
-	//of size 2, with index 0 containing the spawn size coords, and index 1 containing the end sign
-	//coordinates
-	Coordinate[] signPositions = levelGen.getSignCoords();
-	System.out.println("GE Row: " + signPositions[0].row + " GE Col: " + signPositions[0].col);
-	String help = "Use the W A S D keys to move around the map!";
-
-	//levelEnd = new Sign(signPos[1] * 32, signPos[0] * 32, "Insert end stats here");
->>>>>>> combat*/
-	/*
-	   private GameObject[][] levelMap;
-	   private GameObject[][] entityMap;
-	   */
-	//map, row, column; tile, trigger, entity
 	public static GameObject[][][] levelMap;
 	private ArrayList<EnemyObject> enemyUpdateList;
 	private MoveHistory moveHist;
