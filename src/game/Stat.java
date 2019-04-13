@@ -6,9 +6,9 @@ import sound.*;
 import object.*;
 
 import java.util.Random;
+import java.io.Serializable;
 
-
-public class Stat {
+public class Stat implements Serializable{
 	
 	/*
 	 * The Constructor function
