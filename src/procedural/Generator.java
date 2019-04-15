@@ -420,7 +420,16 @@ public class Generator {
 	//This function updates the map[][] object with all the rooms that have been
 	//Generated so far
 	private void updateMap() {
-		for(Room room: roomsInLevel) drawRoom(room);
+		for(Room room: roomsInLevel) {
+			drawRoom(room);
+			try {
+				Thread.sleep(1000);
+				printMap();
+			}
+			catch(Exception e) {
+				System.out.println("Lmao git gu");
+			}
+		}
 		for(Corridor cor : corridorsInLevel) drawCorridor(cor);
 		for(Coordinate coord: corridorTiles) map[coord.row][coord.col] = 1;
 	}
@@ -476,11 +485,11 @@ public class Generator {
 		System.out.println("=====Printing World=====");
 		for(int i = 0; i < map.length; i++) {
 			for(int j = 0; j < map[1].length; j++) {
-				//if(map[i][j] == 1) termColorGreen();
-				//else if(map[i][j] == 2) termColorRed();
-				//else termColorBlack();
+				if(map[i][j] == 1) termColorGreen();
+				else if(map[i][j] == 2) termColorRed();
+				else termColorBlack();
 				System.out.print(map[i][j] + " ");
-				//termClearColor();
+				termClearColor();
 			}
 			System.out.println();
 		}
@@ -489,7 +498,8 @@ public class Generator {
 
 	private void log(String str) {
 		//Can be changed later to write to a ProcGen log file perhaps
-		System.out.println(str);
+		//System.out.println(str);
+		return;
 	}
 
 	private void termColorRed() {
