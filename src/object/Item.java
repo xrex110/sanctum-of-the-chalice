@@ -30,7 +30,9 @@ public abstract class Item extends GameObject implements Interactable{
 				}
 			}
 		}
-		placePass();
+		if (x >= 0 && y>= 0) {
+			placePass();
+		}
 
 	}
 
@@ -47,7 +49,9 @@ public abstract class Item extends GameObject implements Interactable{
 				}
 			}
 		}
-		placePass();
+		if (x >= 0 && y>= 0) {
+			placePass();
+		}
 
 	}
 	public Item(int x, int y, ArrayList<Pair<Integer,Integer>> pLocs){
@@ -59,7 +63,9 @@ public abstract class Item extends GameObject implements Interactable{
 			loc = new Pair<Integer,Integer>(pLocs.get(i).x, pLocs.get(i).y);
 			passiveLocs.add(loc);
 		}
-		placePass();
+		if (x >= 0 && y>= 0) {
+			placePass();
+		}
 
 	}
 

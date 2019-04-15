@@ -50,7 +50,9 @@ public class EnemyObject extends GameObject implements Interactable {
 			}
 		}
 	}
-	placePass();
+	if (x >= 0 && y >= 0) {
+		placePass();
+	}
 	System.out.println("Enemy: " + passiveLocs);
 
     }

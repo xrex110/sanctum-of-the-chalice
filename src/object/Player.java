@@ -43,7 +43,9 @@ public class Player extends GameObject implements Interactable {
 				}
 			}
 		}
-		placePass();
+		if (x >= 0 && y >= 0) {
+			placePass();
+		}
 
 	}
 

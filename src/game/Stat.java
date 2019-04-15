@@ -135,6 +135,35 @@ public class Stat {
 
 	}
 
+	//set all stats to zero
+	public void zeroStats() {
+		this.objectLv = 0;
+		this.str      = 0;
+		this.dex      = 0;
+		this.wis      = 0;
+		this.con      = 0;
+		this.currentHp = 0;
+		this.maxHp    = 0;
+		this.exp      = 0;
+		this.alive    = false;
+	
+
+	}
+
+	public Stat copyStats() {
+		Stat cop = new Stat();
+		cop.objectLv = this.objectLv;
+		cop.str      = this.str;
+		cop.dex      = this.dex;
+		cop.wis      = this.wis;
+		cop.con      = this.con;
+		cop.currentHp = this.currentHp;
+		cop.maxHp    = this.maxHp;
+		cop.exp      = this.exp;
+		cop.alive    = this.alive;
+		return cop;
+	}
+
 	/*
 	*	About the Damage related functions
 	*	-toDamage function is used to calculate
