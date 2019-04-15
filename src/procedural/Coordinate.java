@@ -1,6 +1,8 @@
 package procedural;
 
-public class Coordinate {
+import java.io.Serializable;
+
+public class Coordinate implements Serializable{
 	public int row, col;
 	
 	public Coordinate(int row, int col) {

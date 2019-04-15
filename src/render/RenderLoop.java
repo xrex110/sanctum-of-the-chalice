@@ -7,12 +7,13 @@ import object.*;
 
 
 import java.awt.event.KeyEvent;
+import static main.Sanctum.settings; 
 
 public class RenderLoop extends Thread {
 
 	Window window;	/* Static window object */
 	InputHandler in;	/* Static InputHandler object */
-	GameView gm;
+	public GameView gm;
     MenuView menuView;   /* Static MenuView object */
     public static final long SLEEP_TIME = 16;
 	//private static int frame = 1;	/* Used for theoretical FPS calculation */
@@ -59,72 +60,70 @@ public class RenderLoop extends Thread {
 	}
 	public void handleInput() {
 		in.poll();
-        
-		if(in.isKeyPressed(KeyEvent.VK_ESCAPE)) {
+        Menu current = ((Menu)window.getWindowView());
+		if(in.isKeyPressed(KeyEvent.VK_BACK_QUOTE)) {
 			log("Window killed");
 			window.killWindow();
 			System.exit(1);
 		}
-        if(in.isKeyPressed(KeyEvent.VK_P)) {
-            if(!menuView.equals((Menu)window.getWindowView())) {
-                menuView.focus((Menu)window.getWindowView());
-		GameEngine.setPause();
-	    }
+        if(in.isKeyPressed(KeyEvent.VK_ESCAPE)) {
+            if(!menuView.equals(current)) {
+                menuView.focus(current);
+		        GameEngine.setPause();
+	        }
         }
-		if(in.isKeyPressed(KeyEvent.VK_W)) {
+        if(in.isKeyPressed(KeyEvent.VK_ENTER)) {
+            current.invoke("Enter");
+        }
+        else if(current instanceof KeybindMenu) {
+            for(int i = 0; i < 255; ++i) {
+                String tester = ""+ (char)i;
+                if(in.isKeyPressed(i) && tester.matches("[A-Z0-9]")) {
+                    current.invoke(tester);
+                    break;
+                }
+            }
+        }
+		else if(in.isKeyPressed(settings.UP)) {
 			//log("W was pressed on RE");
 			//Player.player.moveUp();
-            ((Menu)window.getWindowView()).invoke("W");
+            current.invoke("W");
 			
 		}
-		else if(in.isKeyPressed(KeyEvent.VK_S)) {
+		else if(in.isKeyPressed(settings.DOWN)) {
 			//log("S was pressed on RE");
 			//Player.player.moveDown();
         
-            ((Menu)window.getWindowView()).invoke("S");
+            current.invoke("S");
 		}
-		else if(in.isKeyPressed(KeyEvent.VK_A)) {
+		else if(in.isKeyPressed(settings.LEFT)) {
 			//log("A was pressed on RE");
 			//Player.player.moveLeft();
-            ((Menu)window.getWindowView()).invoke("A");
+            current.invoke("A");
             
 		}
-		else if(in.isKeyPressed(KeyEvent.VK_D)) {
+		else if(in.isKeyPressed(settings.RIGHT)) {
 			//log("D was pressed on RE");
 			//Player.player.moveRight();
-            ((Menu)window.getWindowView()).invoke("D");
+            current.invoke("D");
         }
-        else if(in.isKeyPressed(KeyEvent.VK_ENTER)) {
-            ((Menu)window.getWindowView()).invoke("Enter");
+        else if(in.isKeyPressed(settings.INVENTORY)) {
+            current.invoke("INVENTORY");
         }
-        else if(in.isKeyPressed(KeyEvent.VK_O)) {
-            ((Menu)window.getWindowView()).invoke("O");
-        }
-        else if(in.isKeyPressed(KeyEvent.VK_I)) {
-            ((Menu)window.getWindowView()).invoke("INVENTORY");
-        }
-        else if(in.isKeyPressed(KeyEvent.VK_K)) {
-            ((Menu)window.getWindowView()).invoke("K");
-        }
-        else if(in.isKeyPressed(KeyEvent.VK_L)) {
-            ((Menu)window.getWindowView()).invoke("L");
-        }else if(in.isKeyPressed(KeyEvent.VK_Q)) {
-            ((Menu)window.getWindowView()).invoke("Q");
+        else if(in.isKeyPressed(settings.REVERT)) {
+            current.invoke("Q");
         }else if(in.isKeyPressed(KeyEvent.VK_F1)) {
-            ((Menu)window.getWindowView()).invoke("TOGGLE_HUD");
+            current.invoke("TOGGLE_HUD");
         }else if(in.isKeyPressed(KeyEvent.VK_F3)) {
             if(in.isKeyPressed(KeyEvent.VK_E))
-                ((Menu)window.getWindowView()).invoke("TOGGLE_OBJ");
+                current.invoke("TOGGLE_OBJ");
             else if(in.isKeyPressed(KeyEvent.VK_F2))
-                ((Menu)window.getWindowView()).invoke("MAP_SCREENSHOT");
-            else ((Menu)window.getWindowView()).invoke("TOGGLE_DEBUG");
+                current.invoke("MAP_SCREENSHOT");
+            else current.invoke("TOGGLE_DEBUG");
         }else if(in.isKeyPressed(KeyEvent.VK_F2)) {
-            ((Menu)window.getWindowView()).invoke("SCREENSHOT");
+            current.invoke("SCREENSHOT");
         }
-
-
-
-		else ((Menu)window.getWindowView()).invoke("");
+		else current.invoke("");
 		
 	}
 

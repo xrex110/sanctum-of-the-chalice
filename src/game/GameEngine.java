@@ -39,13 +39,13 @@ public class GameEngine {
 	private static String currentInput;
 	private RenderLoop renderEngine;
 	private SoundEngine soundEngine;
-	private ScoreTracker tracker;
+	public ScoreTracker tracker;
 
 	private Generator levelGen;
 	public static GameObject[][][] levelMap;
 
 	private ArrayList<EnemyObject> enemyUpdateList;
-	private MoveHistory moveHist;
+	public MoveHistory moveHist;
 
 	private EnemyObject theEnemy;
 	public static int mapWidth;
@@ -54,6 +54,7 @@ public class GameEngine {
 	public static Timer playtime = new Timer();
 
 	public GameEngine() {
+
 		enemyUpdateList = new ArrayList<EnemyObject>();
 
 		LevelMap testLevel = new LevelMap();

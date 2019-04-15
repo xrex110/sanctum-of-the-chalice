@@ -14,9 +14,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+
 public class Player extends GameObject implements Interactable {
 
-	transient SpriteLoader sp = new SpriteLoader();
+    SpriteLoader sp = new SpriteLoader();
 	public static Player player = new Player(0,0);
 	public static int TILE_SIZE_X = 32, TILE_SIZE_Y = 32;
 	ArrayList<Pair<Integer,Integer>> passiveLocs;
@@ -173,7 +174,7 @@ public class Player extends GameObject implements Interactable {
 =======
 public class Player extends GameObject {
 
-    transient SpriteLoader sp = new SpriteLoader();
+    SpriteLoader sp = new SpriteLoader();
     public static Player player = new Player(0,0);
     public static int TILE_SIZE_X = 32, TILE_SIZE_Y = 32;
 	public Stat stat = new Stat(0);

@@ -37,7 +37,7 @@ public class MenuView extends Menu {
         buttons = new DynamicButton[] {
             new DynamicButton("Start",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
                 new DynamicButton("Settings",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
-                new DynamicButton("Classes",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
+                new DynamicButton("Save",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
                 new DynamicButton("Exit",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
         };
         for(DynamicButton b : buttons) options.add(b);
@@ -49,8 +49,9 @@ public class MenuView extends Menu {
     private void initializeChildren(){
         SettingsView settings = new SettingsView(getWidth(), getHeight(), this);
         children.add(settings);
-        ClassView cv = new ClassView(getWidth(), getHeight(), this);
-        children.add(cv);
+        //ClassView cv = new ClassView(getWidth(), getHeight(), this);
+        SaveView saveView = new SaveView(getWidth(), getHeight(), this);
+        children.add(saveView);
     }
 
     public boolean recursiveIsFocused() {

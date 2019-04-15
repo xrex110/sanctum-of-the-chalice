@@ -1,7 +1,8 @@
 package object;
 import main.*;
 
-public class Pair<X,Y> {
+import java.io.Serializable;
+public class Pair<X,Y> implements Serializable{
     public X x;
     public Y y;
     public Pair(X a, Y b) {

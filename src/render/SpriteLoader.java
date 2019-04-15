@@ -5,12 +5,13 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-public class SpriteLoader{
+import java.io.Serializable;
+public class SpriteLoader implements Serializable {
 
     private static final String RESOURCE_PATH = "../res/";
 
     /* Stores all image files loaded */
-    private final HashMap<String, BufferedImage> cache;
+    private transient HashMap<String, BufferedImage> cache;
 
     public SpriteLoader(){
         cache = new HashMap<String, BufferedImage>();
@@ -24,6 +25,7 @@ public class SpriteLoader{
 	 */
     
     public BufferedImage getSprite(String requested, int frame, int xSize, int ySize) {
+        if(cache == null) cache = new HashMap<String, BufferedImage>();
 		String cacheQuery = requested + frame;
 		//System.out.println("Searching for " + cacheQuery + " within cache");
 		if(cache.containsKey(cacheQuery)) {
@@ -50,6 +52,7 @@ public class SpriteLoader{
      *
      */
     public int cacheSheet(String path, int x, int y) {
+        if(cache == null) cache = new HashMap<String, BufferedImage>();
         BufferedImage sheet = getImage(RESOURCE_PATH + path);
         
         if(sheet == null){
@@ -98,6 +101,7 @@ public class SpriteLoader{
 	 */
 	
 	public BufferedImage cacheImage(String path) {
+        if(cache == null) cache = new HashMap<String, BufferedImage>();
 		BufferedImage img = getImage(path);
 		String imgKey = path + "0";
 		//System.out.println("Put " + imgKey + " in cache");
@@ -110,6 +114,7 @@ public class SpriteLoader{
      *  Purpose: Loads a sprite from the disk and returns it as a BufferedImage.
      */
     public BufferedImage getImage(String path) {
+        if(cache == null) cache = new HashMap<String, BufferedImage>();
 
         if(path == null){
             System.out.printf("Sprite loader: path provided to getImage() is null!%n");
@@ -132,6 +137,7 @@ public class SpriteLoader{
     }
 
     public HashMap<String, BufferedImage> getCache(){
+        if(cache == null) cache = new HashMap<String, BufferedImage>();
         return cache;
     }
 
