@@ -23,6 +23,11 @@ public class Tile extends GameObject{
         this.spriteIdentifier = spriteIdentifier;
         this.tileID = tileID;
     }
+
+    public GameObject cloneTo(int x, int y) {
+	return new Tile(x, y, spriteIdentifier, tileID, isSolid());
+    }
+
     public void draw(Graphics2D rend) {
         rend.drawImage(spLoader.getSprite(spriteIdentifier, tileID, 32, 32), null, getX(), getY());
     }

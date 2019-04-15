@@ -55,6 +55,10 @@ public class EnemyObject extends GameObject implements Interactable {
 
     }
 
+	public GameObject cloneTo(int x, int y) {
+		return new EnemyObject(x, y);
+	}
+
 	public void moveTo(int x, int y) {
 		clearPass();
 		setX(x);
@@ -129,6 +133,10 @@ public class EnemyObject extends GameObject implements Interactable {
 		return awakenRange;
 	}
 	return aggroRange;
+    }
+
+    public void death() {
+	clearPass();
     }
 
     public boolean interact(int currentX, int currentY) {

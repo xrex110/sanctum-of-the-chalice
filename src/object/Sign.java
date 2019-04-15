@@ -25,6 +25,10 @@ public class Sign extends Item implements Interactable{
 	System.out.println("Enemy: " + passiveLocs);
 
     }
+
+    public GameObject cloneTo(int x, int y) {
+	return new Sign(x, y, text);
+    }
 /*
 	public void moveTo(int x, int y) {
 		clearPass();

@@ -16,6 +16,7 @@ public abstract class GameObject implements Serializable{
 		this.solid = solid;
     }
 	
+    public abstract GameObject cloneTo(int x, int y);
 
     public void moveTo(int x, int y) {
 	    setX(x);

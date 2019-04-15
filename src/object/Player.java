@@ -46,6 +46,10 @@ public class Player extends GameObject implements Interactable {
 		placePass();
 
 	}
+
+	public GameObject cloneTo(int x, int y) {
+		return new Player(x, y);
+	}
 	
 	public boolean moveUp() {
 		setY(getY() - TILE_SIZE_Y);

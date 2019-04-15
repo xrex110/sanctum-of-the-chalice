@@ -50,6 +50,19 @@ public abstract class Item extends GameObject implements Interactable{
 		placePass();
 
 	}
+	public Item(int x, int y, ArrayList<Pair<Integer,Integer>> pLocs){
+		super(x,y, false);
+
+		passiveLocs = new ArrayList<Pair<Integer,Integer>>();
+		for ( int i = 0; i < pLocs.size(); i++) {
+			Pair<Integer,Integer> loc;
+			loc = new Pair<Integer,Integer>(pLocs.get(i).x, pLocs.get(i).y);
+			passiveLocs.add(loc);
+		}
+		placePass();
+
+	}
+
 	public void moveTo(int x, int y) {
 		clearPass();
 		setX(x);

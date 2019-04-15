@@ -20,4 +20,8 @@ public class TriggerList extends GameObject {
 		triggers = new ArrayList<Interactable>();
 		rendered = new ArrayList<GameObject>();
 	}
+
+	public GameObject cloneTo(int x, int y) {
+		return new TriggerList(x, y);
+	}
 }

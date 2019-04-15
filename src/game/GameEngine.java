@@ -11,7 +11,7 @@ import java.util.*;
 
 public class GameEngine {
 	public final float FASTRATE = 31.25f;
-	public static final float SLOWRATE = 100f;
+	public static final float SLOWRATE = 250f;
 	private final float MILLITONANO = 1_000_000;
 	private final int MAXHISTORY = 30;
 	public float currSlowRate;
@@ -241,6 +241,7 @@ public class GameEngine {
 					}	
 				}
 				else {
+					en.death();
 					GameEngine.levelMap[2][en.getY()][en.getX()] = null;
 					
 				}
