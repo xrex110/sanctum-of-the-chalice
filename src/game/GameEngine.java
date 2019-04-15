@@ -57,7 +57,7 @@ public class GameEngine {
 		enemyUpdateList = new ArrayList<EnemyObject>();
 
 		LevelMap testLevel = new LevelMap();
-		testLevel.numRooms = 10;
+		testLevel.numRooms = 25;
 		testLevel.linear = true;
 		testLevel.minRoomSize = 7;
 		testLevel.maxRoomSize = 11;
@@ -71,6 +71,7 @@ public class GameEngine {
 
 		levelGen = new Generator(testLevel);
 		LevelData curLevel = levelGen.generateDungeon();
+		if(curLevel == null) System.out.println("Generation fail");
 
 		GameEngine.levelMap = curLevel.levelMap;
 		this.mapWidth = curLevel.mapWidth;
