@@ -78,9 +78,13 @@ public class GameEngine {
 		testLevel.chestSpawnChance = 55.50;
 		testLevel.chestSpawnPenalty = 30;
 
-		levelGen = new Generator(testLevel);
-		LevelData curLevel = levelGen.generateDungeon();
-		if(curLevel == null) System.out.println("Generation fail");
+
+		LevelData curLevel = null;
+		while(curLevel == null) {
+			levelGen = new Generator(testLevel);
+			curLevel = levelGen.generateDungeon();
+			System.out.println("Generating Dungeon...");
+		}
 
 		GameEngine.levelMap = curLevel.levelMap;
 		this.mapWidth = curLevel.mapWidth;

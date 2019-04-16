@@ -17,6 +17,7 @@ public class Generator {
 	/////////////////////////////////////////////
 
 	private final int STANDARD_MAX_OFFSET = 50;
+	private final int STALL_THRESHOLD = 100;
 
 	//These variables try to keep track of the topleftmost corner
 	//and the bottomrightmost corner of the rooms generated in the
@@ -100,9 +101,21 @@ public class Generator {
 		//If Linear generation is picked
 		if(linear) {
 			int count = 0;
+			//The stallCount keeps track of the number of stalls that occur
+			//in an attempt to generate a segment from a room in the loop below
+			//If for that specific room, there have been more than 5 attempts, we return NULL,
+			//And allow the GameEngine to call generateDungeon() again.
+			int stallCount = 0;
 			while(numberOfRoomsGenerated != numRooms) {
 				boolean genResult = generateSegment(roomsInLevel.get(count));
-				if(!genResult) continue;
+				if(!genResult) {
+					//System.out.println("HERE!");
+					stallCount++;
+					//stall threshold is 5
+					if(stallCount == STALL_THRESHOLD) return null;
+					continue;
+				}
+				stallCount = 0;
 				log("Segment " + numberOfRoomsGenerated + " generated successfully");
 				numberOfRoomsGenerated++;
 				count++;
@@ -208,6 +221,14 @@ public class Generator {
 		//We select a random, unconnected side of the room
 		boolean genSuccess = false;
 
+		//This variable governs how many times the generator will try to
+		//Resize a corridor or room in the event of a collision.
+		//If it has resized a room or corridor this many times, it will return
+		//genSuccess = false.
+		int resizeTries = 5;
+		int corridorResizeCount = 0;
+		int roomResizeCount = 0;
+
 		while(!genSuccess) {
 			Direction dir = null;
 			boolean sideFound = false;
@@ -218,11 +239,6 @@ public class Generator {
 				if(startRoom.isAllConnected()) return genSuccess;
 				dir = Direction.values()[rng.getRandomNumber(3)];	//Random dir
 				if(!startRoom.isSideConnected(dir)) sideFound = true;
-				long bTimeElapsed = System.currentTimeMillis() - pollStart;
-				if(bTimeElapsed > 10000) {
-					log("Returning due to timeout");
-					return false;
-				}
 			}
 			//dir is the heading
 			//Now we get the index on the wall we want to start at
@@ -271,11 +287,6 @@ public class Generator {
 
 			//Generation successful!
 			genSuccess = true;
-			long aTimeElapsed = System.currentTimeMillis() - pollStart;
-			if(aTimeElapsed > 10000) {
-				log("Returning due to timeout outloop");
-				return false;
-			}
 		}
 		return genSuccess;
 	}
