@@ -70,13 +70,13 @@ public class UsableItem extends GameObject implements Interactable {
 	public void pickUp() {
 		TriggerList trig = (TriggerList)GameEngine.levelMap[1][getY()][getX()];
 		trig.triggers.remove(this);
-
+		trig.rendered.remove(this);
 	}
 
 	public void putDown() {
 		TriggerList trig = (TriggerList)GameEngine.levelMap[1][getY()][getX()];
 		trig.triggers.add(this);
-
+		trig.rendered.add(this);
 	}
 
 	public void draw(Graphics2D rend) {
@@ -89,12 +89,12 @@ public class UsableItem extends GameObject implements Interactable {
 
 	public boolean interact(GameObject other) {
 		if (other == Player.player) {
-			pickUp();
+			
 			//add to player inventory
-			//
-			//
-			//
-			return true;
+			if (GameEngine.addToInventory(this)) {
+				pickUp();
+				return true;
+			}
 		}
 		return false;
 	}

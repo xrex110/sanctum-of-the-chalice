@@ -87,6 +87,8 @@ public class GameEngine {
 		//Debug Item
 		inventory[3] = new UsableItem(-1, -1, "Mundane Potion", "basicPotion.png", 2);
 		inventory[3].modifier.setHP(20);
+		//TriggerList trig = (TriggerList)levelMap[1][Player.player.getY()+1][Player.player.getX()];
+		inventory[3].cloneTo(Player.player.getX(), Player.player.getY() +1);
 
 		moveHist = new MoveHistory(MAXHISTORY);
 		//levelEnd = new Sign(signPositions[1].col, signPositions[1].row, "Insert end stats here");
@@ -629,6 +631,16 @@ public class GameEngine {
 				}
 
 		return path;
+	}
+
+	public static boolean addToInventory(UsableItem it) {
+		for (int i = 0; i < inventory.length; i++) {
+			if (inventory[i] == null) {
+				inventory[i] = it;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static void updateInput(String input) {
