@@ -29,6 +29,8 @@ public class GameEngine {
 	private int slowIts;
 	private float gameStart;
 	private boolean running;
+	////////////////Sound Lists////////////////////////////
+	//background music
 	private String backgroundMusic = "../res/Twisting.ogg";
 	//Enemy attack flare sound
 	private String enemyAtkSound= "../res/EnemySound.ogg";
@@ -36,6 +38,7 @@ public class GameEngine {
 	private String footStep = "../res/footStep2.ogg";
 	// fight sound.
 	private String atkSound2 = "../res/attackSound2.ogg";
+	////////////////////////////////////////////////////////
 	private static String currentInput;
 	private static int inventIndex;
 	private RenderLoop renderEngine;
@@ -55,6 +58,8 @@ public class GameEngine {
 	public static int mapHeight;
 
 	public static Timer playtime = new Timer();
+
+	private ArrayList<UsableItem> itemList = new ArrayList<UsableItem>();
 
 	public GameEngine() {
 		enemyUpdateList = new ArrayList<EnemyObject>();
@@ -97,6 +102,7 @@ public class GameEngine {
 		inventory[3].cloneTo(Player.player.getX(), Player.player.getY() +1);
 		betterPotion.cloneTo(Player.player.getX()+1, Player.player.getY());
 		betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
+		itemList.add(betterPotion);
 
 
 		moveHist = new MoveHistory(MAXHISTORY);
@@ -271,8 +277,12 @@ public class GameEngine {
 					}	
 				}
 				else {
+					//betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
 					en.death();
 					GameEngine.levelMap[2][en.getY()][en.getX()] = null;
+					Random r = new Random();
+					int itemNum = r.nextInt(itemList.size());
+					(itemList.get(itemNum)).cloneTo(en.getX(),en.getY());
 					
 				}
 			}
@@ -325,6 +335,7 @@ public class GameEngine {
 		{
 			//Player.player.moveUp();
 			yPos--;
+			//System.out.println("\n\nEvent number : " + Player.player.stat.getEventNum()+" \n");
 		}
 		else if (currentInput.equals("A"))
 		{
@@ -362,6 +373,7 @@ public class GameEngine {
 					soundEngine.play(atkSound2, "attack2");
 					//soundEngine.play(footStep, "footStep2");
 				
+					// int checkKill = false;
 					CombatSys.combatPlayer(Player.player,((EnemyObject)levelMap[2][yPos][xPos]));
 				}
 
