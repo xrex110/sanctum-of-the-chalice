@@ -90,13 +90,13 @@ public class Stat {
 		}
 
 	}
-	public Stat(int lv, int str, int dex, int wis, int con, int currentHp, int exp, boolean alive){
+	public Stat(int lv, int str, int dex, int wis, int co, int currentHp, int exp, boolean alive){
 		
 		this.objectLv = lv;
 		this.str      = str;
 		this.dex      = dex;
 		this.wis      = wis;
-		this.con      = con;
+		this.con      = co;
 		this.currentHp = currentHp;
 		//this.maxHp    = 100;
 		this.exp      = exp;

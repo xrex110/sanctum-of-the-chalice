@@ -74,8 +74,8 @@ public class GameEngine {
 		testLevel.tileSpriteSheet = "test_tile.png";
 		testLevel.wallTileCode = 0;
 		testLevel.floorTileCode = 1;
-		testLevel.chestSpawnChance = 20.254896;
-		testLevel.chestSpawnPenalty = 8.45;
+		testLevel.chestSpawnChance = 55.50;
+		testLevel.chestSpawnPenalty = 30;
 
 		levelGen = new Generator(testLevel);
 		LevelData curLevel = levelGen.generateDungeon();
@@ -103,7 +103,15 @@ public class GameEngine {
 		betterPotion.cloneTo(Player.player.getX()+1, Player.player.getY());
 		betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
 		itemList.add(betterPotion);
+		heal = new Stat(1,0,0,0,-2,0,0,false);
+		Equipable arm = new Equipable(-1,-1,"Underwear of Vulnerability", "underwear.png", 1, heal, Equipable.EquipType.ARMOR);
+		itemList.add(arm);
+		heal = new Stat(1,0,0,0,1,0,0,false);
+		arm = new Equipable(-1,-1,"Leather Gambisson", "leatherArmor.png", 1, heal, Equipable.EquipType.ARMOR);
+		itemList.add(arm);
 
+
+		
 
 		moveHist = new MoveHistory(MAXHISTORY);
 		//levelEnd = new Sign(signPositions[1].col, signPositions[1].row, "Insert end stats here");

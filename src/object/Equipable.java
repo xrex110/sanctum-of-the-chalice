@@ -31,7 +31,7 @@ public class Equipable extends UsableItem implements Interactable {
 	}
 	
 	public Equipable(int x, int y, String n, String img, int maxDur, Stat mod, EquipType eq){
-		super(x, y, n, img, maxDur);
+		super(x, y, n, img, maxDur,mod);
 		type = eq;
 	}
 
@@ -47,19 +47,24 @@ public class Equipable extends UsableItem implements Interactable {
 
 	public void use() {
 		//Do stuff with player stats
+		System.out.println("Using " + name);
 		if (GameEngine.equips[type.ordinal()] != null) {
+			System.out.println("Current Equip: " + GameEngine.equips[type.ordinal()].name);
 			GameEngine.equips[type.ordinal()].unEquip();
 			if (GameEngine.equips[type.ordinal()] == this) {
 				GameEngine.equips[type.ordinal()] = null;
 			}
-			else {
-				GameEngine.equips[type.ordinal()] = this;
-				equip();
-			}
+			
+		}
+		else {
+			System.out.println("No current equip");
+			GameEngine.equips[type.ordinal()] = this;
+			equip();
 		}
 	}
 
 	public void equip() {
+		System.out.println(modifier.getMaxHP());
 		Player.player.stat.addStat(modifier);
 	}
 
