@@ -27,7 +27,7 @@ public class Stat {
 	private int con;
 	private int wis;
 	private int currentHp;
-	private int maxHp;
+	//private int maxHp;
 	private int objectLv;
 	private int exp;
 
@@ -41,9 +41,9 @@ public class Stat {
 		this.str      = 1;
 		this.dex      = 1;
 		this.wis      = 1;
-		this.con      = 1;
+		this.con      = 10;
 		this.currentHp = 100;
-		this.maxHp    = 100;
+		//this.maxHp    = 100;
 		this.exp      = 0;
 		this.alive    = true;
 	
@@ -66,10 +66,13 @@ public class Stat {
 			this.objectLv = 1;
 			this.str      = 2;
 			this.dex      = 1;
-			this.wis      = 3;
-			this.con      = 1;
+
+
+			this.wis      = 1;
+			this.con      = 10;
+
 			this.currentHp = 100;
-			this.maxHp    = 100;
+			//this.maxHp    = 100;
 			this.exp      = 0;
 			this.alive    = true;
 			this.objectType = 0;//Player
@@ -78,14 +81,27 @@ public class Stat {
 			this.str      = 1;
 			this.dex      = 1;
 			this.wis      = 1;
-			this.con      = 1;
+			this.con      = 2;
 			this.currentHp = 20;
-			this.maxHp    = 20;
+			//this.maxHp    = 20;
 			this.exp      = 5;
 			this.alive    = true;
 			this.objectType = 1; // Creature;
 		}
 
+	}
+	public Stat(int lv, int str, int dex, int wis, int con, int currentHp, int exp, boolean alive){
+		
+		this.objectLv = lv;
+		this.str      = str;
+		this.dex      = dex;
+		this.wis      = wis;
+		this.con      = con;
+		this.currentHp = currentHp;
+		//this.maxHp    = 100;
+		this.exp      = exp;
+		this.alive    = alive;
+	
 	}
 	/*
 	* here are some "set functions"
@@ -104,11 +120,34 @@ public class Stat {
 	public void setWis(int point){
 		wis += point;
 	}
+	public void setHP(int point){
+		currentHp += point;
+	}
 	public void setCon(int point){
 		con += point;
-		if(point >=0){
-			maxHp += point*10;
-		}		
+				
+	}
+	public boolean addStat(Stat other) {
+		boolean affected = false;
+		//this.objectLv += other.objectLv;
+		this.str      += other.str;
+		this.dex      += other.dex;
+		this.wis      += other.wis;
+		this.con      += other.con;
+		int oldHp = this.currentHp;
+		//this.maxHp    += other.maxHp;
+		this.currentHp += other.currentHp;
+		if (this.currentHp > getMaxHP()) {
+			this.currentHp = getMaxHP();
+		}
+		getExp(other.exp);
+		if (other.str != 0 || other.dex != 0 || other.wis != 0 
+				|| other.con != 0 || other.exp != 0 
+				|| oldHp != this.currentHp) {
+			affected = true;
+		}
+
+		return affected;
 	}
 	/*
 	* here are some "get functions"
@@ -134,7 +173,8 @@ public class Stat {
 		return currentHp;	
 	}	
 	public int getMaxHP(){
-		return maxHp;
+		
+		return con * 10;
 	}
 	public int getLv(){
 		return objectLv;
@@ -157,7 +197,7 @@ public class Stat {
 		this.wis      = 0;
 		this.con      = 0;
 		this.currentHp = 0;
-		this.maxHp    = 0;
+		//this.maxHp    = 0;
 		this.exp      = 0;
 		this.alive    = false;
 	}
@@ -170,7 +210,7 @@ public class Stat {
 		cop.wis      = this.wis;
 		cop.con      = this.con;
 		cop.currentHp = this.currentHp;
-		cop.maxHp    = this.maxHp;
+		//cop.maxHp    = this.maxHp;
 		cop.exp      = this.exp;
 		cop.alive    = this.alive;
 		return cop;
@@ -226,7 +266,7 @@ public class Stat {
 		setWis(1);
 		setCon(1);
 		objectLv+=1;
-		currentHp = maxHp; // update their current hp to max
+		currentHp = getMaxHP(); // update their current hp to max
 	}
 
 	/*

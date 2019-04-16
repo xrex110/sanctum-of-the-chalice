@@ -40,12 +40,14 @@ public class GameEngine {
 	private String atkSound2 = "../res/attackSound2.ogg";
 	////////////////////////////////////////////////////////
 	private static String currentInput;
+	private static int inventIndex;
 	private RenderLoop renderEngine;
 	private SoundEngine soundEngine;
 	private ScoreTracker tracker;
 
 	private Generator levelGen;
 	public static GameObject[][][] levelMap;
+	public static UsableItem[] inventory;
 
 	private ArrayList<EnemyObject> enemyUpdateList;
 	private MoveHistory moveHist;
@@ -74,6 +76,7 @@ public class GameEngine {
 
 		levelGen = new Generator(testLevel);
 		LevelData curLevel = levelGen.generateDungeon();
+		if(curLevel == null) System.out.println("Generation fail");
 
 		GameEngine.levelMap = curLevel.levelMap;
 		this.mapWidth = curLevel.mapWidth;
@@ -81,6 +84,21 @@ public class GameEngine {
 
 		//Weird sink code, because Player.player exists and is static
 		Player.player = new Player(curLevel.playerSpawnPosition.col, curLevel.playerSpawnPosition.row);
+
+		inventIndex = -1;
+		inventory = new UsableItem[28];
+		//Debug Items; These are examples of two potion items that have been instantiated and then cloned to the map
+		//Each uses a different method of setting stat values. The one used by betterPotion is probably preferable
+		//TODO remove these debug items later
+		inventory[3] = new UsableItem(-1, -1, "Mundane Potion", "basicPotion.png", 2);
+		inventory[3].modifier.setHP(20);
+		Stat heal = new Stat(1,0,0,0,0,10,10,false);
+		UsableItem betterPotion = new UsableItem(-1,-1,"Growth Potion", "growthPotion.png", 1, heal);
+		
+		inventory[3].cloneTo(Player.player.getX(), Player.player.getY() +1);
+		betterPotion.cloneTo(Player.player.getX()+1, Player.player.getY());
+		betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
+
 
 		moveHist = new MoveHistory(MAXHISTORY);
 		//levelEnd = new Sign(signPositions[1].col, signPositions[1].row, "Insert end stats here");
@@ -109,6 +127,7 @@ public class GameEngine {
 		running = true;
 		gameStart = System.nanoTime() / MILLITONANO;
 		renderEngine.updateMap(GameEngine.levelMap);
+		renderEngine.updateInventory(inventory);
 		//renderEngine.updateEntityMap(entityMap);
 		renderEngine.start();		//Starts the renderengine thread!
 
@@ -156,6 +175,15 @@ public class GameEngine {
 	public void fastTick() {
 
 		fastIts += 1;
+		if (inventIndex >= 0) {
+			if (inventory[inventIndex] != null) {
+				inventory[inventIndex].use();
+				if (inventory[inventIndex].durability <= 0) {
+					inventory[inventIndex] = null;
+				}
+			}
+			inventIndex = -1;
+		}
 		//fillerOperations(100_000);
 		/*if(!currentInput.equals("")) {
 		  System.out.println("Key is " + currentInput);
@@ -617,10 +645,23 @@ public class GameEngine {
 		return path;
 	}
 
+	public static boolean addToInventory(UsableItem it) {
+		for (int i = 0; i < inventory.length; i++) {
+			if (inventory[i] == null) {
+				inventory[i] = it;
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static void updateInput(String input) {
 		if(!input.equals("") && !input.equals(currentInput)) {
 			currentInput = input;
 		}
 
+	}
+	public static void updateInventIndex(int i) {
+		inventIndex = i;
 	}
 }

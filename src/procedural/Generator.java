@@ -48,6 +48,8 @@ public class Generator {
 	private double chestSpawnChance;
 	private double chestSpawnPenalty;
 
+	private long pollStart;
+
 	public Generator(LevelMap mapDetails) {
 		rng = new RandomNumberGenerator();
 		//map = new int[mapSize][mapSize];
@@ -82,6 +84,7 @@ public class Generator {
 	public LevelData generateDungeon() {
 		//First we generate a spawn room
 		long startTime = System.currentTimeMillis();
+		pollStart = System.currentTimeMillis();
 		generateSpawn(STANDARD_MAX_OFFSET, minSpawnSize, maxSpawnSize);
 
 		//A segment is described as an attempt to generate a corridor and room
@@ -209,6 +212,11 @@ public class Generator {
 				if(startRoom.isAllConnected()) return genSuccess;
 				dir = Direction.values()[rng.getRandomNumber(3)];	//Random dir
 				if(!startRoom.isSideConnected(dir)) sideFound = true;
+				long bTimeElapsed = System.currentTimeMillis() - pollStart;
+				if(bTimeElapsed > 10000) {
+					log("Returning due to timeout");
+					return false;
+				}
 			}
 			//dir is the heading
 			//Now we get the index on the wall we want to start at
@@ -257,6 +265,11 @@ public class Generator {
 
 			//Generation successful!
 			genSuccess = true;
+			long aTimeElapsed = System.currentTimeMillis() - pollStart;
+			if(aTimeElapsed > 10000) {
+				log("Returning due to timeout outloop");
+				return false;
+			}
 		}
 		return genSuccess;
 	}
@@ -420,7 +433,9 @@ public class Generator {
 	//This function updates the map[][] object with all the rooms that have been
 	//Generated so far
 	private void updateMap() {
-		for(Room room: roomsInLevel) drawRoom(room);
+		for(Room room: roomsInLevel) {
+			drawRoom(room);
+		}
 		for(Corridor cor : corridorsInLevel) drawCorridor(cor);
 		for(Coordinate coord: corridorTiles) map[coord.row][coord.col] = 1;
 	}
@@ -476,11 +491,11 @@ public class Generator {
 		System.out.println("=====Printing World=====");
 		for(int i = 0; i < map.length; i++) {
 			for(int j = 0; j < map[1].length; j++) {
-				//if(map[i][j] == 1) termColorGreen();
-				//else if(map[i][j] == 2) termColorRed();
-				//else termColorBlack();
+				if(map[i][j] == 1) termColorGreen();
+				else if(map[i][j] == 2) termColorRed();
+				else termColorBlack();
 				System.out.print(map[i][j] + " ");
-				//termClearColor();
+				termClearColor();
 			}
 			System.out.println();
 		}
@@ -490,6 +505,7 @@ public class Generator {
 	private void log(String str) {
 		//Can be changed later to write to a ProcGen log file perhaps
 		System.out.println(str);
+		return;
 	}
 
 	private void termColorRed() {
