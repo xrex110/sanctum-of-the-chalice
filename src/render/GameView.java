@@ -45,7 +45,7 @@ public class GameView extends Menu {
     private static int interpRate = 5;
     //private Sign signSelected = null;
     
-    private InventoryMenu inventoryMenu;
+    public InventoryMenu inventoryMenu;
     
     boolean debugIsActive = true;
     boolean hudIsActive = true;

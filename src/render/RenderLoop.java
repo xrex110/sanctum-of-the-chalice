@@ -141,6 +141,10 @@ public class RenderLoop extends Thread {
 	public void updateMap(GameObject[][][] map) {	
 		gm.setMap(map);
 	}
+
+	public void updateInventory(UsableItem[] inv) {
+		gm.inventoryMenu.setInvent(inv);
+	}
 /*
 	public void updateEntityMap(GameObject[][] emap) {
 		gm.setEMap(emap);

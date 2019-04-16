@@ -16,6 +16,7 @@ public class InventoryMenu extends Menu {
     //This is for debugging, hook in an Item[] later
     String[] inventory = new String[28];
     private DynamicButton[] inventoryButtons = new DynamicButton[28];
+    private UsableItem[] geInventory;
     //For this array, set each equipment slot ID's image to the current equipped item slot's sprite!
     private DynamicButton[] equipmentRender = new DynamicButton[4];
     private SpriteLoader sp;
@@ -76,8 +77,14 @@ public class InventoryMenu extends Menu {
             drawStats(rend);
             drawLevelInfo(rend);
 
-            for(DynamicButton b : inventoryButtons) {
-                b.draw(rend);
+            for(int i = 0; i < inventoryButtons.length; i++) {
+                if (geInventory[i] == null) {
+			inventoryButtons[i].image = null;
+		}
+		else {
+			inventoryButtons[i].image = geInventory[i].getBufImage();
+		}
+		inventoryButtons[i].draw(rend);
             }
             for(DynamicButton b : equipmentRender) {
                 b.draw(rend);
@@ -181,7 +188,12 @@ public class InventoryMenu extends Menu {
                         inventoryButtons[i].outline = inventoryButtons[i].originalOutline;
                     }
                 }
+		GameEngine.updateInventIndex(selection);
                 break;
         }
+    }
+
+    public void setInvent(UsableItem[] inv) {
+	this.geInventory = inv;
     }
 }
