@@ -54,6 +54,9 @@ public class Equipable extends UsableItem implements Interactable {
 			if (GameEngine.equips[type.ordinal()] == this) {
 				GameEngine.equips[type.ordinal()] = null;
 			}
+			else {
+				GameEngine.equips[type.ordinal()] = this;
+			}
 			
 		}
 		else {

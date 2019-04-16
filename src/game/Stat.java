@@ -279,9 +279,10 @@ public class Stat {
 		}
 		System.out.println("Player get "+exp+ " exp");
 		exp += newExp;
-		if(exp/10 == objectLv){
+		if(exp/10 >= objectLv){
+			exp -= objectLv * 10;
 			levelUp();
-			exp =0;
+			//exp =0;
 		}
 	}
 	public void levelUp(){
