@@ -84,11 +84,18 @@ public class GameEngine {
 
 		inventIndex = -1;
 		inventory = new UsableItem[28];
-		//Debug Item
+		//Debug Items; These are examples of two potion items that have been instantiated and then cloned to the map
+		//Each uses a different method of setting stat values. The one used by betterPotion is probably preferable
+		//TODO remove these debug items later
 		inventory[3] = new UsableItem(-1, -1, "Mundane Potion", "basicPotion.png", 2);
 		inventory[3].modifier.setHP(20);
-		//TriggerList trig = (TriggerList)levelMap[1][Player.player.getY()+1][Player.player.getX()];
+		Stat heal = new Stat(1,0,0,0,0,10,10,false);
+		UsableItem betterPotion = new UsableItem(-1,-1,"Growth Potion", "growthPotion.png", 1, heal);
+		
 		inventory[3].cloneTo(Player.player.getX(), Player.player.getY() +1);
+		betterPotion.cloneTo(Player.player.getX()+1, Player.player.getY());
+		betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
+
 
 		moveHist = new MoveHistory(MAXHISTORY);
 		//levelEnd = new Sign(signPositions[1].col, signPositions[1].row, "Insert end stats here");

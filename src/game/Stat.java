@@ -72,6 +72,19 @@ public class Stat {
 		}
 
 	}
+	public Stat(int lv, int str, int dex, int wis, int con, int currentHp, int exp, boolean alive){
+		
+		this.objectLv = lv;
+		this.str      = str;
+		this.dex      = dex;
+		this.wis      = wis;
+		this.con      = con;
+		this.currentHp = currentHp;
+		//this.maxHp    = 100;
+		this.exp      = exp;
+		this.alive    = alive;
+	
+	}
 	/*
 	* here are some "set functions"
 	* each functions will set the status and 
@@ -98,7 +111,7 @@ public class Stat {
 	}
 	public boolean addStat(Stat other) {
 		boolean affected = false;
-		this.objectLv += other.objectLv;
+		//this.objectLv += other.objectLv;
 		this.str      += other.str;
 		this.dex      += other.dex;
 		this.wis      += other.wis;
@@ -109,8 +122,8 @@ public class Stat {
 		if (this.currentHp > getMaxHP()) {
 			this.currentHp = getMaxHP();
 		}
-		this.exp      += other.exp;
-		if (other.objectLv != 0 || other.str != 0 || other.dex != 0 || other.wis != 0 
+		getExp(other.exp);
+		if (other.str != 0 || other.dex != 0 || other.wis != 0 
 				|| other.con != 0 || other.exp != 0 
 				|| oldHp != this.currentHp) {
 			affected = true;
