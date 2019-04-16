@@ -45,6 +45,7 @@ public class GameEngine {
 	private Generator levelGen;
 	public static GameObject[][][] levelMap;
 	public static UsableItem[] inventory;
+	public static Equipable[] equips;
 
 	private ArrayList<EnemyObject> enemyUpdateList;
 	private MoveHistory moveHist;
@@ -84,6 +85,7 @@ public class GameEngine {
 
 		inventIndex = -1;
 		inventory = new UsableItem[28];
+		equips = new Equipable[4];
 		//Debug Items; These are examples of two potion items that have been instantiated and then cloned to the map
 		//Each uses a different method of setting stat values. The one used by betterPotion is probably preferable
 		//TODO remove these debug items later
@@ -124,7 +126,7 @@ public class GameEngine {
 		running = true;
 		gameStart = System.nanoTime() / MILLITONANO;
 		renderEngine.updateMap(GameEngine.levelMap);
-		renderEngine.updateInventory(inventory);
+		renderEngine.updateInventory(inventory, equips);
 		//renderEngine.updateEntityMap(entityMap);
 		renderEngine.start();		//Starts the renderengine thread!
 

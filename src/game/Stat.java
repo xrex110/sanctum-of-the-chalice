@@ -131,6 +131,19 @@ public class Stat {
 
 		return affected;
 	}
+	public void minusStat(Stat other) {
+		boolean affected = false;
+		//this.objectLv += other.objectLv;
+		this.str      -= other.str;
+		this.dex      -= other.dex;
+		this.wis      -= other.wis;
+		this.con      -= other.con;
+		this.currentHp -= other.currentHp;
+		if (this.currentHp > getMaxHP()) {
+			this.currentHp = getMaxHP();
+		}
+		this.exp -= other.exp;
+	}
 	/*
 	* here are some "get functions"
 	* for stat check system, these functions will
