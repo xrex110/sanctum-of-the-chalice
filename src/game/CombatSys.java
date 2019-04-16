@@ -40,7 +40,8 @@ public class CombatSys {
 						System.out.println("Player get "+exp+ " exp");
 						//destroy the enemy object.-> ??
 					}
-				}				
+				}			
+				//System.out.println("\n\nEvent number : " + atk.stat.getEventNum()+" \n");
 				System.out.println("Enemy Health: " + def.stat.getHP());
 				System.out.println("\n\n Player Stat: ");
 				System.out.println("\nPlayer HP: "+atk.stat.getHP());

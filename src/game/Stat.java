@@ -20,6 +20,8 @@ public class Stat {
 	 *			 1 = Enemy
 	 * @ 1st trial => make simple to check it is work.
 	 */
+	
+	private int eventNum;
 	private int str;
 	private int dex;
 	private int con;
@@ -46,12 +48,25 @@ public class Stat {
 		this.alive    = true;
 	
 	}
+	/*
+	 *  the variable "eventcase" will choose which
+	 *	event will occurs in the level.
+	 *  the default value is -1, and the -1 will have no event in the game system.
+	 *  
+	 *
+	 *	1. HP double.
+	 *  2. EXP double.
+	 *	3. Get and dealt Damage Double.
+	 *	
+	 */
 	public Stat(int type){
 		if(type==0){
+			//Random rand = new Random();
+			//eventNum = rand.nextInt(3)+1;
 			this.objectLv = 1;
-			this.str      = 1;
+			this.str      = 2;
 			this.dex      = 1;
-			this.wis      = 1;
+			this.wis      = 3;
 			this.con      = 1;
 			this.currentHp = 100;
 			this.maxHp    = 100;
@@ -125,14 +140,13 @@ public class Stat {
 		return objectLv;
 	}
 	public int getCurXP(){
-	
 		return exp;
-
 	}
 	public int getTotXP(){
-	
 		return objectLv*10;
-
+	}
+	public int getEventNum(){
+		return eventNum;
 	}
 
 	//set all stats to zero
@@ -146,8 +160,6 @@ public class Stat {
 		this.maxHp    = 0;
 		this.exp      = 0;
 		this.alive    = false;
-	
-
 	}
 
 	public Stat copyStats() {

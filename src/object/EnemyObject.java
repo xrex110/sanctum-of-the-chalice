@@ -139,6 +139,7 @@ public class EnemyObject extends GameObject implements Interactable {
 
     public void death() {
 	clearPass();
+
     }
 
     public boolean interact(int currentX, int currentY) {

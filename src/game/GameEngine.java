@@ -29,6 +29,8 @@ public class GameEngine {
 	private int slowIts;
 	private float gameStart;
 	private boolean running;
+	////////////////Sound Lists////////////////////////////
+	//background music
 	private String backgroundMusic = "../res/Twisting.ogg";
 	//Enemy attack flare sound
 	private String enemyAtkSound= "../res/EnemySound.ogg";
@@ -36,6 +38,7 @@ public class GameEngine {
 	private String footStep = "../res/footStep2.ogg";
 	// fight sound.
 	private String atkSound2 = "../res/attackSound2.ogg";
+	////////////////////////////////////////////////////////
 	private static String currentInput;
 	private RenderLoop renderEngine;
 	private SoundEngine soundEngine;
@@ -295,6 +298,7 @@ public class GameEngine {
 		{
 			//Player.player.moveUp();
 			yPos--;
+			//System.out.println("\n\nEvent number : " + Player.player.stat.getEventNum()+" \n");
 		}
 		else if (currentInput.equals("A"))
 		{
@@ -332,6 +336,7 @@ public class GameEngine {
 					soundEngine.play(atkSound2, "attack2");
 					//soundEngine.play(footStep, "footStep2");
 				
+					// int checkKill = false;
 					CombatSys.combatPlayer(Player.player,((EnemyObject)levelMap[2][yPos][xPos]));
 				}
 
