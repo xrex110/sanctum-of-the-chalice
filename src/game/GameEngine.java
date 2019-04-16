@@ -58,6 +58,8 @@ public class GameEngine {
 
 	public static Timer playtime = new Timer();
 
+	private ArrayList<UsableItem> itemList = new ArrayList<UsableItem>();
+
 	public GameEngine() {
 		enemyUpdateList = new ArrayList<EnemyObject>();
 
@@ -98,6 +100,7 @@ public class GameEngine {
 		inventory[3].cloneTo(Player.player.getX(), Player.player.getY() +1);
 		betterPotion.cloneTo(Player.player.getX()+1, Player.player.getY());
 		betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
+		itemList.add(betterPotion);
 
 
 		moveHist = new MoveHistory(MAXHISTORY);
@@ -272,8 +275,12 @@ public class GameEngine {
 					}	
 				}
 				else {
+					//betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
 					en.death();
 					GameEngine.levelMap[2][en.getY()][en.getX()] = null;
+					Random r = new Random();
+					int itemNum = r.nextInt(itemList.size());
+					(itemList.get(itemNum)).cloneTo(en.getX(),en.getY());
 					
 				}
 			}
