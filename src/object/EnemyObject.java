@@ -19,7 +19,7 @@ public class EnemyObject extends GameObject implements Interactable {
         ArrayList<Pair<Integer,Integer>> passiveLocs;
 
 	//stat
-	public Stat stat = new Stat(1); // enemy type;
+	public Stat stat = new Stat(1,4); // enemy type;
 
     enum STATE { 
 	SLEEP,

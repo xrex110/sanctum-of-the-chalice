@@ -59,7 +59,8 @@ public class GameEngine {
 	public static Timer playtime = new Timer();
 
 	private ArrayList<UsableItem> itemList = new ArrayList<UsableItem>();
-
+	//event number variable
+	public int event_num;
 	public GameEngine() {
 		enemyUpdateList = new ArrayList<EnemyObject>();
 
@@ -83,9 +84,11 @@ public class GameEngine {
 		GameEngine.levelMap = curLevel.levelMap;
 		this.mapWidth = curLevel.mapWidth;
 		this.mapHeight = curLevel.mapHeight;
+		//Event Handler
+		event_num = levelGen.getEventNum();
 
 		//Weird sink code, because Player.player exists and is static
-		Player.player = new Player(curLevel.playerSpawnPosition.col, curLevel.playerSpawnPosition.row);
+		Player.player = new Player(curLevel.playerSpawnPosition.col, curLevel.playerSpawnPosition.row,event_num);
 
 		inventIndex = -1;
 		inventory = new UsableItem[28];
@@ -333,7 +336,8 @@ public class GameEngine {
 		{
 			//Player.player.moveUp();
 			yPos--;
-			//System.out.println("\n\nEvent number : " + Player.player.stat.getEventNum()+" \n");
+			System.out.println("\n\nEvent number : " + event_num+" \n");
+			
 		}
 		else if (currentInput.equals("A"))
 		{

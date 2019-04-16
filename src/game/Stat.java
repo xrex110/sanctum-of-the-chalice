@@ -35,6 +35,8 @@ public class Stat {
 	private int objectType;
 	Random rand = new Random();
 
+	
+
 	public Stat(){
 		
 		this.objectLv = 1;
@@ -46,7 +48,7 @@ public class Stat {
 		//this.maxHp    = 100;
 		this.exp      = 0;
 		this.alive    = true;
-	
+		
 	}
 	/*
 	 *  the variable "eventcase" will choose which
@@ -59,19 +61,19 @@ public class Stat {
 	 *	3. Get and dealt Damage Double.
 	 *	
 	 */
-	public Stat(int type){
+	public Stat(int type,int event){
 		if(type==0){
-			//Random rand = new Random();
-			//eventNum = rand.nextInt(3)+1;
+			if(event==1){
+				this.con       = 20;
+				this.currentHp = 200;
+			}else{
+				this.con       = 10;
+				this.currentHp = 100;
+			}
 			this.objectLv = 1;
 			this.str      = 2;
 			this.dex      = 1;
-
-
-			this.wis      = 1;
-			this.con      = 10;
-
-			this.currentHp = 100;
+			this.wis      = 1;			
 			//this.maxHp    = 100;
 			this.exp      = 0;
 			this.alive    = true;
@@ -88,6 +90,7 @@ public class Stat {
 			this.alive    = true;
 			this.objectType = 1; // Creature;
 		}
+		eventNum = event;
 
 	}
 	public Stat(int lv, int str, int dex, int wis, int con, int currentHp, int exp, boolean alive){
@@ -227,6 +230,10 @@ public class Stat {
 	*	 of the object which is alive or dead.
 	*/
 	public int toDamage(){
+		if(eventNum == 3){
+		return(str*10)*2;
+		
+		}
 		return (str * 10);
 	}
 	public void getDamage(int dmg){
@@ -254,6 +261,10 @@ public class Stat {
 	*/
 	public void getExp(int newExp){
 		//int currentExp = exp;
+		if(eventNum == 2){
+			newExp*=2;
+		}
+		System.out.println("Player get "+exp+ " exp");
 		exp += newExp;
 		if(exp/10 == objectLv){
 			levelUp();
