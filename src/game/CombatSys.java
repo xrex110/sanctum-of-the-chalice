@@ -36,8 +36,9 @@ public class CombatSys {
 						//enemy die.
 						//give exp to the user.
 						int exp = def.stat.giveExp();
+						
 						atk.stat.getExp(exp);
-						System.out.println("Player get "+exp+ " exp");
+						//System.out.println("Player get "+exp+ " exp");
 						//destroy the enemy object.-> ??
 					}
 				}			

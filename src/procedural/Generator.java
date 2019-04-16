@@ -50,6 +50,9 @@ public class Generator {
 
 	private long pollStart;
 
+	//Random event variable
+	private int eventNumber;
+
 	public Generator(LevelMap mapDetails) {
 		rng = new RandomNumberGenerator();
 		//map = new int[mapSize][mapSize];
@@ -79,6 +82,9 @@ public class Generator {
 		//For spawning
 		this.chestSpawnChance = mapDetails.chestSpawnChance;
 		this.chestSpawnPenalty = mapDetails.chestSpawnPenalty;
+
+		//Generate random number 1~3 for Random Event.
+		eventNumber = rng.getRandomWithinBounds(1,3);
 	}
 
 	public LevelData generateDungeon() {
@@ -522,5 +528,8 @@ public class Generator {
 
 	private void termClearColor() {
 		System.out.print("\033[0m");
-	}	
+	}
+	public int getEventNum(){
+		return eventNumber;
+	}
 }

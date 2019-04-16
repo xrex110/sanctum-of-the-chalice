@@ -52,6 +52,9 @@ public class GameView extends Menu {
     boolean entityDebugGrid = false;
     boolean mapScreenshot = false; 
     private boolean takeScreenshot= false;
+
+	//event Number get from Player.
+
     //Handles the rendering of time until next tick
 	public GameView() {
         super(800,800,null);
@@ -264,8 +267,18 @@ public class GameView extends Menu {
         float playtime = GameEngine.playtime.getMillis() / 1000f;
         String playstr = "Playtime: " + playtime;
         fpsText.drawOutlineText(rend, playstr, 25, 125);
+		String event_n = "Event is : " ;
+		//+ Player.player.stat.getEventNum();
+		if(Player.player.stat.getEventNum()==1){
+			event_n += "Double HP Start";
+		}else if(Player.player.stat.getEventNum()==2){
+			event_n += "Double EXP";
+		}else{
+			event_n += "Double Damage";
+		}
+		fpsText.drawOutlineText(rend, event_n, 300,150);
     }
-
+	
     private void updateFPS() {
         if(!fpsTimer.isActive())
             fpsTimer.start();
@@ -277,9 +290,8 @@ public class GameView extends Menu {
             frameCount = 0;
             fpsTimer.reset();
         }
-
-
     }
+	
 
     private void positionCamera(Graphics2D rend) {
         AffineTransform at = new AffineTransform();

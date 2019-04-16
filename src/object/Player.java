@@ -20,9 +20,34 @@ public class Player extends GameObject implements Interactable {
 	public static Player player = new Player(0,0);
 	public static int TILE_SIZE_X = 32, TILE_SIZE_Y = 32;
 	ArrayList<Pair<Integer,Integer>> passiveLocs;
-	public Stat stat = new Stat(0);
+	public Stat stat;
 
 
+	public Player(int x, int y,int event) {
+		super(x,y, true);
+		int[][] passiveMap = {{0,0,1,0,0},
+			{0,1,1,1,0},
+			{1,1,1,1,1},
+			{0,1,1,1,0},
+			{0,0,1,0,0}};
+		 stat = new Stat(0,event);
+
+
+		passiveLocs = new ArrayList<Pair<Integer,Integer>>();
+		for ( int i = 0; i < passiveMap.length; i++) {
+			for (int j = 0; j < passiveMap[i].length; j++) {
+				if (passiveMap[i][j] == 1) {
+					int xOff = j - (passiveMap[i].length/2);
+					int yOff = i - passiveMap.length/2;
+					passiveLocs.add(new Pair<Integer,Integer>(xOff, yOff));
+				}
+			}
+		}
+		if (x >= 0 && y >= 0) {
+			placePass();
+		}
+
+	}
 	public Player(int x, int y) {
 		super(x,y, true);
 		int[][] passiveMap = {{0,0,1,0,0},
@@ -30,7 +55,7 @@ public class Player extends GameObject implements Interactable {
 			{1,1,1,1,1},
 			{0,1,1,1,0},
 			{0,0,1,0,0}};
-
+		//stat = new Stat(0,event);
 
 
 		passiveLocs = new ArrayList<Pair<Integer,Integer>>();
