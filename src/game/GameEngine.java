@@ -96,9 +96,9 @@ public class GameEngine {
 		Player.player = new Player(curLevel.playerSpawnPosition.col, curLevel.playerSpawnPosition.row,event_num);
 
 		JsonReader jsonread = new JsonReader();
-		UsableItem newItem = null;
+		ArrayList<UsableItem> itemsReadIn = null;
 		try { 
-			newItem = (UsableItem) jsonread.readItems();
+			itemsReadIn = jsonread.readItems();
 		}
 		catch (java.io.IOException e) {
 			System.out.println("JSON FAIL");
@@ -117,8 +117,6 @@ public class GameEngine {
 		
 		inventory[3].cloneTo(Player.player.getX(), Player.player.getY() +1);
 
-		newItem.cloneTo(Player.player.getX() + 1, Player.player.getY() - 1);
-
 		betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
 		itemList.add(betterPotion);
 		heal = new Stat(1,0,0,0,-2,0,0,false);
@@ -128,8 +126,9 @@ public class GameEngine {
 		arm = new Equipable(-1,-1,"Leather Gambisson", "leatherArmor.png", 1, heal, Equipable.EquipType.ARMOR);
 		itemList.add(arm);
 
-
-		
+		for(UsableItem item : itemsReadIn) {
+			itemList.add(item);
+		}
 
 		moveHist = new MoveHistory(MAXHISTORY);
 		//levelEnd = new Sign(signPositions[1].col, signPositions[1].row, "Insert end stats here");

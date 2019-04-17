@@ -21,19 +21,20 @@ public class JsonReader {
 		}
 	}*/
 
-	public GameObject readItems() throws IOException {
+	public ArrayList<UsableItem> readItems() throws IOException {
 		ObjectMapper mp = new ObjectMapper();
 
-		UsableItem item = null;
+		//TODO: Add equippables functionality
+		ArrayList<UsableItem> listOfItems = null; 
 
 		try {
-			 item = mp.readValue(new File("object/testfile.json"), UsableItem.class);
+			 listOfItems= mp.readValue(new File("../data/items.json"), new TypeReference<List<UsableItem>>(){});
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("Item loaded, name: " + item.name);
-		return item;
+		
+		return listOfItems;
 	}
 
 }
