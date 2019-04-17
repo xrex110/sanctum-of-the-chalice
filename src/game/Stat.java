@@ -1,6 +1,8 @@
 package game;
 import main.*;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import render.*;
 import sound.*;
 import object.*;
@@ -93,6 +95,12 @@ public class Stat {
 		eventNum = event;
 
 	}
+
+	//The follwing constructor is only for JSONReader purposes
+	public Stat(@JsonProperty("level") int lvl, @JsonProperty("str") int str, @JsonProperty("dex") int dex, @JsonProperty("wis") int wisdom, @JsonProperty("con") int con, @JsonProperty("hp") int hp, @JsonProperty("exp") int exp) {
+		this(lvl, str, dex, wisdom, con, hp, exp, false);
+	}
+
 	public Stat(int lv, int str, int dex, int wis, int co, int currentHp, int exp, boolean alive){
 		
 		this.objectLv = lv;

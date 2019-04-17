@@ -95,6 +95,15 @@ public class GameEngine {
 		//Weird sink code, because Player.player exists and is static
 		Player.player = new Player(curLevel.playerSpawnPosition.col, curLevel.playerSpawnPosition.row,event_num);
 
+		JsonReader jsonread = new JsonReader();
+		UsableItem newItem = null;
+		try { 
+			newItem = (UsableItem) jsonread.readItems();
+		}
+		catch (java.io.IOException e) {
+			System.out.println("JSON FAIL");
+		}
+
 		inventIndex = -1;
 		inventory = new UsableItem[28];
 		equips = new Equipable[4];
@@ -107,7 +116,9 @@ public class GameEngine {
 		UsableItem betterPotion = new UsableItem(-1,-1,"Growth Potion", "growthPotion.png", 1, heal);
 		
 		inventory[3].cloneTo(Player.player.getX(), Player.player.getY() +1);
-		betterPotion.cloneTo(Player.player.getX()+1, Player.player.getY());
+
+		newItem.cloneTo(Player.player.getX() + 1, Player.player.getY() - 1);
+
 		betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
 		itemList.add(betterPotion);
 		heal = new Stat(1,0,0,0,-2,0,0,false);

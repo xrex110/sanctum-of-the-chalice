@@ -1,6 +1,7 @@
 package object;
 import main.*;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.awt.Graphics2D;
 import render.*;
@@ -48,6 +49,15 @@ public class UsableItem extends GameObject implements Interactable {
 		maxDurability = maxDur;
 		durability = maxDurability;
 		modifier = mod;
+	}
+
+	//The following constructor is the one to be used for reading in from JSON
+	public UsableItem(@JsonProperty("name") String name, @JsonProperty("spritepath") String img, @JsonProperty("maximumDurability") int maxDur, @JsonProperty("stats") Stat mod) {
+		super(-1, -1, false);
+		this.name = name;
+		this.image = img;
+		this.maxDurability = this.durability = maxDur;
+		this.modifier = mod;
 	}
 
 	public GameObject cloneTo(int x, int y) {

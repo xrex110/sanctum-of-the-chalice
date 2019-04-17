@@ -1,0 +1,14 @@
+{
+	"name": "Uul-Netol's Embrace",
+	"spritepath": "flail.png",
+	"maximumDurability": 100,
+	"stats": {
+		"level": 18,
+		"str": 75,
+		"dex": 150,
+		"wis": 60,
+		"con": 15,
+		"hp": 0,
+		"exp": 0
+	}
+}
