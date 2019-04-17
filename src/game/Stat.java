@@ -71,7 +71,7 @@ public class Stat {
 				this.currentHp = 100;
 			}
 			this.objectLv = 1;
-			this.str      = 2;
+			this.str      = 1;
 			this.dex      = 1;
 			this.wis      = 1;			
 			//this.maxHp    = 100;
@@ -83,8 +83,8 @@ public class Stat {
 			this.str      = 1;
 			this.dex      = 1;
 			this.wis      = 1;
-			this.con      = 2;
-			this.currentHp = 20;
+			this.con      = 3;
+			this.currentHp = 30;
 			//this.maxHp    = 20;
 			this.exp      = 5;
 			this.alive    = true;

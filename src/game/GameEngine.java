@@ -180,7 +180,7 @@ public class GameEngine {
 					slowCount += timeToNext;
 				}
 				else {
-					System.out.print("lag");
+					//System.out.print("lag");
 				}
 			}
 			else {
@@ -267,6 +267,7 @@ public class GameEngine {
 
 			//System.out.println("Slow tick: "+slowIts+"\n"+moveHist);
 			pathAll(10);
+			sleepForMilli(currSlowRate/2);
 			while (enemyUpdateList.size() > 0) {
 				//System.out.println("enemy");
 				EnemyObject en = enemyUpdateList.remove(0);
@@ -283,8 +284,20 @@ public class GameEngine {
 						//en.setY(nextLoc.y);
 					}else if(nextLoc!= null 
 						  &&levelMap[2][nextLoc.y][nextLoc.x] ==Player.player){
-						  soundEngine.play(enemyAtkSound, "enemyAtk");
-						  CombatSys.combatEnemy(en,Player.player);
+						soundEngine.play(enemyAtkSound, "enemyAtk");
+						int[] kb = {nextLoc.y+(nextLoc.y-en.getY()),
+							nextLoc.x+(nextLoc.x-en.getX())};
+						if (kb[0] >= 0 && kb[0] < levelMap[0].length 
+							&& kb[1] >= 0 && kb[1] < levelMap[0][0].length
+							&& levelMap[0][kb[0]][kb[1]] != null
+							&& !levelMap[0][kb[0]][kb[1]].isSolid()
+							&& levelMap[2][kb[0]][kb[1]] == null) {
+							levelMap[2][kb[0]][kb[1]] = Player.player;
+							Player.player.moveTo(kb[1],kb[0]);
+							levelMap[2][nextLoc.y][nextLoc.x] = null;
+						}
+						CombatSys.combatEnemy(en,Player.player);
+						renderEngine.hurtEffect();
 					}
 					TriggerList trig = (TriggerList)GameEngine.levelMap[1][en.getY()][en.getX()];
 					for (int i = 0; i < trig.triggers.size(); i++) {
@@ -390,7 +403,21 @@ public class GameEngine {
 					//soundEngine.play(footStep, "footStep2");
 				
 					// int checkKill = false;
-					CombatSys.combatPlayer(Player.player,((EnemyObject)levelMap[2][yPos][xPos]));
+					EnemyObject en = (EnemyObject)levelMap[2][yPos][xPos];
+					en.cooldown++;
+					int[] kb = {Player.player.getY()+2*(yPos-Player.player.getY())
+						, Player.player.getX()+2*(xPos-Player.player.getX())};
+					if (kb[0] >= 0 && kb[0] < levelMap[0].length 
+							&& kb[1] >= 0 && kb[1] < levelMap[0][0].length
+							&& levelMap[0][kb[0]][kb[1]] != null
+							&& !levelMap[0][kb[0]][kb[1]].isSolid()
+							&& levelMap[2][kb[0]][kb[1]] == null) {
+						levelMap[2][yPos][xPos] = null;
+						en.moveTo(kb[1],kb[0]);
+						levelMap[2][kb[0]][kb[1]] = en;
+					}
+					
+					CombatSys.combatPlayer(Player.player, en);
 				}
 
 			}

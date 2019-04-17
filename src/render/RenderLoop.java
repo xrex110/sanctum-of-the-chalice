@@ -145,6 +145,10 @@ public class RenderLoop extends Thread {
 	public void updateInventory(UsableItem[] inv, Equipable[] equip) {
 		gm.inventoryMenu.setInvent(inv, equip);
 	}
+
+	public void hurtEffect() {
+		gm.hurtEffect();
+	}
 /*
 	public void updateEntityMap(GameObject[][] emap) {
 		gm.setEMap(emap);

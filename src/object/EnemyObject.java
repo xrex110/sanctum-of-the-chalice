@@ -16,6 +16,8 @@ public class EnemyObject extends GameObject implements Interactable {
     FireAnimation animation = new FireAnimation();
     int awakenRange = 3;
     int aggroRange = 6;
+    int actionCool = 0;
+    public int cooldown = 0;
         ArrayList<Pair<Integer,Integer>> passiveLocs;
 
 	//stat
@@ -121,7 +123,11 @@ public class EnemyObject extends GameObject implements Interactable {
 	}
 	if (state == STATE.AGGRO) {
 		if (path.size() > 0 && path.size() <= aggroRange) {
-    	    		return path.get(0);
+			if (cooldown <= 0) {
+				cooldown = actionCool;
+    	    			return path.get(0);
+			}
+			cooldown--;
 		}
 		else {
 			state = STATE.AWAKE;

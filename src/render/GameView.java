@@ -33,7 +33,7 @@ public class GameView extends Menu {
 
 	TextDevice fpsText;
 	TextDevice testText;
-    PlayerStatusHUD playerStatusHud;
+	public PlayerStatusHUD playerStatusHud;
     
     //TODO: Delete me later please and thank
     //Sign sign = new Sign(-128, -128, "Hello general kenobi");
@@ -333,6 +333,10 @@ public class GameView extends Menu {
         at.translate(transX, transY);
         if(!mapScreenshot)
         rend.setTransform(at); 
+    }
+
+    public void hurtEffect() {
+        playerStatusHud.reduceHP(0);
     }
 
     public static void setInterpRate(int x) {
