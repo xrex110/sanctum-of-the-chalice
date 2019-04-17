@@ -102,7 +102,7 @@ public class EnemyObject extends GameObject implements Interactable {
         //BufferedImage sprite = sp.getSprite("sign.png",0,32,32);
         
         BufferedImage sprite = animation.getUpdate();
-        rend.drawImage(sprite, null, getX()-28, getY()-60);
+        rend.drawImage(sprite, null, getX(), getY());
     }
     
     public void setPath(ArrayList<Pair<Integer,Integer>> p) {

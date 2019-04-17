@@ -33,7 +33,7 @@ public class GameEngine {
 	//background music
 	private String backgroundMusic = "../res/Twisting.ogg";
 	//Enemy attack flare sound
-	private String enemyAtkSound= "../res/EnemySound.ogg";
+	private String enemyAtkSound= /*"../res/EnemySound.ogg"*/ "../res/classic_hurt.ogg";
 	// footstep sound.
 	private String footStep = "../res/footStep2.ogg";
 	// fight sound.
@@ -72,9 +72,9 @@ public class GameEngine {
 		testLevel.maxRoomSize = 11;
 		testLevel.minSpawnSize = 6;
 		testLevel.maxSpawnSize = 12;
-		testLevel.tileSpriteSheet = "test_tile.png";
+		testLevel.tileSpriteSheet = "tiles.png";
 		testLevel.wallTileCode = 0;
-		testLevel.floorTileCode = 1;
+		testLevel.floorTileCode = 2;
 		testLevel.chestSpawnChance = 55.50;
 		testLevel.chestSpawnPenalty = 30;
 
