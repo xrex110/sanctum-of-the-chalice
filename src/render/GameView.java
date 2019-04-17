@@ -103,8 +103,10 @@ public class GameView extends Menu {
 		
         positionCamera(rend);
         
-        if(frameCount % (int)(GameEngine.SLOWRATE / RenderLoop.SLEEP_TIME) == 0)
+        if(frameCount % (int)(GameEngine.SLOWRATE / RenderLoop.SLEEP_TIME) == 0) {
             playerStatusHud.setKey("");
+            test = null;
+        }
 
 		/*for(int i = 0; i < xTiles; i++) {
 			for(int j = 0; j < yTiles; j++) {
@@ -157,6 +159,9 @@ public class GameView extends Menu {
 				}
 			}
 		}
+
+        if(test != null) test.draw(rend);
+
         Player.player.draw(rend, playerXCopy, playerYCopy);
         
         if(hudIsActive)
@@ -346,12 +351,28 @@ public class GameView extends Menu {
     public static int getInterpRate() {
         return Sanctum.settings.interpRate;
     }
+    Ability test = null;
     public void invoke(String key) {
         //Please do nothing ty
         if(!isFocused) return; 
-        if(key.matches("^[WASDQ]$")) {
+        if(key.matches("^[WASDQ1-9]$")) {
             playerStatusHud.setKey(key);
             GameEngine.updateInput(key);
+            if(key.matches("^[1-9]$")) {
+                switch(key) {
+                    case "1": 
+                        test = new AbilityX(Player.player.getX(), Player.player.getY(), Player.player);
+                        break;
+                    case "2":
+                        test = new AbilityY(Player.player.getX(), Player.player.getY(), Player.player);
+                        break;
+                    case "3":
+                        test = new AbilityZ(Player.player.getX(), Player.player.getY(), Player.player);
+                        break;
+                }
+            } else {
+                test = null;
+            }
             return;
         }
         if(!sanitizeInputTime(500,key)) return;
