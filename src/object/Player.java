@@ -102,7 +102,7 @@ public class Player extends GameObject implements Interactable {
 	public void draw(Graphics2D rend, int copyX, int copyY) {
 		//rend.fillRect(getX(),getY(), 32, 32);
 		sp.cacheImage("wizard.png");
-		BufferedImage sprite = sp.getSprite("wizard.png",0,32,32);
+		BufferedImage sprite = sp.getSprite("player1.png",0,32,32);
 		rend.drawImage(sprite, null, copyX, copyY);
 	}
 	public int getStr() {
