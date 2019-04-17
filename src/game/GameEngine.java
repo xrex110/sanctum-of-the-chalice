@@ -162,6 +162,7 @@ public class GameEngine {
 		while (running)
 		{
 			timeStart += System.nanoTime() / MILLITONANO;
+			//System.out.print(gameMode+" "+prevMode);
 
 			fastTick();
 			if (slowCount >= currSlowRate && gameMode != MODE.PAUSE)
@@ -456,18 +457,25 @@ public class GameEngine {
 	public static boolean setPause() { 
 		//returns true if sets to pause
 		//returns false if already paused
-		if (gameMode != MODE.PAUSE) {
-			prevMode = gameMode;
-			gameMode = MODE.PAUSE;
-			playtime.stop();
-			return true;
-		}
+	//	synchronized(gameMode) {
+			if (gameMode != MODE.PAUSE) {
+				prevMode = gameMode;
+				gameMode = MODE.PAUSE;
+				playtime.stop();
+				return true;
+			}
+		
 		return false;
 	}
 
 	public static void unPause() {
 		playtime.start();
 		gameMode = prevMode;
+		if (gameMode == MODE.PAUSE) {
+			gameMode = MODE.GAME;
+			prevMode = MODE.GAME;
+		}
+
 	}
 	//TODO Make the maxDist parameter actually matter
 	public void pathAll(int maxDist) {
