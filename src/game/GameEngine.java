@@ -29,20 +29,26 @@ public class GameEngine {
 	private int slowIts;
 	private float gameStart;
 	private boolean running;
+	////////////////Sound Lists////////////////////////////
+	//background music
 	private String backgroundMusic = "../res/Twisting.ogg";
 	//Enemy attack flare sound
-	private String enemyAtkSound= "../res/EnemySound.ogg";
+	private String enemyAtkSound= /*"../res/EnemySound.ogg"*/ "../res/classic_hurt.ogg";
 	// footstep sound.
 	private String footStep = "../res/footStep2.ogg";
 	// fight sound.
 	private String atkSound2 = "../res/attackSound2.ogg";
+	////////////////////////////////////////////////////////
 	private static String currentInput;
+	private static int inventIndex;
 	private RenderLoop renderEngine;
 	private SoundEngine soundEngine;
 	public ScoreTracker tracker;
 
 	private Generator levelGen;
 	public static GameObject[][][] levelMap;
+	public static UsableItem[] inventory;
+	public static Equipable[] equips;
 
 	private ArrayList<EnemyObject> enemyUpdateList;
 	public MoveHistory moveHist;
@@ -53,6 +59,9 @@ public class GameEngine {
 
 	public static Timer playtime = new Timer();
 
+	private ArrayList<UsableItem> itemList = new ArrayList<UsableItem>();
+	//event number variable
+	public int event_num;
 	public GameEngine() {
 
 		enemyUpdateList = new ArrayList<EnemyObject>();
@@ -64,21 +73,63 @@ public class GameEngine {
 		testLevel.maxRoomSize = 11;
 		testLevel.minSpawnSize = 6;
 		testLevel.maxSpawnSize = 12;
-		testLevel.tileSpriteSheet = "test_tile.png";
+		testLevel.tileSpriteSheet = "tiles.png";
 		testLevel.wallTileCode = 0;
-		testLevel.floorTileCode = 1;
-		testLevel.chestSpawnChance = 20.254896;
-		testLevel.chestSpawnPenalty = 8.45;
+		testLevel.floorTileCode = 2;
+		testLevel.chestSpawnChance = 55.50;
+		testLevel.chestSpawnPenalty = 30;
 
-		levelGen = new Generator(testLevel);
-		LevelData curLevel = levelGen.generateDungeon();
+
+		LevelData curLevel = null;
+		while(curLevel == null) {
+			levelGen = new Generator(testLevel);
+			curLevel = levelGen.generateDungeon();
+			System.out.println("Generating Dungeon...");
+		}
 
 		GameEngine.levelMap = curLevel.levelMap;
 		this.mapWidth = curLevel.mapWidth;
 		this.mapHeight = curLevel.mapHeight;
+		//Event Handler
+		event_num = levelGen.getEventNum();
 
 		//Weird sink code, because Player.player exists and is static
-		Player.player = new Player(curLevel.playerSpawnPosition.col, curLevel.playerSpawnPosition.row);
+		Player.player = new Player(curLevel.playerSpawnPosition.col, curLevel.playerSpawnPosition.row,event_num);
+
+		JsonReader jsonread = new JsonReader();
+		ArrayList<UsableItem> itemsReadIn = null;
+		try { 
+			itemsReadIn = jsonread.readItems();
+		}
+		catch (java.io.IOException e) {
+			System.out.println("JSON FAIL");
+		}
+
+		inventIndex = -1;
+		inventory = new UsableItem[28];
+		equips = new Equipable[4];
+		//Debug Items; These are examples of two potion items that have been instantiated and then cloned to the map
+		//Each uses a different method of setting stat values. The one used by betterPotion is probably preferable
+		//TODO remove these debug items later
+		inventory[3] = new UsableItem(-1, -1, "Mundane Potion", "basicPotion.png", 2);
+		inventory[3].modifier.setHP(20);
+		Stat heal = new Stat(1,0,0,0,0,10,10,false);
+		UsableItem betterPotion = new UsableItem(-1,-1,"Growth Potion", "growthPotion.png", 1, heal);
+		
+		inventory[3].cloneTo(Player.player.getX(), Player.player.getY() +1);
+
+		betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
+		itemList.add(betterPotion);
+		heal = new Stat(1,0,0,0,-2,0,0,false);
+		Equipable arm = new Equipable(-1,-1,"Underwear of Vulnerability", "underwear.png", 1, heal, Equipable.EquipType.ARMOR);
+		itemList.add(arm);
+		heal = new Stat(1,0,0,0,1,0,0,false);
+		arm = new Equipable(-1,-1,"Leather Gambisson", "leatherArmor.png", 1, heal, Equipable.EquipType.ARMOR);
+		itemList.add(arm);
+
+		for(UsableItem item : itemsReadIn) {
+			itemList.add(item);
+		}
 
 		moveHist = new MoveHistory(MAXHISTORY);
 		//levelEnd = new Sign(signPositions[1].col, signPositions[1].row, "Insert end stats here");
@@ -107,6 +158,7 @@ public class GameEngine {
 		running = true;
 		gameStart = System.nanoTime() / MILLITONANO;
 		renderEngine.updateMap(GameEngine.levelMap);
+		renderEngine.updateInventory(inventory, equips);
 		//renderEngine.updateEntityMap(entityMap);
 		renderEngine.start();		//Starts the renderengine thread!
 
@@ -121,6 +173,7 @@ public class GameEngine {
 		while (running)
 		{
 			timeStart += System.nanoTime() / MILLITONANO;
+			//System.out.print(gameMode+" "+prevMode);
 
 			fastTick();
 			if (slowCount >= currSlowRate && gameMode != MODE.PAUSE)
@@ -139,7 +192,7 @@ public class GameEngine {
 					slowCount += timeToNext;
 				}
 				else {
-					System.out.print("lag");
+					//System.out.print("lag");
 				}
 			}
 			else {
@@ -154,6 +207,15 @@ public class GameEngine {
 	public void fastTick() {
 
 		fastIts += 1;
+		if (inventIndex >= 0) {
+			if (inventory[inventIndex] != null) {
+				inventory[inventIndex].use();
+				if (inventory[inventIndex].durability <= 0) {
+					inventory[inventIndex] = null;
+				}
+			}
+			inventIndex = -1;
+		}
 		//fillerOperations(100_000);
 		/*if(!currentInput.equals("")) {
 		  System.out.println("Key is " + currentInput);
@@ -217,6 +279,7 @@ public class GameEngine {
 
 			//System.out.println("Slow tick: "+slowIts+"\n"+moveHist);
 			pathAll(10);
+			sleepForMilli(currSlowRate/2);
 			while (enemyUpdateList.size() > 0) {
 				//System.out.println("enemy");
 				EnemyObject en = enemyUpdateList.remove(0);
@@ -233,8 +296,20 @@ public class GameEngine {
 						//en.setY(nextLoc.y);
 					}else if(nextLoc!= null 
 						  &&levelMap[2][nextLoc.y][nextLoc.x] ==Player.player){
-						  soundEngine.play(enemyAtkSound, "enemyAtk");
-						  CombatSys.combatEnemy(en,Player.player);
+						soundEngine.play(enemyAtkSound, "enemyAtk");
+						int[] kb = {nextLoc.y+(nextLoc.y-en.getY()),
+							nextLoc.x+(nextLoc.x-en.getX())};
+						if (kb[0] >= 0 && kb[0] < levelMap[0].length 
+							&& kb[1] >= 0 && kb[1] < levelMap[0][0].length
+							&& levelMap[0][kb[0]][kb[1]] != null
+							&& !levelMap[0][kb[0]][kb[1]].isSolid()
+							&& levelMap[2][kb[0]][kb[1]] == null) {
+							levelMap[2][kb[0]][kb[1]] = Player.player;
+							Player.player.moveTo(kb[1],kb[0]);
+							levelMap[2][nextLoc.y][nextLoc.x] = null;
+						}
+						CombatSys.combatEnemy(en,Player.player);
+						renderEngine.hurtEffect();
 					}
 					TriggerList trig = (TriggerList)GameEngine.levelMap[1][en.getY()][en.getX()];
 					for (int i = 0; i < trig.triggers.size(); i++) {
@@ -242,8 +317,12 @@ public class GameEngine {
 					}	
 				}
 				else {
+					//betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
 					en.death();
 					GameEngine.levelMap[2][en.getY()][en.getX()] = null;
+					Random r = new Random();
+					int itemNum = r.nextInt(itemList.size());
+					(itemList.get(itemNum)).cloneTo(en.getX(),en.getY());
 					
 				}
 			}
@@ -296,6 +375,8 @@ public class GameEngine {
 		{
 			//Player.player.moveUp();
 			yPos--;
+			System.out.println("\n\nEvent number : " + event_num+" \n");
+			
 		}
 		else if (currentInput.equals("A"))
 		{
@@ -333,7 +414,22 @@ public class GameEngine {
 					soundEngine.play(atkSound2, "attack2");
 					//soundEngine.play(footStep, "footStep2");
 				
-					CombatSys.combatPlayer(Player.player,((EnemyObject)levelMap[2][yPos][xPos]));
+					// int checkKill = false;
+					EnemyObject en = (EnemyObject)levelMap[2][yPos][xPos];
+					en.cooldown++;
+					int[] kb = {Player.player.getY()+2*(yPos-Player.player.getY())
+						, Player.player.getX()+2*(xPos-Player.player.getX())};
+					if (kb[0] >= 0 && kb[0] < levelMap[0].length 
+							&& kb[1] >= 0 && kb[1] < levelMap[0][0].length
+							&& levelMap[0][kb[0]][kb[1]] != null
+							&& !levelMap[0][kb[0]][kb[1]].isSolid()
+							&& levelMap[2][kb[0]][kb[1]] == null) {
+						levelMap[2][yPos][xPos] = null;
+						en.moveTo(kb[1],kb[0]);
+						levelMap[2][kb[0]][kb[1]] = en;
+					}
+					
+					CombatSys.combatPlayer(Player.player, en);
 				}
 
 			}
@@ -372,18 +468,25 @@ public class GameEngine {
 	public static boolean setPause() { 
 		//returns true if sets to pause
 		//returns false if already paused
-		if (gameMode != MODE.PAUSE) {
-			prevMode = gameMode;
-			gameMode = MODE.PAUSE;
-			playtime.stop();
-			return true;
-		}
+	//	synchronized(gameMode) {
+			if (gameMode != MODE.PAUSE) {
+				prevMode = gameMode;
+				gameMode = MODE.PAUSE;
+				playtime.stop();
+				return true;
+			}
+		
 		return false;
 	}
 
 	public static void unPause() {
 		playtime.start();
 		gameMode = prevMode;
+		if (gameMode == MODE.PAUSE) {
+			gameMode = MODE.GAME;
+			prevMode = MODE.GAME;
+		}
+
 	}
 	//TODO Make the maxDist parameter actually matter
 	public void pathAll(int maxDist) {
@@ -613,10 +716,23 @@ public class GameEngine {
 		return path;
 	}
 
+	public static boolean addToInventory(UsableItem it) {
+		for (int i = 0; i < inventory.length; i++) {
+			if (inventory[i] == null) {
+				inventory[i] = it;
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static void updateInput(String input) {
 		if(!input.equals("") && !input.equals(currentInput)) {
 			currentInput = input;
 		}
 
+	}
+	public static void updateInventIndex(int i) {
+		inventIndex = i;
 	}
 }

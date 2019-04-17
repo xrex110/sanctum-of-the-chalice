@@ -1,6 +1,8 @@
 package game;
 import main.*;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import render.*;
 import sound.*;
 import object.*;
@@ -20,12 +22,14 @@ public class Stat implements Serializable{
 	 *			 1 = Enemy
 	 * @ 1st trial => make simple to check it is work.
 	 */
+	
+	private int eventNum;
 	private int str;
 	private int dex;
 	private int con;
 	private int wis;
 	private int currentHp;
-	private int maxHp;
+	//private int maxHp;
 	private int objectLv;
 	private int exp;
 
@@ -33,28 +37,46 @@ public class Stat implements Serializable{
 	private int objectType;
 	Random rand = new Random();
 
+	
+
 	public Stat(){
 		
 		this.objectLv = 1;
 		this.str      = 1;
 		this.dex      = 1;
 		this.wis      = 1;
-		this.con      = 1;
+		this.con      = 10;
 		this.currentHp = 100;
-		this.maxHp    = 100;
+		//this.maxHp    = 100;
 		this.exp      = 0;
 		this.alive    = true;
-	
+		
 	}
-	public Stat(int type){
+	/*
+	 *  the variable "eventcase" will choose which
+	 *	event will occurs in the level.
+	 *  the default value is -1, and the -1 will have no event in the game system.
+	 *  
+	 *
+	 *	1. HP double.
+	 *  2. EXP double.
+	 *	3. Get and dealt Damage Double.
+	 *	
+	 */
+	public Stat(int type,int event){
 		if(type==0){
+			if(event==1){
+				this.con       = 20;
+				this.currentHp = 200;
+			}else{
+				this.con       = 10;
+				this.currentHp = 100;
+			}
 			this.objectLv = 1;
 			this.str      = 1;
 			this.dex      = 1;
-			this.wis      = 1;
-			this.con      = 1;
-			this.currentHp = 100;
-			this.maxHp    = 100;
+			this.wis      = 1;			
+			//this.maxHp    = 100;
 			this.exp      = 0;
 			this.alive    = true;
 			this.objectType = 0;//Player
@@ -63,14 +85,34 @@ public class Stat implements Serializable{
 			this.str      = 1;
 			this.dex      = 1;
 			this.wis      = 1;
-			this.con      = 1;
-			this.currentHp = 20;
-			this.maxHp    = 20;
+			this.con      = 3;
+			this.currentHp = 30;
+			//this.maxHp    = 20;
 			this.exp      = 5;
 			this.alive    = true;
 			this.objectType = 1; // Creature;
 		}
+		eventNum = event;
 
+	}
+
+	//The follwing constructor is only for JSONReader purposes
+	public Stat(@JsonProperty("level") int lvl, @JsonProperty("str") int str, @JsonProperty("dex") int dex, @JsonProperty("wis") int wisdom, @JsonProperty("con") int con, @JsonProperty("hp") int hp, @JsonProperty("exp") int exp) {
+		this(lvl, str, dex, wisdom, con, hp, exp, false);
+	}
+
+	public Stat(int lv, int str, int dex, int wis, int co, int currentHp, int exp, boolean alive){
+		
+		this.objectLv = lv;
+		this.str      = str;
+		this.dex      = dex;
+		this.wis      = wis;
+		this.con      = co;
+		this.currentHp = currentHp;
+		//this.maxHp    = 100;
+		this.exp      = exp;
+		this.alive    = alive;
+	
 	}
 	/*
 	* here are some "set functions"
@@ -89,11 +131,47 @@ public class Stat implements Serializable{
 	public void setWis(int point){
 		wis += point;
 	}
+	public void setHP(int point){
+		currentHp += point;
+	}
 	public void setCon(int point){
 		con += point;
-		if(point >=0){
-			maxHp += point*10;
-		}		
+				
+	}
+	public boolean addStat(Stat other) {
+		boolean affected = false;
+		//this.objectLv += other.objectLv;
+		this.str      += other.str;
+		this.dex      += other.dex;
+		this.wis      += other.wis;
+		this.con      += other.con;
+		int oldHp = this.currentHp;
+		//this.maxHp    += other.maxHp;
+		this.currentHp += other.currentHp;
+		if (this.currentHp > getMaxHP()) {
+			this.currentHp = getMaxHP();
+		}
+		getExp(other.exp);
+		if (other.str != 0 || other.dex != 0 || other.wis != 0 
+				|| other.con != 0 || other.exp != 0 
+				|| oldHp != this.currentHp) {
+			affected = true;
+		}
+
+		return affected;
+	}
+	public void minusStat(Stat other) {
+		boolean affected = false;
+		//this.objectLv += other.objectLv;
+		this.str      -= other.str;
+		this.dex      -= other.dex;
+		this.wis      -= other.wis;
+		this.con      -= other.con;
+		this.currentHp -= other.currentHp;
+		if (this.currentHp > getMaxHP()) {
+			this.currentHp = getMaxHP();
+		}
+		this.exp -= other.exp;
 	}
 	/*
 	* here are some "get functions"
@@ -119,20 +197,20 @@ public class Stat implements Serializable{
 		return currentHp;	
 	}	
 	public int getMaxHP(){
-		return maxHp;
+		
+		return con * 10;
 	}
 	public int getLv(){
 		return objectLv;
 	}
 	public int getCurXP(){
-	
 		return exp;
-
 	}
 	public int getTotXP(){
-	
 		return objectLv*10;
-
+	}
+	public int getEventNum(){
+		return eventNum;
 	}
 
 	//set all stats to zero
@@ -143,11 +221,9 @@ public class Stat implements Serializable{
 		this.wis      = 0;
 		this.con      = 0;
 		this.currentHp = 0;
-		this.maxHp    = 0;
+		//this.maxHp    = 0;
 		this.exp      = 0;
 		this.alive    = false;
-	
-
 	}
 
 	public Stat copyStats() {
@@ -158,7 +234,7 @@ public class Stat implements Serializable{
 		cop.wis      = this.wis;
 		cop.con      = this.con;
 		cop.currentHp = this.currentHp;
-		cop.maxHp    = this.maxHp;
+		//cop.maxHp    = this.maxHp;
 		cop.exp      = this.exp;
 		cop.alive    = this.alive;
 		return cop;
@@ -175,6 +251,10 @@ public class Stat implements Serializable{
 	*	 of the object which is alive or dead.
 	*/
 	public int toDamage(){
+		if(eventNum == 3){
+		return(str*10)*2;
+		
+		}
 		return (str * 10);
 	}
 	public void getDamage(int dmg){
@@ -202,10 +282,15 @@ public class Stat implements Serializable{
 	*/
 	public void getExp(int newExp){
 		//int currentExp = exp;
+		if(eventNum == 2){
+			newExp*=2;
+		}
+		System.out.println("Player get "+exp+ " exp");
 		exp += newExp;
-		if(exp/10 == objectLv){
+		if(exp/10 >= objectLv){
+			exp -= objectLv * 10;
 			levelUp();
-			exp =0;
+			//exp =0;
 		}
 	}
 	public void levelUp(){
@@ -214,7 +299,7 @@ public class Stat implements Serializable{
 		setWis(1);
 		setCon(1);
 		objectLv+=1;
-		currentHp = maxHp; // update their current hp to max
+		currentHp = getMaxHP(); // update their current hp to max
 	}
 
 	/*

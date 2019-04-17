@@ -1,0 +1,72 @@
+[
+{
+	"name": "Seath's Tome of Knowledge",
+	"spritepath": "tome.png",
+	"maximumDurability": 1,
+	"stats": {
+		"level": 3,
+		"str": 0,
+		"dex": 0,
+		"wis": 15,
+		"con": 0,
+		"hp": 0,
+		"exp": 10
+	}
+},
+{
+	"name": "Potion of Strength",
+	"spritepath": "strengthpot.png",
+	"maximumDurability": 1,
+	"stats": {
+		"level": 1,
+		"str": 10,
+		"dex": 0,
+		"wis": 0,
+		"con": 0,
+		"hp": 0,
+		"exp": 0
+	}
+},
+{
+	"name": "Trickster's Card",
+	"spritepath": "card.png",
+	"maximumDurability": 1,
+	"stats": {
+		"level": 5,
+		"str": 0,
+		"dex": 15,
+		"wis": 0,
+		"con": 0,
+		"hp": 0,
+		"exp": 0
+	}
+},
+{
+	"name": "Corn of Constitution",
+	"spritepath": "corn.png",
+	"maximumDurability": 1,
+	"stats": {
+		"level": 10,
+		"str": 0,
+		"dex": 0,
+		"wis": 0,
+		"con": 20,
+		"hp": 0,
+		"exp": 0
+	}
+},
+{
+	"name": "Orb of Insight",
+	"spritepath": "orb.png",
+	"maximumDurability": 1,
+	"stats": {
+		"level": 5,
+		"str": 5,
+		"dex": 5,
+		"wis": 5,
+		"con": 5,
+		"hp": 0,
+		"exp": 0
+	}
+}
+]

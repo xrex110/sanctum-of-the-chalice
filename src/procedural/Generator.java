@@ -17,6 +17,7 @@ public class Generator {
 	/////////////////////////////////////////////
 
 	private final int STANDARD_MAX_OFFSET = 50;
+	private final int STALL_THRESHOLD = 100;
 
 	//These variables try to keep track of the topleftmost corner
 	//and the bottomrightmost corner of the rooms generated in the
@@ -48,6 +49,11 @@ public class Generator {
 	private double chestSpawnChance;
 	private double chestSpawnPenalty;
 
+	private long pollStart;
+
+	//Random event variable
+	private int eventNumber;
+
 	public Generator(LevelMap mapDetails) {
 		rng = new RandomNumberGenerator();
 		//map = new int[mapSize][mapSize];
@@ -77,11 +83,15 @@ public class Generator {
 		//For spawning
 		this.chestSpawnChance = mapDetails.chestSpawnChance;
 		this.chestSpawnPenalty = mapDetails.chestSpawnPenalty;
+
+		//Generate random number 1~3 for Random Event.
+		eventNumber = rng.getRandomWithinBounds(1,3);
 	}
 
 	public LevelData generateDungeon() {
 		//First we generate a spawn room
 		long startTime = System.currentTimeMillis();
+		pollStart = System.currentTimeMillis();
 		generateSpawn(STANDARD_MAX_OFFSET, minSpawnSize, maxSpawnSize);
 
 		//A segment is described as an attempt to generate a corridor and room
@@ -91,9 +101,21 @@ public class Generator {
 		//If Linear generation is picked
 		if(linear) {
 			int count = 0;
+			//The stallCount keeps track of the number of stalls that occur
+			//in an attempt to generate a segment from a room in the loop below
+			//If for that specific room, there have been more than 5 attempts, we return NULL,
+			//And allow the GameEngine to call generateDungeon() again.
+			int stallCount = 0;
 			while(numberOfRoomsGenerated != numRooms) {
 				boolean genResult = generateSegment(roomsInLevel.get(count));
-				if(!genResult) continue;
+				if(!genResult) {
+					//System.out.println("HERE!");
+					stallCount++;
+					//stall threshold is 5
+					if(stallCount == STALL_THRESHOLD) return null;
+					continue;
+				}
+				stallCount = 0;
 				log("Segment " + numberOfRoomsGenerated + " generated successfully");
 				numberOfRoomsGenerated++;
 				count++;
@@ -198,6 +220,14 @@ public class Generator {
 	private boolean generateSegment(Room startRoom) {
 		//We select a random, unconnected side of the room
 		boolean genSuccess = false;
+
+		//This variable governs how many times the generator will try to
+		//Resize a corridor or room in the event of a collision.
+		//If it has resized a room or corridor this many times, it will return
+		//genSuccess = false.
+		int resizeTries = 5;
+		int corridorResizeCount = 0;
+		int roomResizeCount = 0;
 
 		while(!genSuccess) {
 			Direction dir = null;
@@ -420,7 +450,9 @@ public class Generator {
 	//This function updates the map[][] object with all the rooms that have been
 	//Generated so far
 	private void updateMap() {
-		for(Room room: roomsInLevel) drawRoom(room);
+		for(Room room: roomsInLevel) {
+			drawRoom(room);
+		}
 		for(Corridor cor : corridorsInLevel) drawCorridor(cor);
 		for(Coordinate coord: corridorTiles) map[coord.row][coord.col] = 1;
 	}
@@ -476,11 +508,11 @@ public class Generator {
 		System.out.println("=====Printing World=====");
 		for(int i = 0; i < map.length; i++) {
 			for(int j = 0; j < map[1].length; j++) {
-				//if(map[i][j] == 1) termColorGreen();
-				//else if(map[i][j] == 2) termColorRed();
-				//else termColorBlack();
+				if(map[i][j] == 1) termColorGreen();
+				else if(map[i][j] == 2) termColorRed();
+				else termColorBlack();
 				System.out.print(map[i][j] + " ");
-				//termClearColor();
+				termClearColor();
 			}
 			System.out.println();
 		}
@@ -490,6 +522,7 @@ public class Generator {
 	private void log(String str) {
 		//Can be changed later to write to a ProcGen log file perhaps
 		System.out.println(str);
+		return;
 	}
 
 	private void termColorRed() {
@@ -506,5 +539,8 @@ public class Generator {
 
 	private void termClearColor() {
 		System.out.print("\033[0m");
-	}	
+	}
+	public int getEventNum(){
+		return eventNumber;
+	}
 }

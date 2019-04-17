@@ -16,10 +16,12 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
     FireAnimation animation = new FireAnimation();
     int awakenRange = 3;
     int aggroRange = 6;
+    int actionCool = 0;
+    public int cooldown = 0;
         ArrayList<Pair<Integer,Integer>> passiveLocs;
 
 	//stat
-	public Stat stat = new Stat(1); // enemy type;
+	public Stat stat = new Stat(1,4); // enemy type;
 
     enum STATE { 
 	SLEEP,
@@ -100,7 +102,7 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
         //BufferedImage sprite = sp.getSprite("sign.png",0,32,32);
         
         BufferedImage sprite = animation.getUpdate();
-        rend.drawImage(sprite, null, getX()-28, getY()-60);
+        rend.drawImage(sprite, null, getX(), getY());
     }
     
     public void setPath(ArrayList<Pair<Integer,Integer>> p) {
@@ -121,7 +123,11 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
 	}
 	if (state == STATE.AGGRO) {
 		if (path.size() > 0 && path.size() <= aggroRange) {
-    	    		return path.get(0);
+			if (cooldown <= 0) {
+				cooldown = actionCool;
+    	    			return path.get(0);
+			}
+			cooldown--;
 		}
 		else {
 			state = STATE.AWAKE;
@@ -139,6 +145,7 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
 
     public void death() {
 	clearPass();
+
     }
 
     public boolean interact(int currentX, int currentY) {
