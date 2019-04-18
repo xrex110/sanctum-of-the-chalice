@@ -68,7 +68,7 @@ public class GameEngine {
 		enemyUpdateList = new ArrayList<EnemyObject>();
 
 		LevelMap testLevel = new LevelMap();
-		testLevel.numRooms = 25;
+		testLevel.numRooms = 6;
 		testLevel.linear = true;
 		testLevel.minRoomSize = 7;
 		testLevel.maxRoomSize = 11;
@@ -114,7 +114,7 @@ public class GameEngine {
 		//Each uses a different method of setting stat values. The one used by betterPotion is probably preferable
 		//TODO remove these debug items later
 		inventory[3] = new UsableItem(-1, -1, "Mundane Potion", "basicPotion.png", 2);
-		inventory[3].modifier.setHP(20);
+		inventory[3].modifier = new Stat(1,0,0,0,0,30,0,false);
 		Stat heal = new Stat(1,0,0,0,0,10,10,false);
 		UsableItem betterPotion = new UsableItem(-1,-1,"Growth Potion", "growthPotion.png", 1, heal);
 		
@@ -133,10 +133,10 @@ public class GameEngine {
 			itemList.add(item);
 		}
 
-		Boss bigB = new Boss(Player.player.getX()+1, Player.player.getY()+1);
-		levelMap[2][Player.player.getY()+1][Player.player.getX()+1]=bigB;
+		Boss bigB = new Boss(curLevel.bossSpawnPosition.col, curLevel.bossSpawnPosition.row);
+		levelMap[2][curLevel.playerSpawnPosition.row][curLevel.playerSpawnPosition.col]=bigB;
 
-		levelMap[2][Player.player.getY()][Player.player.getX()-3]=new NPC(Player.player.getX()-3, Player.player.getY());
+		levelMap[2][curLevel.npcSpawnPosition.row][curLevel.npcSpawnPosition.col]=new NPC(curLevel.npcSpawnPosition.col, curLevel.npcSpawnPosition.row);
 
 
 
