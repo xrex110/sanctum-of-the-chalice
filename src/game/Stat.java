@@ -133,6 +133,9 @@ public class Stat implements Serializable{
 	}
 	public void setHP(int point){
 		currentHp += point;
+		if (currentHp > getMaxHP()) {
+			currentHp = getMaxHP();
+		}
 	}
 	public void setCon(int point){
 		con += point;

@@ -136,6 +136,10 @@ public class GameEngine {
 		Boss bigB = new Boss(Player.player.getX()+1, Player.player.getY()+1);
 		levelMap[2][Player.player.getY()+1][Player.player.getX()+1]=bigB;
 
+		levelMap[2][Player.player.getY()][Player.player.getX()-3]=new NPC(Player.player.getX()-3, Player.player.getY());
+
+
+
 		moveHist = new MoveHistory(MAXHISTORY);
 		//levelEnd = new Sign(signPositions[1].col, signPositions[1].row, "Insert end stats here");
 

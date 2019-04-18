@@ -34,11 +34,9 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
 
     public EnemyObject(int x, int y){
         super(x,y, false);
-	int[][] passiveMap = {{0,0,1,0,0},
-	    		{0,1,1,1,0},
-	    		{1,1,1,1,1},
-			{0,1,1,1,0},
-			{0,0,1,0,0}};
+	int[][] passiveMap = {{0,1,0},
+	    		{1,1,1},
+			{0,1,0}};
 
 	    state = STATE.SLEEP;
         animation.setState(Animation.AnimationState.SLEEP);
@@ -180,7 +178,7 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
 
     public boolean interact(GameObject target) {
 	if (target == Player.player) {
-		System.out.print("Lit");
+		//System.out.print("Lit");
 		return true;
 	}
 	return false;
