@@ -49,6 +49,7 @@ public class GameEngine {
 	public static GameObject[][][] levelMap;
 	public static UsableItem[] inventory;
 	public static Equipable[] equips;
+	public static ArrayList<GameObject> transientRenders;
 
 	private ArrayList<EnemyObject> enemyUpdateList;
 	public MoveHistory moveHist;
@@ -108,6 +109,7 @@ public class GameEngine {
 		inventIndex = -1;
 		inventory = new UsableItem[28];
 		equips = new Equipable[4];
+		transientRenders = new ArrayList<GameObject>();
 		//Debug Items; These are examples of two potion items that have been instantiated and then cloned to the map
 		//Each uses a different method of setting stat values. The one used by betterPotion is probably preferable
 		//TODO remove these debug items later
@@ -271,6 +273,13 @@ public class GameEngine {
 				//TODO: Handle revert collision checks
 				GameEngine.levelMap[2][Player.player.getY()][Player.player.getX()] = Player.player;
 			}
+			while (transientRenders.size() > 0) {
+				GameObject obj = transientRenders.remove(0);
+				TriggerList trig = (TriggerList)levelMap[1][obj.getY()][obj.getX()];
+				trig.rendered.remove(obj);
+			}
+
+
 			updatePlayer();
 
 

@@ -20,9 +20,9 @@ public class Boss extends EnemyObject implements Interactable {
 
     public Boss(int x, int y){
         super(x,y);
-	stat = new Stat(2, 2, 2, 2, 10, 100, 30, true);
+	stat = new Stat(2, 3, 2, 2, 10, 100, 30, true);
 	stat.setObjectType(1);
-	actionCool = 1;
+	actionCool = 2;
 	rotIndex = -1;
 	rotation = new Ability[5];
 	rotation[2]= new AbilityY(0,0,this);
@@ -142,7 +142,7 @@ public class Boss extends EnemyObject implements Interactable {
 		if (rotation[rotIndex] == null) {
 			return path.get(1);
 		}
-		rotation[rotIndex].check(getX(), getY());
+		rotation[rotIndex].check(path.get(1).x, path.get(1).y);
 		return null;
 	}
 

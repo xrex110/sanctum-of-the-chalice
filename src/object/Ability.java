@@ -6,7 +6,7 @@ import java.awt.Color;
 import game.CombatSys;
 import game.GameEngine;
 public class Ability implements java.io.Serializable{
-
+    ImageObject display;
     GameObject parent;
     int x,y; 
     Pair[] deltas;
@@ -15,6 +15,7 @@ public class Ability implements java.io.Serializable{
         this.y = y;
         this.parent = parent;
         deltas = coordinates;
+	display = new ImageObject(-1,-1,"magicVortex.png");
     }
     boolean validate(int deltaX, int deltaY) {
         try {
@@ -27,7 +28,17 @@ public class Ability implements java.io.Serializable{
     public void check() {
         GameObject[][] entities = GameEngine.levelMap[2];
         for(Pair<Integer, Integer> p : deltas) {
-            if(validate(p.x, p.y)) CombatSys.genericCombat(parent, entities[y+p.y][x+p.x]);
+            if(validate(p.x, p.y)) {
+		    	CombatSys.genericCombat(parent, entities[y+p.y][x+p.x]);
+			}
+	    	int dx = x+p.x;
+	    	int dy = y+p.y;
+	    	if (dy >= 0 && dy < entities.length && dx >= 0 && dx < entities[0].length) {
+				TriggerList trig = (TriggerList)GameEngine.levelMap[1][y+p.y][x+p.x];
+		    	ImageObject clnDisp = (ImageObject)display.cloneTo(x+p.x,y+p.y);
+		    	trig.rendered.add(clnDisp);
+		    	GameEngine.transientRenders.add(clnDisp);
+	    	}
         }
     }
 
