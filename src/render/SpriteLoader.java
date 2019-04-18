@@ -85,10 +85,10 @@ public class SpriteLoader implements Serializable {
                 BufferedImage temp = sheet.getSubimage(i, j, x, y);
 				String imgKey = path + count;
 				if(cache.containsKey(imgKey)) {
-					System.out.println("Image " + imgKey + " already in cache");
+					//System.out.println("Image " + imgKey + " already in cache");
 					continue;
 				}
-				System.out.println("Put " + imgKey + " in cache");
+				//System.out.println("Put " + imgKey + " in cache");
                 cache.put(imgKey, temp);
             }
         }
