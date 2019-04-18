@@ -108,6 +108,8 @@ public class SaveHandler {
             oos.writeObject(ge.playtime);
         
             oos.writeObject(ge.moveHist);
+            oos.writeObject(ge.inventory);
+            oos.writeObject(ge.equips);
         
             oos.flush();
             oos.close();
@@ -132,6 +134,10 @@ public class SaveHandler {
         ge.levelMap = (GameObject[][][]) ois.readObject();
         ge.playtime = (Timer) ois.readObject();
         ge.moveHist = (MoveHistory) ois.readObject();
+        ge.inventory = (UsableItem[]) ois.readObject();
+        ge.equips = (Equipable[]) ois.readObject();
+        ge.getRenderEngine().gm.setMap(ge.levelMap);     
+        ge.getRenderEngine().gm.inventoryMenu.setInvent(ge.inventory, ge.equips);     
         ge.getRenderEngine().gm.setMap(ge.levelMap);     
 
         ois.close();
