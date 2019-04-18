@@ -180,7 +180,7 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
 
     public boolean interact(GameObject target) {
 	if (target == Player.player) {
-		System.out.print("Lit");
+		//System.out.print("Lit");
 		return true;
 	}
 	return false;
