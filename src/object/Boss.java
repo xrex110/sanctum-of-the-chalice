@@ -30,7 +30,7 @@ public class Boss extends EnemyObject implements Interactable {
 	rotation[4] = new AbilitySpawn(0,0,this);
 	
 	knockBack = false;
-	awakenRange = 4;
+	awakenRange = 2;
 	aggroRange = 10;
 	corner = new Pair<Integer,Integer>(x,y);
 	lead = new Pair<Integer,Integer>(x, y);
