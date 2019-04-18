@@ -10,12 +10,14 @@ import sound.*;
 
 public class MusicTrigger extends Item implements Interactable {
 	SpriteLoader spLoader = new SpriteLoader();
+	boolean used;
 
 	public boolean interact(GameObject target) {
-		if (target == Player.player) {
+		if (!used && target == Player.player) {
 			System.out.println("Phoebus is sad");
 			GameEngine.soundEngine.stopAllRequests();
 			GameEngine.soundEngine.playLoop("../res/Ghostpocalypse.ogg","boss");
+			used = true;
 			return true;
 		}
 		return false;
@@ -23,7 +25,7 @@ public class MusicTrigger extends Item implements Interactable {
 
 	public MusicTrigger(int x, int y) {
 		super(x, y, new int[][] {{1}});
-		
+		used = false;
 	}
 
 	public GameObject cloneTo(int x, int y) {
