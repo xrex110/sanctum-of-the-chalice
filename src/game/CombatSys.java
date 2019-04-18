@@ -70,6 +70,11 @@ public class CombatSys {
 			if(def.stat.checkAlive() == false){
 				//check player is die or not.
 				System.out.println("Player die!\n ");
+                if(SaveHandler.manualSave) {
+                    SaveHandler.loadGame("manual.save");
+                } else {
+                    SaveHandler.loadGame("auto.save");
+                }
 				//game over!
 				
 				//TODO: game over page or restart?

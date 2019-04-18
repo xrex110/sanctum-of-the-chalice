@@ -175,6 +175,7 @@ public class GameEngine {
 		//soundEngine.play(enterSound, "enter");
 		soundEngine.playLoop(backgroundMusic, "background");
 		//GameEngine.unPause();
+        SaveHandler.saveGame("auto.save");
 		gameLoop();
 	}
 
