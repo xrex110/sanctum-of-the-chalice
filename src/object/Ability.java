@@ -15,7 +15,8 @@ public class Ability implements java.io.Serializable{
         this.y = y;
         this.parent = parent;
         deltas = coordinates;
-	display = new ImageObject(-1,-1,"magicVortex.png");
+	display = new ImageObject(-1,-1,"sparkles.png");
+	//display = new ImageObject(-1,-1,"magicVortex.png");
     }
     boolean validate(int deltaX, int deltaY) {
         try {
