@@ -119,9 +119,9 @@ public class GameEngine {
 		Stat heal = new Stat(1,0,0,0,0,10,10,false);
 		UsableItem betterPotion = new UsableItem(-1,-1,"Growth Potion", "growthPotion.png", 1, heal);
 		
-		inventory[3].cloneTo(Player.player.getX(), Player.player.getY() +1);
+		//inventory[3].cloneTo(Player.player.getX(), Player.player.getY() +1);
 
-		betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
+		//betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
 		itemList.add(betterPotion);
 		heal = new Stat(1,0,0,0,-2,0,0,false);
 		Equipable arm = new Equipable(-1,-1,"Underwear of Vulnerability", "underwear.png", 1, heal, Equipable.EquipType.ARMOR);
@@ -135,7 +135,7 @@ public class GameEngine {
 		}
 
 		Boss bigB = new Boss(curLevel.bossSpawnPosition.col, curLevel.bossSpawnPosition.row);
-		levelMap[2][curLevel.playerSpawnPosition.row][curLevel.playerSpawnPosition.col]=bigB;
+		levelMap[2][curLevel.bossSpawnPosition.row][curLevel.bossSpawnPosition.col]=bigB;
 
 		levelMap[2][curLevel.npcSpawnPosition.row][curLevel.npcSpawnPosition.col]=new NPC(curLevel.npcSpawnPosition.col, curLevel.npcSpawnPosition.row);
 		//levelMap[2][curLevel.bossRoomPosition.row][curLevel.bossSpawnPosition.col]=
