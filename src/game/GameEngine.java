@@ -432,10 +432,10 @@ public class GameEngine {
 				
 					// int checkKill = false;
 					EnemyObject en = (EnemyObject)levelMap[2][yPos][xPos];
-					en.cooldown++;
+					en.hitStun();
 					int[] kb = {Player.player.getY()+2*(yPos-Player.player.getY())
 						, Player.player.getX()+2*(xPos-Player.player.getX())};
-					if (en.checkBounds(kb[1],kb[0])) {
+					if (en.knockBack && en.checkBounds(kb[1],kb[0])) {
 						levelMap[2][yPos][xPos] = null;
 						en.moveTo(kb[1],kb[0]);
 						levelMap[2][kb[0]][kb[1]] = en;

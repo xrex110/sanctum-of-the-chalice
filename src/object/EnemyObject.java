@@ -14,9 +14,10 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
     SpriteLoader sp = new SpriteLoader();
     ArrayList<Pair<Integer,Integer>> path;
     FireAnimation animation = new FireAnimation();
-    int awakenRange = 3;
-    int aggroRange = 6;
+    int awakenRange = 4;
+    int aggroRange = 7;
     int actionCool = 0;
+    public boolean knockBack = true;
     public int cooldown = 0;
         ArrayList<Pair<Integer,Integer>> passiveLocs;
 
@@ -59,8 +60,16 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
 
     }
 
+    public EnemyObject(int x, int y, STATE st) {
+		this(x,y);
+	    state = st;
+	    if (st != STATE.SLEEP) {
+			animation.setState(Animation.AnimationState.AWAKE);
+	    }
+    }
+
 	public GameObject cloneTo(int x, int y) {
-		return new EnemyObject(x, y);
+		return new EnemyObject(x, y, state);
 	}
 
 	public void moveTo(int x, int y) {
@@ -68,6 +77,10 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
 		setX(x);
 		setY(y);
 		placePass();
+	}
+
+	public void hitStun() {
+		cooldown++;
 	}
 
 	public void clearPass() { 

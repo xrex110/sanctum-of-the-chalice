@@ -15,13 +15,26 @@ public class Boss extends EnemyObject implements Interactable {
 	public int width = 2;
 	public Pair<Integer,Integer> corner;
 	public Pair<Integer,Integer> lead;
+	public Ability[] rotation;
+	int rotIndex;
 
     public Boss(int x, int y){
         super(x,y);
-	actionCool = 2;
+	actionCool = 1;
+	rotIndex = -1;
+	rotation = new Ability[4];
+	rotation[1]= new AbilityY(0,0,this);
+	rotation[2] = new AbilityZ(0,0,this);
+	rotation[3] = new AbilitySpawn(0,0,this);
+	
+	knockBack = false;
+	awakenRange = 4;
+	aggroRange = 10;
 	corner = new Pair<Integer,Integer>(x,y);
 	lead = new Pair<Integer,Integer>(x, y);
-	moveTo(x, y);
+	if (checkBounds(x, y)) {
+		moveTo(x, y);
+	}
     }
 
 	public GameObject cloneTo(int x, int y) {
@@ -83,6 +96,10 @@ public class Boss extends EnemyObject implements Interactable {
 		}
     }
 
+	public void hitStun() {
+		
+	}
+
     public Pair<Integer,Integer> nextLoc() {
 	 	if (path != null) {
 			if (state == STATE.SLEEP) {
@@ -100,7 +117,7 @@ public class Boss extends EnemyObject implements Interactable {
 				if (path.size() > 1 && path.size() <= aggroRange+1) {
 					if (cooldown <= 0) {
 						cooldown = actionCool;
-						Pair<Integer,Integer> loc = path.get(1);
+						Pair<Integer,Integer> loc = evalRotation();
 						path = null;
     	    			return loc;
 					}
@@ -114,6 +131,18 @@ public class Boss extends EnemyObject implements Interactable {
 	    }
 		return null;
     }
+
+	public Pair<Integer,Integer> evalRotation() {
+		rotIndex++;
+		if (rotIndex >= rotation.length) {
+			rotIndex -= rotation.length;
+		}
+		if (rotation[rotIndex] == null) {
+			return path.get(1);
+		}
+		rotation[rotIndex].check(getX(), getY());
+		return null;
+	}
 
     public void death() {
 		for (int i = 0; i < width; i++) {

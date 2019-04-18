@@ -30,6 +30,12 @@ public class Ability implements java.io.Serializable{
             if(validate(p.x, p.y)) CombatSys.genericCombat(parent, entities[y+p.y][x+p.x]);
         }
     }
+
+    public void check(int x, int y) {
+	this.x = x;
+	this.y = y;
+	check();
+    }
     
     public void draw(Graphics2D rend) {
         int x = parent.getX();
