@@ -77,6 +77,7 @@ public class InventoryMenu extends Menu {
 
             drawStats(rend);
             drawLevelInfo(rend);
+            drawItemInfo(rend);
 
             for(int i = 0; i < inventoryButtons.length; i++) {
                 if (geInventory[i] == null) {
@@ -101,6 +102,9 @@ public class InventoryMenu extends Menu {
     int statsW = 4 * (BUTTON_WIDTH + horizGap) + horizGap;
     int statsX = getWidth() - equipmentX - statsW + horizGap;
     int statsH = 128 + 26; //Bs magic number to fit text xd
+    
+    int levelY = statsH + equipmentY + BUTTON_HEIGHT;
+    
     public void drawStats(Graphics2D rend) {
     
         drawOutlinedRectangle(rend, Color.white, Color.black, statsX-horizGap,equipmentY-vertGap, statsW, statsH);
@@ -121,7 +125,6 @@ public class InventoryMenu extends Menu {
     }
 
     public void drawLevelInfo(Graphics2D rend) {
-        int levelY = statsH + equipmentY + BUTTON_HEIGHT;
         drawOutlinedRectangle(rend, Color.white, Color.black, statsX-horizGap,levelY-vertGap, statsW, 120);
         int textY = levelY + vertGap;
 
@@ -136,10 +139,20 @@ public class InventoryMenu extends Menu {
             textY += 30;
         }
         
-        //TODO: Remove me am debug
-        rend.drawImage(test.getUpdate(), null, 100, 100);
     }
-    FireAnimation test = new FireAnimation();
+    
+    public void drawItemInfo(Graphics2D rend) {
+        int itemInfoY = levelY + 120 + BUTTON_HEIGHT;
+        int textY = itemInfoY + vertGap;
+
+        String itemDesc = "";
+        if(geInventory[selection] != null)
+            itemDesc = geInventory[selection].name;
+
+        drawOutlinedRectangle(rend, Color.white, Color.black, statsX-horizGap, itemInfoY-vertGap, statsW, 120);
+        font.drawOutlineText(rend, itemDesc, statsX, textY);
+         
+    }
     
     public void drawOutlinedRectangle(Graphics2D rend, Color outline, Color fill, int x, int y, int width, int height) {
         rend.setColor(fill);
