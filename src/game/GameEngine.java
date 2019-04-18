@@ -31,9 +31,10 @@ public class GameEngine {
 	private boolean running;
 	////////////////Sound Lists////////////////////////////
 	//background music
+	private String bossBattleMusic ="../res/Ghostpocalypse.ogg";
 	private String backgroundMusic = "../res/Twisting.ogg";
 	//Enemy attack flare sound
-	private String enemyAtkSound= /*"../res/EnemySound.ogg"*/ "../res/classic_hurt.ogg";
+	private String enemyAtkSound = "../res/classic_hurt.ogg";
 	// footstep sound.
 	private String footStep = "../res/footStep2.ogg";
 	// fight sound.
