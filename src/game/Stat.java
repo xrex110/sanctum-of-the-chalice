@@ -138,6 +138,9 @@ public class Stat implements Serializable{
 		con += point;
 				
 	}
+	public void setObjectType(int type) {
+		this.objectType = type;
+	}
 	public boolean addStat(Stat other) {
 		boolean affected = false;
 		//this.objectLv += other.objectLv;

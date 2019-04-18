@@ -131,6 +131,9 @@ public class GameEngine {
 			itemList.add(item);
 		}
 
+		Boss bigB = new Boss(Player.player.getX()+1, Player.player.getY()+1);
+		levelMap[2][Player.player.getY()+1][Player.player.getX()+1]=bigB;
+
 		moveHist = new MoveHistory(MAXHISTORY);
 		//levelEnd = new Sign(signPositions[1].col, signPositions[1].row, "Insert end stats here");
 
@@ -286,8 +289,7 @@ public class GameEngine {
 				if (en.stat.checkAlive()) {
 					Pair<Integer,Integer> nextLoc = en.nextLoc();
 					if (nextLoc != null 
-							&& !GameEngine.levelMap[0][nextLoc.y][nextLoc.x].isSolid() 
-							&& GameEngine.levelMap[2][nextLoc.y][nextLoc.x] == null) {
+							&& en.checkBounds(nextLoc.x, nextLoc.y)) {
 						GameEngine.levelMap[2][en.getY()][en.getX()] = null;
 						GameEngine.levelMap[2][nextLoc.y][nextLoc.x] = en;
 						en.moveTo(nextLoc.x, nextLoc.y);
@@ -299,11 +301,7 @@ public class GameEngine {
 						soundEngine.play(enemyAtkSound, "enemyAtk");
 						int[] kb = {nextLoc.y+(nextLoc.y-en.getY()),
 							nextLoc.x+(nextLoc.x-en.getX())};
-						if (kb[0] >= 0 && kb[0] < levelMap[0].length 
-							&& kb[1] >= 0 && kb[1] < levelMap[0][0].length
-							&& levelMap[0][kb[0]][kb[1]] != null
-							&& !levelMap[0][kb[0]][kb[1]].isSolid()
-							&& levelMap[2][kb[0]][kb[1]] == null) {
+						if (Player.player.checkBounds(kb[1],kb[0])) {
 							levelMap[2][kb[0]][kb[1]] = Player.player;
 							Player.player.moveTo(kb[1],kb[0]);
 							levelMap[2][nextLoc.y][nextLoc.x] = null;
@@ -434,14 +432,10 @@ public class GameEngine {
 				
 					// int checkKill = false;
 					EnemyObject en = (EnemyObject)levelMap[2][yPos][xPos];
-					en.cooldown++;
+					en.hitStun();
 					int[] kb = {Player.player.getY()+2*(yPos-Player.player.getY())
 						, Player.player.getX()+2*(xPos-Player.player.getX())};
-					if (kb[0] >= 0 && kb[0] < levelMap[0].length 
-							&& kb[1] >= 0 && kb[1] < levelMap[0][0].length
-							&& levelMap[0][kb[0]][kb[1]] != null
-							&& !levelMap[0][kb[0]][kb[1]].isSolid()
-							&& levelMap[2][kb[0]][kb[1]] == null) {
+					if (en.knockBack && en.checkBounds(kb[1],kb[0])) {
 						levelMap[2][yPos][xPos] = null;
 						en.moveTo(kb[1],kb[0]);
 						levelMap[2][kb[0]][kb[1]] = en;
@@ -720,6 +714,7 @@ public class GameEngine {
 	public ArrayList<Pair<Integer,Integer>> extractPath(int[][][] pathMap, int y, int x) {
 		ArrayList<Pair<Integer,Integer>> path = new ArrayList<Pair<Integer,Integer>>();
 		Pair<Integer,Integer> current;
+		path.add(new Pair<Integer,Integer>(x, y));
 		int currx = x;
 		int curry = y;
 		while (curry >= 0 && curry < pathMap.length 

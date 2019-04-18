@@ -14,9 +14,10 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
     SpriteLoader sp = new SpriteLoader();
     ArrayList<Pair<Integer,Integer>> path;
     FireAnimation animation = new FireAnimation();
-    int awakenRange = 3;
-    int aggroRange = 6;
+    int awakenRange = 4;
+    int aggroRange = 7;
     int actionCool = 0;
+    public boolean knockBack = true;
     public int cooldown = 0;
         ArrayList<Pair<Integer,Integer>> passiveLocs;
 
@@ -59,8 +60,16 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
 
     }
 
+    public EnemyObject(int x, int y, STATE st) {
+		this(x,y);
+	    state = st;
+	    if (st != STATE.SLEEP) {
+			animation.setState(Animation.AnimationState.AWAKE);
+	    }
+    }
+
 	public GameObject cloneTo(int x, int y) {
-		return new EnemyObject(x, y);
+		return new EnemyObject(x, y, state);
 	}
 
 	public void moveTo(int x, int y) {
@@ -68,6 +77,10 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
 		setX(x);
 		setY(y);
 		placePass();
+	}
+
+	public void hitStun() {
+		cooldown++;
 	}
 
 	public void clearPass() { 
@@ -105,27 +118,36 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
         rend.drawImage(sprite, null, getX(), getY());
     }
     
+	public boolean checkBounds(int x, int y) {
+		return (y >= 0 && y < GameEngine.levelMap[0].length 
+			&& x >= 0 && x < GameEngine.levelMap[0][0].length
+			&& GameEngine.levelMap[0][y][x] != null
+			&& !GameEngine.levelMap[0][y][x].isSolid()
+			&& (GameEngine.levelMap[2][y][x] == null 
+				|| GameEngine.levelMap[2][y][x] == this));
+	}
+
     public void setPath(ArrayList<Pair<Integer,Integer>> p) {
 	path = p;
     }
 
     public Pair<Integer,Integer> nextLoc() {
 	if (state == STATE.SLEEP) {
-		if (path.size() > 0 && path.size() <= awakenRange) {
+		if (path.size() > 1 && path.size() <= awakenRange+1) {
 			state = STATE.AWAKE;
             animation.setState(Animation.AnimationState.AWAKE);
 		}
 	}
 	if (state == STATE.AWAKE) {
-		if (path.size() > 0 && path.size() <= aggroRange) {
+		if (path.size() > 1 && path.size() <= aggroRange+1) {
 			state = STATE.AGGRO;
 		}
 	}
 	if (state == STATE.AGGRO) {
-		if (path.size() > 0 && path.size() <= aggroRange) {
+		if (path.size() > 1 && path.size() <= aggroRange+1) {
 			if (cooldown <= 0) {
 				cooldown = actionCool;
-    	    			return path.get(0);
+    	    			return path.get(1);
 			}
 			cooldown--;
 		}
