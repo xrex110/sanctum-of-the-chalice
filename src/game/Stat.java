@@ -144,6 +144,9 @@ public class Stat implements Serializable{
 	public void setObjectType(int type) {
 		this.objectType = type;
 	}
+	public void setExp(int e) {
+		this.exp = e;
+	}
 	public boolean addStat(Stat other) {
 		boolean affected = false;
 		//this.objectLv += other.objectLv;
@@ -243,6 +246,7 @@ public class Stat implements Serializable{
 		//cop.maxHp    = this.maxHp;
 		cop.exp      = this.exp;
 		cop.alive    = this.alive;
+		cop.objectType=this.objectType;
 		return cop;
 	}
 
