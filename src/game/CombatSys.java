@@ -36,7 +36,7 @@ public class CombatSys {
 					//check the object die or not.		
 					
 					if(def.stat.getType()==1){
-						System.out.println("Enemy Die");
+					System.out.println("Enemy Die");
 						//def.remove(0);
 						//enemy die.
 						//give exp to the user.
@@ -48,6 +48,7 @@ public class CombatSys {
 					}
 				}			
 				//System.out.println("\n\nEvent number : " + atk.stat.getEventNum()+" \n");
+                /*
 				System.out.println("Enemy Health: " + def.stat.getHP());
 				System.out.println("\n\n Player Stat: ");
 				System.out.println("\nPlayer HP: "+atk.stat.getHP());
@@ -55,7 +56,7 @@ public class CombatSys {
 				System.out.println("STR: "+atk.stat.getStr());
 				System.out.println("DEX: "+atk.stat.getDex());
 				System.out.println("Wis: "+atk.stat.getWis());
-				System.out.println("Con: "+atk.stat.getCon()+"\n");				
+				System.out.println("Con: "+atk.stat.getCon()+"\n");	*/			
 		}
 	}
 
