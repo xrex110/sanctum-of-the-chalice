@@ -69,12 +69,12 @@ public class Boss extends EnemyObject implements Interactable {
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < width; j++) {
 				if (!super.checkBounds(corner.x+j+dx, corner.y+i+dy)) {
-					System.out.println("failed bounds");
+					//System.out.println("failed bounds");
 					return false;
 				}
 			}
 		}
-		System.out.println("good bounds");
+		//System.out.println("good bounds");
 		return true;
 	}
 
@@ -90,7 +90,7 @@ public class Boss extends EnemyObject implements Interactable {
     
     public void setPath(ArrayList<Pair<Integer,Integer>> p) {
 	    	if (path == null) {
-			System.out.println("\nCorner: " + corner + "\nLead: " + lead);
+			//System.out.println("\nCorner: " + corner + "\nLead: " + lead);
 			path = p;
 			lead = path.get(0);
 		}
@@ -156,7 +156,7 @@ public class Boss extends EnemyObject implements Interactable {
 
     public boolean interact(GameObject target) {
 	if (target == Player.player) {
-		System.out.print("Bossem");
+		//System.out.print("Bossem");
 		return true;
 	}
 	return false;
