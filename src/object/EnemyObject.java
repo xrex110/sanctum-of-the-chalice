@@ -105,27 +105,36 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
         rend.drawImage(sprite, null, getX(), getY());
     }
     
+	public boolean checkBounds(int x, int y) {
+		return (y >= 0 && y < GameEngine.levelMap[0].length 
+			&& x >= 0 && x < GameEngine.levelMap[0][0].length
+			&& GameEngine.levelMap[0][y][x] != null
+			&& !GameEngine.levelMap[0][y][x].isSolid()
+			&& (GameEngine.levelMap[2][y][x] == null 
+				|| GameEngine.levelMap[2][y][x] == this));
+	}
+
     public void setPath(ArrayList<Pair<Integer,Integer>> p) {
 	path = p;
     }
 
     public Pair<Integer,Integer> nextLoc() {
 	if (state == STATE.SLEEP) {
-		if (path.size() > 0 && path.size() <= awakenRange) {
+		if (path.size() > 1 && path.size() <= awakenRange+1) {
 			state = STATE.AWAKE;
             animation.setState(Animation.AnimationState.AWAKE);
 		}
 	}
 	if (state == STATE.AWAKE) {
-		if (path.size() > 0 && path.size() <= aggroRange) {
+		if (path.size() > 1 && path.size() <= aggroRange+1) {
 			state = STATE.AGGRO;
 		}
 	}
 	if (state == STATE.AGGRO) {
-		if (path.size() > 0 && path.size() <= aggroRange) {
+		if (path.size() > 1 && path.size() <= aggroRange+1) {
 			if (cooldown <= 0) {
 				cooldown = actionCool;
-    	    			return path.get(0);
+    	    			return path.get(1);
 			}
 			cooldown--;
 		}

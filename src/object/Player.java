@@ -157,6 +157,14 @@ public class Player extends GameObject implements Interactable {
 		setY(y);
 		placePass();
 	}
+	public boolean checkBounds(int x, int y) {
+		return (y >= 0 && y < GameEngine.levelMap[0].length 
+			&& x >= 0 && x < GameEngine.levelMap[0][0].length
+			&& GameEngine.levelMap[0][y][x] != null
+			&& !GameEngine.levelMap[0][y][x].isSolid()
+			&& (GameEngine.levelMap[2][y][x] == null 
+				|| GameEngine.levelMap[2][y][x] == this));
+	}
 
 	public void clearPass() { 
 		for (int i = 0; i < passiveLocs.size(); i++) {
