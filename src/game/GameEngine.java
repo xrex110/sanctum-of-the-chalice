@@ -43,7 +43,7 @@ public class GameEngine {
 	private static String currentInput;
 	private static int inventIndex;
 	private RenderLoop renderEngine;
-	private SoundEngine soundEngine;
+	public static SoundEngine soundEngine;
 	public ScoreTracker tracker;
 
 	private Generator levelGen;
@@ -138,6 +138,9 @@ public class GameEngine {
 		levelMap[2][curLevel.playerSpawnPosition.row][curLevel.playerSpawnPosition.col]=bigB;
 
 		levelMap[2][curLevel.npcSpawnPosition.row][curLevel.npcSpawnPosition.col]=new NPC(curLevel.npcSpawnPosition.col, curLevel.npcSpawnPosition.row);
+		//levelMap[2][curLevel.bossRoomPosition.row][curLevel.bossSpawnPosition.col]=
+		MusicTrigger musicChanger = new MusicTrigger(curLevel.bossRoomPosition.col, curLevel.bossRoomPosition.row);
+		
 
 
 
