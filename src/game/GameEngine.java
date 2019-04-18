@@ -391,6 +391,24 @@ public class GameEngine {
 			//Player.player.moveRight();
 			xPos++;
 		}
+        else if (currentInput.equals("1")) 
+        {
+            //TODO: Remove these two lines
+            AbilityX DEBUG = new AbilityX(xPos,yPos,Player.player);
+            DEBUG.check();
+
+        }
+        else if (currentInput.equals("2")) 
+        {
+            //TODO: Remove these two lines
+            AbilityY DEBUG = new AbilityY(xPos,yPos,Player.player);
+            DEBUG.check();
+
+        }
+        else if (currentInput.equals("3")) {
+            AbilityZ DEBUG = new AbilityZ(xPos,yPos,Player.player);
+            DEBUG.check();
+        }
 
 		if(GameEngine.levelMap[0][yPos][xPos] != null) {
 			if (!GameEngine.levelMap[0][yPos][xPos].isSolid() && GameEngine.levelMap[2][yPos][xPos] == null)

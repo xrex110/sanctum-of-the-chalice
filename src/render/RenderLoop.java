@@ -107,6 +107,16 @@ public class RenderLoop extends Thread {
 			//Player.player.moveRight();
             current.invoke("D");
         }
+        else if(in.isKeyPressed(KeyEvent.VK_1)) {
+            current.invoke("1");
+        }
+        else if(in.isKeyPressed(KeyEvent.VK_2)) {
+            current.invoke("2");
+        }
+        else if(in.isKeyPressed(KeyEvent.VK_3)) {
+            current.invoke("3");
+        }
+
         else if(in.isKeyPressed(settings.INVENTORY)) {
             current.invoke("INVENTORY");
         }

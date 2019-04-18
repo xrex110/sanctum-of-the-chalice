@@ -16,6 +16,11 @@ public class CombatSys {
 	*				 - call toDamage function to the other object.
 	*				 - update each object's current hp based on the damage.
 	*/
+    
+    public static void genericCombat(GameObject a, GameObject b) {
+        if(a instanceof Player && b instanceof EnemyObject) combatPlayer((Player)a,(EnemyObject)b);
+        else if(a instanceof EnemyObject && b instanceof Player) combatEnemy((EnemyObject)a,(Player) b); 
+    }
 
 	public static void combatPlayer(Player atk, EnemyObject def){
 
