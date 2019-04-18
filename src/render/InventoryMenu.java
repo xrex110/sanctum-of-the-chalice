@@ -42,7 +42,8 @@ public class InventoryMenu extends Menu {
         this.setOpaque(true);
         this.setBackground(Color.black);
         sp = new SpriteLoader();
-        /* Initialize inventory buttons */
+        
+                /* Initialize inventory buttons */
         //Defines the top left corner of the inventory
 
         for(int i = 0; i < INVENT_WIDTH; ++i) {
@@ -65,6 +66,12 @@ public class InventoryMenu extends Menu {
 
         }
     }
+    private void drawCenteredText(Graphics2D rend, String text, int x, int y, int w, int h) {
+        int textX = x + w/2 - font.getPixelWidth(rend, text) / 2;
+        int textY = y + h/2 + font.getPixelHeight(rend)/4;
+        font.drawOutlineText(rend, text, textX, textY);
+    }
+
     @Override
         public void paint(Graphics g) {
             if(!isFocused) return;
@@ -122,6 +129,18 @@ public class InventoryMenu extends Menu {
             textY += 30;
         }
         
+        int barWidth = 100;
+        int barHeight = 25;
+        int barX = getWidth()-19- barWidth;
+        int barY = getHeight() - 2*(barHeight + 10)-3;
+
+		int health = Player.player.stat.getHP();
+        int hpMax = Player.player.stat.getMaxHP();
+        String hp = health + "/" + hpMax;
+        fillProgressBar(rend, barX, barY, barWidth, barHeight, health,
+                hpMax,  Color.white, new Color(0xbb0a1e), Color.black);
+        drawCenteredText(rend, hp, barX, barY, barWidth, barHeight);
+
     }
 
     public void drawLevelInfo(Graphics2D rend) {
@@ -159,6 +178,16 @@ public class InventoryMenu extends Menu {
         rend.fillRect(x,y,width,height);
         rend.setColor(outline);
         rend.drawRect(x,y,width,height);
+    }
+    
+    private void fillProgressBar(Graphics2D rend, int x, int y, int w, int h, int current, int max, Color outline, Color fill, Color background) {
+        rend.setColor(background);
+        rend.fillRect(x,y,w,h);
+        rend.setColor(fill);
+        float fillRatio = (float) current / max;
+        rend.fillRect(x,y,(int) (w * fillRatio),h);
+        rend.setColor(outline);
+        rend.drawRect(x,y,w,h);
     }
 
     public void invoke(String key) {
