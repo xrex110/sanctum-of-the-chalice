@@ -131,7 +131,7 @@ public class InventoryMenu extends Menu {
         
         int barWidth = 100;
         int barHeight = 25;
-        int barX = getWidth()-19- barWidth;
+        int barX = getWidth()-17- barWidth;
         int barY = getHeight() - 2*(barHeight + 10)-3;
 
 		int health = Player.player.stat.getHP();
