@@ -20,12 +20,14 @@ public class Boss extends EnemyObject implements Interactable {
 
     public Boss(int x, int y){
         super(x,y);
+	stat = new Stat(2, 2, 2, 2, 10, 100, 30, true);
+	stat.setObjectType(1);
 	actionCool = 1;
 	rotIndex = -1;
-	rotation = new Ability[4];
-	rotation[1]= new AbilityY(0,0,this);
-	rotation[2] = new AbilityZ(0,0,this);
-	rotation[3] = new AbilitySpawn(0,0,this);
+	rotation = new Ability[5];
+	rotation[2]= new AbilityY(0,0,this);
+	rotation[3] = new AbilityZ(0,0,this);
+	rotation[4] = new AbilitySpawn(0,0,this);
 	
 	knockBack = false;
 	awakenRange = 4;
