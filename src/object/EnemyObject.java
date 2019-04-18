@@ -66,8 +66,18 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
 	    }
     }
 
+    public EnemyObject(int x, int y, STATE st, Stat prevStats) {
+		this(x,y);
+	    state = st;
+	    stat = prevStats;
+	    if (st != STATE.SLEEP) {
+			animation.setState(Animation.AnimationState.AWAKE);
+	    }
+    }
+
+
 	public GameObject cloneTo(int x, int y) {
-		return new EnemyObject(x, y, state);
+		return new EnemyObject(x, y, state, stat.copyStats());
 	}
 
 	public void moveTo(int x, int y) {

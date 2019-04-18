@@ -13,6 +13,7 @@ public class AbilitySpawn extends Ability {
 	public AbilitySpawn(int x, int y, GameObject parent) {
         super(x,y,parent,deltas);
 		minion = new EnemyObject(-1,-1,EnemyObject.STATE.AWAKE);
+		minion.stat.setExp(0);
     }
 
     public void check() {
