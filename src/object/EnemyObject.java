@@ -54,7 +54,7 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
 	if (x >= 0 && y >= 0) {
 		placePass();
 	}
-	System.out.println("Enemy: " + passiveLocs);
+	//System.out.println("Enemy: " + passiveLocs);
 
     }
 
