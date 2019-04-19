@@ -30,13 +30,13 @@ public class CombatSys {
 				int atkDamage = 0;
 				atkDamage = atk.stat.toDamage();
 				def.stat.getDamage(atkDamage);
-				System.out.println("Attack!");
-				System.out.println("Enemy get "+ atkDamage + " Damage");
+				//System.out.println("Attack!");
+				//System.out.println("Enemy get "+ atkDamage + " Damage");
 				if(def.stat.checkAlive()==false){
 					//check the object die or not.		
 					
 					if(def.stat.getType()==1){
-					System.out.println("Enemy Die");
+					//System.out.println("Enemy Die");
 						//def.remove(0);
 						//enemy die.
 						//give exp to the user.
@@ -66,11 +66,11 @@ public class CombatSys {
 			int atkDamage = 0;
 			atkDamage = atk.stat.toDamage();
 			def.stat.getDamage(atkDamage);
-			System.out.println("Enemy Attack!");
-			System.out.println("Player get: "+ atkDamage+ " Damage");
+			//System.out.println("Enemy Attack!");
+			//System.out.println("Player get: "+ atkDamage+ " Damage");
 			if(def.stat.checkAlive() == false){
 				//check player is die or not.
-				System.out.println("Player die!\n ");
+				//System.out.println("Player die!\n ");
                 if(SaveHandler.manualSave) {
                     SaveHandler.loadGame("manual.save");
                 } else {

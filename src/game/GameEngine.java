@@ -76,8 +76,8 @@ public class GameEngine {
 		testLevel.minSpawnSize = 6;
 		testLevel.maxSpawnSize = 12;
 		testLevel.tileSpriteSheet = "tiles.png";
-		testLevel.wallTileCode = 0;					//5 = lava, 9 = mossy, 0 = normal
-		testLevel.floorTileCode = 2;				//3 = lava, 7 = mossy, 2 = normal
+		testLevel.wallTileCode = 9;					//5 = lava, 9 = mossy, 0 = normal
+		testLevel.floorTileCode = 7;				//3 = lava, 7 = mossy, 2 = normal
 		testLevel.chestSpawnChance = 55.50;
 		testLevel.chestSpawnPenalty = 30;
 
@@ -391,7 +391,7 @@ public class GameEngine {
 		{
 			//Player.player.moveUp();
 			yPos--;
-			System.out.println("\n\nEvent number : " + event_num+" \n");
+			//System.out.println("\n\nEvent number : " + event_num+" \n");
 			
 		}
 		else if (currentInput.equals("A"))
