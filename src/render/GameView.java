@@ -47,7 +47,7 @@ public class GameView extends Menu {
     
     public InventoryMenu inventoryMenu;
     
-    boolean debugIsActive = true;
+    boolean debugIsActive = false;
     boolean hudIsActive = true;
     boolean entityDebugGrid = false;
     boolean mapScreenshot = false; 
