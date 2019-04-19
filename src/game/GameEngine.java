@@ -132,6 +132,7 @@ public class GameEngine {
 
 		for(UsableItem item : itemsReadIn) {
 			itemList.add(item);
+			addToInventory(item);
 		}
 
 		Boss bigB = new Boss(curLevel.bossSpawnPosition.col, curLevel.bossSpawnPosition.row);

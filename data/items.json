@@ -68,5 +68,35 @@
 		"hp": 0,
 		"exp": 0
 	}
+},
+{
+	"name": "Shine of Immortality",
+	"spritepath": "sparkles.png",
+	"maximumDurability": 1,
+	"stats": {
+		"level": 5,
+		"str": 0,
+		"dex": 0,
+		"wis": 0,
+		"con": 3000,
+		"hp": 30000,
+		"exp": 0
+	}
+},
+{
+	"name": "Aura of Perfection",
+	"spritepath": "magicVortex.png",
+	"maximumDurability": 1,
+	"stats": {
+		"level": 5,
+		"str": 0,
+		"dex": 0,
+		"wis": 0,
+		"con": -3000,
+		"hp": 0,
+		"exp": 0
+	}
 }
+
+
 ]
