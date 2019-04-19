@@ -88,7 +88,7 @@ public class Stat implements Serializable{
 			this.con      = 3;
 			this.currentHp = 30;
 			//this.maxHp    = 20;
-			this.exp      = 5;
+			this.exp      = 3;
 			this.alive    = true;
 			this.objectType = 1; // Creature;
 		}
@@ -295,7 +295,7 @@ public class Stat implements Serializable{
 		if(eventNum == 2){
 			newExp*=2;
 		}
-		System.out.println("Player get "+exp+ " exp");
+		//System.out.println("Player get "+exp+ " exp");
 		exp += newExp;
 		if(exp/10 >= objectLv){
 			exp -= objectLv * 10;
