@@ -69,15 +69,15 @@ public class GameEngine {
 		enemyUpdateList = new ArrayList<EnemyObject>();
 
 		LevelMap testLevel = new LevelMap();
-		testLevel.numRooms = 6;
-		testLevel.linear = true;
+		testLevel.numRooms = 10;
+		testLevel.linear = false;
 		testLevel.minRoomSize = 7;
 		testLevel.maxRoomSize = 11;
 		testLevel.minSpawnSize = 6;
 		testLevel.maxSpawnSize = 12;
 		testLevel.tileSpriteSheet = "tiles.png";
-		testLevel.wallTileCode = 0;
-		testLevel.floorTileCode = 2;
+		testLevel.wallTileCode = 0;					//5 = lava, 9 = mossy, 0 = normal
+		testLevel.floorTileCode = 2;				//3 = lava, 7 = mossy, 2 = normal
 		testLevel.chestSpawnChance = 55.50;
 		testLevel.chestSpawnPenalty = 30;
 
