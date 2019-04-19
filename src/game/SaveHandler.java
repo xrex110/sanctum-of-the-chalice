@@ -146,7 +146,7 @@ public class SaveHandler {
         ge.getRenderEngine().gm.setMap(ge.levelMap);     
         ge.getRenderEngine().gm.inventoryMenu.setInvent(ge.inventory, ge.equips);     
         ge.getRenderEngine().gm.setMap(ge.levelMap);     
-
+        ge.playtime.start();
         ois.close();
         fis.close();
         
