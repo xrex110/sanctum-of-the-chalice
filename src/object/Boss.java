@@ -20,7 +20,7 @@ public class Boss extends EnemyObject implements Interactable {
 
     public Boss(int x, int y){
         super(x,y);
-	stat = new Stat(2, 3, 2, 2, 10, 100, 30, true);
+	stat = new Stat(2, 5, 2, 2, 100, 1000, 30, true);
 	stat.setObjectType(1);
 	actionCool = 2;
 	rotIndex = -1;

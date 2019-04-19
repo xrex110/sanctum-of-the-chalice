@@ -594,7 +594,7 @@ public class GameEngine {
 				}
 			}
 			//look right
-			if (current[0] < pathMap[0].length-1 && pathMap[current[0]][current[1]+1][4] < 0) {
+			if (current[1] < pathMap[0].length-1 && pathMap[current[0]][current[1]+1][4] < 0) {
 				int[] next = {current[0], current[1]+1, current[0], current[1], current[4]+1};
 				pathMap[next[0]][next[1]][0] = next[0];
 				pathMap[next[0]][next[1]][1] = next[1];
@@ -701,7 +701,7 @@ public class GameEngine {
 				}
 			}
 			//look right
-			if (current[0] < pathMap[0].length-1 && pathMap[current[0]][current[1]+1][4] < 0) {
+			if (current[1] < pathMap[0].length-1 && pathMap[current[0]][current[1]+1][4] < 0) {
 				int[] next = {current[0], current[1]+1, current[0], current[1], current[4]+1};
 				pathMap[next[0]][next[1]][0] = next[0];
 				pathMap[next[0]][next[1]][1] = next[1];
