@@ -151,14 +151,14 @@ public class Generator {
 		long endTime = System.currentTimeMillis();
 
 		//Print map!
-		printMap();
-
+		//printMap();
+		/*
 		termColorRed();
 		System.out.println("=========================");
 		System.out.println("Time taken to generate level (not counting printing)\n\t\t" + (endTime - startTime) + "ms");
 		System.out.println("=========================");
 		termClearColor();
-
+		*/
 		//Now we create the LevelData object to send back to GE
 		LevelData thisLevel = new LevelData();
 		thisLevel.levelMap = objectMap;
@@ -530,7 +530,7 @@ public class Generator {
 
 	private void log(String str) {
 		//Can be changed later to write to a ProcGen log file perhaps
-		System.out.println(str);
+		//System.out.println(str);
 		return;
 	}
 

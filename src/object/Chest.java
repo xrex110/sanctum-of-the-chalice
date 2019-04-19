@@ -13,7 +13,7 @@ public class Chest extends Item implements Interactable {
 
 	public boolean interact(GameObject target) {
 		if (target == Player.player) {
-			System.out.println("Phoebus is smart");
+			//System.out.println("Phoebus is smart");
 			return true;
 		}
 		return false;
