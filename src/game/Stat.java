@@ -133,6 +133,9 @@ public class Stat implements Serializable{
 	}
 	public void setHP(int point){
 		currentHp += point;
+		if (currentHp > getMaxHP()) {
+			currentHp = getMaxHP();
+		}
 	}
 	public void setCon(int point){
 		con += point;
@@ -140,6 +143,9 @@ public class Stat implements Serializable{
 	}
 	public void setObjectType(int type) {
 		this.objectType = type;
+	}
+	public void setExp(int e) {
+		this.exp = e;
 	}
 	public boolean addStat(Stat other) {
 		boolean affected = false;
@@ -240,6 +246,7 @@ public class Stat implements Serializable{
 		//cop.maxHp    = this.maxHp;
 		cop.exp      = this.exp;
 		cop.alive    = this.alive;
+		cop.objectType=this.objectType;
 		return cop;
 	}
 

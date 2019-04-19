@@ -166,7 +166,16 @@ public class Generator {
 		thisLevel.mapHeight = this.mapHeight;
 
 		thisLevel.playerSpawnPosition = rng.getRandomCoordinateWithinBounds(spawnRoom.row + 2, spawnRoom.row + spawnRoom.bounds.height - 2, spawnRoom.col + 2, spawnRoom.col + spawnRoom.bounds.width - 2);
+		
+		//Boss spawn position
+		Room bossRoom = roomsInLevel.get(roomsInLevel.size() - 1);
+		thisLevel.bossSpawnPosition = rng.getRandomCoordinateWithinBounds(bossRoom.row + 3, bossRoom.row + bossRoom.bounds.height - 3, bossRoom.col + 3, bossRoom.col + bossRoom.bounds.width - 3);
+		thisLevel.bossRoomPosition = corridorTiles.get(corridorTiles.size() - 1);
 
+		//Random room selection
+		Room npcRoom = roomsInLevel.get(rng.getRandomWithinBounds(1, roomsInLevel.size() - 2));
+		thisLevel.npcSpawnPosition = rng.getRandomCoordinateWithinBounds(npcRoom.row + 2, npcRoom.row + npcRoom.bounds.height - 2, npcRoom.col + 2, npcRoom.col + npcRoom.bounds.width - 2);
+		
 		return thisLevel;
 	}
 

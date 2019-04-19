@@ -8,4 +8,8 @@ public class LevelData {
 	public int mapWidth;
 	public int mapHeight;
 	public Coordinate playerSpawnPosition;
+	public Coordinate bossSpawnPosition;
+	//Spawn position for the music change trigger
+	public Coordinate bossRoomPosition;
+	public Coordinate npcSpawnPosition;
 }

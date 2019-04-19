@@ -34,11 +34,9 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
 
     public EnemyObject(int x, int y){
         super(x,y, false);
-	int[][] passiveMap = {{0,0,1,0,0},
-	    		{0,1,1,1,0},
-	    		{1,1,1,1,1},
-			{0,1,1,1,0},
-			{0,0,1,0,0}};
+	int[][] passiveMap = {{0,1,0},
+	    		{1,1,1},
+			{0,1,0}};
 
 	    state = STATE.SLEEP;
         animation.setState(Animation.AnimationState.SLEEP);
@@ -68,8 +66,18 @@ public class EnemyObject extends GameObject implements Serializable, Interactabl
 	    }
     }
 
+    public EnemyObject(int x, int y, STATE st, Stat prevStats) {
+		this(x,y);
+	    state = st;
+	    stat = prevStats;
+	    if (st != STATE.SLEEP) {
+			animation.setState(Animation.AnimationState.AWAKE);
+	    }
+    }
+
+
 	public GameObject cloneTo(int x, int y) {
-		return new EnemyObject(x, y, state);
+		return new EnemyObject(x, y, state, stat.copyStats());
 	}
 
 	public void moveTo(int x, int y) {

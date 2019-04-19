@@ -14,12 +14,13 @@ import java.io.ObjectOutputStream;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import static main.Sanctum.ge;
-
+import java.util.ArrayList;
 public class SaveHandler {
 
     /* This class should contain ONLY static saving methods and fields */
     private static final String BIN_PATH = SaveHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath();
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-SS"); 
+    public static boolean manualSave = false;
     public static void saveScreenshot(BufferedImage image) {
         new Thread(new Runnable() {
             @Override
@@ -87,16 +88,16 @@ public class SaveHandler {
         }
         
     }
+    
+    
 
-    public static void saveGame() {
+    public static void saveGame(String fileName) {
         try {
             File directory = new File(BIN_PATH + "data");
         
             if(!directory.exists())
                 directory.mkdir();
-
-            String fileName = "playthrough.save";
-
+            
             FileOutputStream os = new FileOutputStream(directory.getPath() + "/" + fileName, false);
             ObjectOutputStream oos = new ObjectOutputStream(os);
 
@@ -110,6 +111,7 @@ public class SaveHandler {
             oos.writeObject(ge.moveHist);
             oos.writeObject(ge.inventory);
             oos.writeObject(ge.equips);
+            oos.writeObject(ge.transientRenders);
         
             oos.flush();
             oos.close();
@@ -119,13 +121,17 @@ public class SaveHandler {
             e.printStackTrace();
         }
     }
-    public static void loadGame() {
+    public static void loadGame(String fileName) {
         try {
         File directory = new File(BIN_PATH + "data");
         if(!directory.exists())
             directory.mkdir();
-        String fileName = "playthrough.save";
         
+        if(fileName.equals("manual.save")) {
+                manualSave = true;
+        }
+            
+
         FileInputStream fis = new FileInputStream(directory.getPath() + "/" + fileName);
         ObjectInputStream ois = new ObjectInputStream(fis);
         
@@ -136,6 +142,7 @@ public class SaveHandler {
         ge.moveHist = (MoveHistory) ois.readObject();
         ge.inventory = (UsableItem[]) ois.readObject();
         ge.equips = (Equipable[]) ois.readObject();
+        ge.transientRenders = (ArrayList<GameObject>) ois.readObject();
         ge.getRenderEngine().gm.setMap(ge.levelMap);     
         ge.getRenderEngine().gm.inventoryMenu.setInvent(ge.inventory, ge.equips);     
         ge.getRenderEngine().gm.setMap(ge.levelMap);     
@@ -145,7 +152,8 @@ public class SaveHandler {
         
         System.out.println("Successfully loaded save game");
         } catch(Exception e) {
-            e.printStackTrace();
+            manualSave = false;
+            loadGame("auto.save");
         } 
     }
 

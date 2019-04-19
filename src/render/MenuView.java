@@ -17,6 +17,7 @@ public class MenuView extends Menu {
 
     private ArrayList<Menu> children = new ArrayList<Menu>();
     private DynamicButton[] buttons;
+    private FadingText savedNotification, loadNotification;
 
     public MenuView(int width, int height) {
         super(width, height, null);
@@ -30,19 +31,25 @@ public class MenuView extends Menu {
         Color fill = new Color(0x002663);
 
         int BUTTON_HEIGHT = 50;
-        int BUTTON_WIDTH = 100;
+        int BUTTON_WIDTH = 200;
         int x = (getWidth() - BUTTON_WIDTH) / 2;
 
         int i = 0;
         buttons = new DynamicButton[] {
-            new DynamicButton("Start",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
-                new DynamicButton("Settings",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
-                new DynamicButton("Save",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
-                new DynamicButton("Exit",x,200 + BUTTON_HEIGHT * 2 * i++,100,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
+            new DynamicButton("New Game/Continue",x,200 + BUTTON_HEIGHT * 2 * i++,BUTTON_WIDTH,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
+            new DynamicButton("Continue Last Save",x,200 + BUTTON_HEIGHT * 2 * i++,BUTTON_WIDTH,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
+                new DynamicButton("Settings",x,200 + BUTTON_HEIGHT * 2 * i++,BUTTON_WIDTH,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
+                new DynamicButton("Save",x,200 + BUTTON_HEIGHT * 2 * i++,BUTTON_WIDTH,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
+                new DynamicButton("Exit",x,200 + BUTTON_HEIGHT * 2 * i++,BUTTON_WIDTH,BUTTON_HEIGHT,fill,outline,selectedColor,menuText),
         };
         for(DynamicButton b : buttons) options.add(b);
         selectButton(0);
         initializeChildren();
+        
+        TextDevice notifText = new TextDevice("DPComic",20,Color.white, Color.black);
+        savedNotification = new FadingText("Saved game!", 50, 50,500,true,notifText);
+        loadNotification = new FadingText("Loaded game!", 50, 50,500,true,notifText);
+
 
     }
 
@@ -79,7 +86,7 @@ public class MenuView extends Menu {
                 selection = selection == buttons.length-1 ? 0 : selection + 1;
                 selectButton(selection);
                 break; 
-            case "Enter": {
+            case "Enter": 
                 RenderLoop re = Sanctum.ge.getRenderEngine();
                 if(selection == 0) {
                     //Start new game
@@ -87,19 +94,28 @@ public class MenuView extends Menu {
                     re.gm.focus(this);
 		            GameEngine.unPause();
                 } else if(selection == 1) {
+                    SaveHandler.loadGame("manual.save"); 
+                    System.out.println("Loading game!");
+                    re.gm.focus(this);
+		            GameEngine.unPause();
+                } else if(selection == 2) {
                     //Settings
                     children.get(0).focus(this);
-                } else if(selection == 2) {
-                    //Class Selection
-                    children.get(1).focus(this);
                 } else if(selection == 3) {
+                    //Class Selection
+                    game.SaveHandler.saveGame("manual.save");
+                    savedNotification.start();
+                    loadNotification.stop();
+
+                } else if(selection == 4) {
                     //Exit
                     Sanctum.ge.getRenderEngine().window.killWindow();
                     System.exit(0);
                 }
                 break;
+            
             }
-        }
+    
     }
 
     @Override
@@ -115,6 +131,10 @@ public class MenuView extends Menu {
             for(int i = 0; i < options.size(); ++i) {
                 options.get(i).draw(rend);
             }
+            savedNotification.fadeIn(rend);
+            loadNotification.fadeIn(rend);
+        
+
         }
     public void setInputHandler(InputHandler ih) {
 		this.addKeyListener(ih);

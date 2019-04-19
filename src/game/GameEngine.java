@@ -31,9 +31,10 @@ public class GameEngine {
 	private boolean running;
 	////////////////Sound Lists////////////////////////////
 	//background music
+	private String bossBattleMusic ="../res/Ghostpocalypse.ogg";
 	private String backgroundMusic = "../res/Twisting.ogg";
 	//Enemy attack flare sound
-	private String enemyAtkSound= /*"../res/EnemySound.ogg"*/ "../res/classic_hurt.ogg";
+	private String enemyAtkSound = "../res/classic_hurt.ogg";
 	// footstep sound.
 	private String footStep = "../res/footStep2.ogg";
 	// fight sound.
@@ -42,7 +43,7 @@ public class GameEngine {
 	private static String currentInput;
 	private static int inventIndex;
 	private RenderLoop renderEngine;
-	private SoundEngine soundEngine;
+	public static SoundEngine soundEngine;
 	public ScoreTracker tracker;
 
 	private Generator levelGen;
@@ -68,7 +69,7 @@ public class GameEngine {
 		enemyUpdateList = new ArrayList<EnemyObject>();
 
 		LevelMap testLevel = new LevelMap();
-		testLevel.numRooms = 25;
+		testLevel.numRooms = 6;
 		testLevel.linear = true;
 		testLevel.minRoomSize = 7;
 		testLevel.maxRoomSize = 11;
@@ -114,13 +115,13 @@ public class GameEngine {
 		//Each uses a different method of setting stat values. The one used by betterPotion is probably preferable
 		//TODO remove these debug items later
 		inventory[3] = new UsableItem(-1, -1, "Mundane Potion", "basicPotion.png", 2);
-		inventory[3].modifier.setHP(20);
+		inventory[3].modifier = new Stat(1,0,0,0,0,30,0,false);
 		Stat heal = new Stat(1,0,0,0,0,10,10,false);
 		UsableItem betterPotion = new UsableItem(-1,-1,"Growth Potion", "growthPotion.png", 1, heal);
 		
-		inventory[3].cloneTo(Player.player.getX(), Player.player.getY() +1);
+		//inventory[3].cloneTo(Player.player.getX(), Player.player.getY() +1);
 
-		betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
+		//betterPotion.cloneTo(Player.player.getX(), Player.player.getY() +1);
 		itemList.add(betterPotion);
 		heal = new Stat(1,0,0,0,-2,0,0,false);
 		Equipable arm = new Equipable(-1,-1,"Underwear of Vulnerability", "underwear.png", 1, heal, Equipable.EquipType.ARMOR);
@@ -133,8 +134,15 @@ public class GameEngine {
 			itemList.add(item);
 		}
 
-		Boss bigB = new Boss(Player.player.getX()+1, Player.player.getY()+1);
-		levelMap[2][Player.player.getY()+1][Player.player.getX()+1]=bigB;
+		Boss bigB = new Boss(curLevel.bossSpawnPosition.col, curLevel.bossSpawnPosition.row);
+		levelMap[2][curLevel.bossSpawnPosition.row][curLevel.bossSpawnPosition.col]=bigB;
+
+		levelMap[2][curLevel.npcSpawnPosition.row][curLevel.npcSpawnPosition.col]=new NPC(curLevel.npcSpawnPosition.col, curLevel.npcSpawnPosition.row);
+		//levelMap[2][curLevel.bossRoomPosition.row][curLevel.bossSpawnPosition.col]=
+		MusicTrigger musicChanger = new MusicTrigger(curLevel.bossRoomPosition.col, curLevel.bossRoomPosition.row);
+		
+
+
 
 		moveHist = new MoveHistory(MAXHISTORY);
 		//levelEnd = new Sign(signPositions[1].col, signPositions[1].row, "Insert end stats here");
@@ -170,6 +178,7 @@ public class GameEngine {
 		//soundEngine.play(enterSound, "enter");
 		soundEngine.playLoop(backgroundMusic, "background");
 		//GameEngine.unPause();
+        SaveHandler.saveGame("auto.save");
 		gameLoop();
 	}
 
@@ -585,7 +594,7 @@ public class GameEngine {
 				}
 			}
 			//look right
-			if (current[0] < pathMap[0].length-1 && pathMap[current[0]][current[1]+1][4] < 0) {
+			if (current[1] < pathMap[0].length-1 && pathMap[current[0]][current[1]+1][4] < 0) {
 				int[] next = {current[0], current[1]+1, current[0], current[1], current[4]+1};
 				pathMap[next[0]][next[1]][0] = next[0];
 				pathMap[next[0]][next[1]][1] = next[1];
@@ -692,7 +701,7 @@ public class GameEngine {
 				}
 			}
 			//look right
-			if (current[0] < pathMap[0].length-1 && pathMap[current[0]][current[1]+1][4] < 0) {
+			if (current[1] < pathMap[0].length-1 && pathMap[current[0]][current[1]+1][4] < 0) {
 				int[] next = {current[0], current[1]+1, current[0], current[1], current[4]+1};
 				pathMap[next[0]][next[1]][0] = next[0];
 				pathMap[next[0]][next[1]][1] = next[1];
