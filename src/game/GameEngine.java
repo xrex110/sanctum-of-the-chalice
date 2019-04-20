@@ -69,8 +69,8 @@ public class GameEngine {
 		enemyUpdateList = new ArrayList<EnemyObject>();
 
 		LevelMap testLevel = new LevelMap();
-		testLevel.numRooms = 10;
-		testLevel.linear = false;
+		testLevel.numRooms = 5;
+		testLevel.linear = true;
 		testLevel.minRoomSize = 7;
 		testLevel.maxRoomSize = 11;
 		testLevel.minSpawnSize = 6;
