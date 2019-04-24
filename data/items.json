@@ -34,7 +34,7 @@
 	"stats": {
 		"level": 5,
 		"str": 0,
-		"dex": 15,
+		"dex": 1000,
 		"wis": 0,
 		"con": 0,
 		"hp": 0,

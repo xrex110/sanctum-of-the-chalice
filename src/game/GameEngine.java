@@ -68,16 +68,25 @@ public class GameEngine {
 
 		enemyUpdateList = new ArrayList<EnemyObject>();
 
+		//Randomization for presentation purposes here
+		RandomNumberGenerator rand = new RandomNumberGenerator();
+		int roomsToGenerate = rand.getRandomWithinBounds(4, 8);
+		boolean linearity = rand.getRandomWithinBounds(0, 1) == 1; 
+		int[][] roomPairs = { {0, 2},
+							  {5, 3},
+							  {9, 7} };
+		int selector = rand.getRandomWithinBounds(0, 2);
+
 		LevelMap testLevel = new LevelMap();
-		testLevel.numRooms = 5;
-		testLevel.linear = true;
+		testLevel.numRooms = roomsToGenerate;
+		testLevel.linear = linearity;
 		testLevel.minRoomSize = 7;
 		testLevel.maxRoomSize = 11;
 		testLevel.minSpawnSize = 6;
 		testLevel.maxSpawnSize = 12;
 		testLevel.tileSpriteSheet = "tiles.png";
-		testLevel.wallTileCode = 9;					//5 = lava, 9 = mossy, 0 = normal
-		testLevel.floorTileCode = 7;				//3 = lava, 7 = mossy, 2 = normal
+		testLevel.wallTileCode = roomPairs[selector][0];  //5 = lava, 9 = mossy, 0 = normal
+		testLevel.floorTileCode = roomPairs[selector][1]; //3 = lava, 7 = mossy, 2 = normal
 		testLevel.chestSpawnChance = 55.50;
 		testLevel.chestSpawnPenalty = 30;
 
@@ -126,13 +135,16 @@ public class GameEngine {
 		heal = new Stat(1,0,0,0,-2,0,0,false);
 		Equipable arm = new Equipable(-1,-1,"Underwear of Vulnerability", "underwear.png", 1, heal, Equipable.EquipType.ARMOR);
 		itemList.add(arm);
+		addToInventory((UsableItem)arm.cloneTo(-1,-1));
 		heal = new Stat(1,0,0,0,1,0,0,false);
 		arm = new Equipable(-1,-1,"Leather Gambisson", "leatherArmor.png", 1, heal, Equipable.EquipType.ARMOR);
 		itemList.add(arm);
+		addToInventory((UsableItem)arm.cloneTo(-1,-1));
+
 
 		for(UsableItem item : itemsReadIn) {
 			itemList.add(item);
-			addToInventory(item);
+			addToInventory((UsableItem)item.cloneTo(-1,-1));
 		}
 
 		Boss bigB = new Boss(curLevel.bossSpawnPosition.col, curLevel.bossSpawnPosition.row);
